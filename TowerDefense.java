@@ -11,12 +11,13 @@ public class TowerDefense extends JFrame implements WindowListener
 		super("Tower Defense");
 		Container c = getContentPane();
 		gp = new GamePanel(this);
-		c.add(gp, "Center");
+		c.add(gp);
 
 		addWindowListener(this);
-		pack();
+		setIgnoreRepaint(true);
 		setResizable(false);
 		setVisible(true);
+		pack();
 	}
 	
 	public void windowActivated(WindowEvent e) {}

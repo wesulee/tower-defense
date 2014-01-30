@@ -13,7 +13,6 @@ public class Menu
 	private int wave = 0;
 	
 	private Font font;
-//	private FontMetrics metrics;
 	
 	
 	public Menu(int width, int height, int width_offset, Player player)
@@ -29,12 +28,14 @@ public class Menu
 	
 	public void draw(Graphics2D g)
 	{
+		g.setFont(font);
 		g.setColor(Color.gray);
 		g.fillRect(WIDTH_OFFSET, 0, WIDTH, HEIGHT);
+		g.setColor(Color.white);
+		
+		g.drawString("Wave "+wave, WIDTH_OFFSET+20, 20);
 		
 		// display health and gold
-		g.setColor(Color.white);
-		g.setFont(font);
 		g.drawString("Health: " + player.getHealth() + "/" + playerMaxHealth, 
 				WIDTH_OFFSET+15, HEIGHT-45);
 		g.drawString("Gold: " + player.getGold(), WIDTH_OFFSET+15, HEIGHT-25);

@@ -8,8 +8,8 @@ import java.awt.*;
 public class GamePanel extends JPanel implements Runnable
 {
 	private final static int TARGET_FPS = 60;
-	private static int WIDTH = 900;
-	private static int HEIGHT = 600;
+	public final static int WIDTH = 900;
+	public final static int HEIGHT = 600;
 	// MENU_X determines where menu is drawn
 	private static int MENU_X = 800;
 	
@@ -26,8 +26,6 @@ public class GamePanel extends JPanel implements Runnable
 	private Graphics2D dbg;
 	private Image dbImage = null;
 
-
-	
 	private BufferedImage background;
 	private Player player;
 	private Menu menu;
@@ -37,7 +35,7 @@ public class GamePanel extends JPanel implements Runnable
 		tdTop = td;
 		this.period = ((long)(1000.0 / TARGET_FPS)) * 1000000L;
 		
-		setBackground(Color.white);
+		//setBackground(Color.white);
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		setFocusable(true);
 		requestFocus();
@@ -112,6 +110,10 @@ public class GamePanel extends JPanel implements Runnable
 	private void testPress(int x, int y)
 	{
 		// not implemented
+		if (x > MENU_X) {
+			// inside menu
+			return;
+		}
 	}
 	
 	private void gameUpdate()
@@ -158,12 +160,16 @@ public class GamePanel extends JPanel implements Runnable
 	private void processKey(KeyEvent e)
 	{
 		int code = e.getKeyCode();
+		// not implemented
 	}
 	
 	private void printStats()
 	{
 		long elapseTime = (System.nanoTime()-gameStartTime) / 1000000L; // ms
 		double elapse = elapseTime / 1000.0;
+		double targetFPS = 1000.0 / period * 1000000L;
+		System.out.println("Target FPS: "+targetFPS);
+		System.out.println("Period: " + (period / 1000) / 1000.0 + " ms");
 		System.out.println("Average FPS: " + gameUpdateCount / elapse);
 		System.out.println("gameUpdateCount: " + gameUpdateCount);
 		System.out.println("Elapse time: " + elapse + " s");
