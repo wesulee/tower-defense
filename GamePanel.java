@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.io.*;
+import java.util.ArrayList;
 import javax.imageio.*;
 import java.awt.image.*;
 import java.awt.event.*;
@@ -29,6 +30,8 @@ public class GamePanel extends JPanel implements Runnable
 	private BufferedImage background;
 	private Player player;
 	private Menu menu;
+	private TowerSprites tSprites;
+	private ArrayList<Tower> towers = new ArrayList<Tower>();
 
 	public GamePanel(TowerDefense td)
 	{
@@ -45,14 +48,18 @@ public class GamePanel extends JPanel implements Runnable
 			{ testPress(e.getX(), e.getY()); }
 		});
 		
+		// load/setup game data
 		try {
-			background = ImageIO.read(getClass().getResource("/Resources/test_map.png"));
+			background = ImageIO.read(getClass().getResource("/Resources/Maps/test_map.png"));
 		} 
 		catch (IOException e) {
 			System.out.println("Unable to load test_map.png");
 		}
 		player = new Player();
 		menu = new Menu(WIDTH, HEIGHT, MENU_X, player);
+		tSprites = new TowerSprites();
+		towers.add(new TestTower(400, 220));
+		towers.add(new TestTower(500, 220));
 		
 	}
 	
@@ -109,6 +116,7 @@ public class GamePanel extends JPanel implements Runnable
 	
 	private void testPress(int x, int y)
 	{
+		System.out.println("Mouse clicked at ("+x+", "+y+")");
 		// not implemented
 		if (x > MENU_X) {
 			// inside menu
@@ -139,6 +147,10 @@ public class GamePanel extends JPanel implements Runnable
 		dbg.setColor(Color.white);
 		dbg.fillRect(0, 0, WIDTH, HEIGHT);
 		dbg.drawImage(background, 0, 0, null);
+		
+		for (Tower t : towers) {
+			t.draw(dbg);
+		}
 		
 		menu.draw(dbg);
 	}
