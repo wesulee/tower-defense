@@ -1,6 +1,8 @@
+package towerdefense.towers;
+
 public enum TowerType 
 {
-	TestTowerType("test_tower.png");
+	TestTowerType("test_tower.png"), TestTower2Type("test_tower2.png");
 	
 	TowerType(String fname)
 	{

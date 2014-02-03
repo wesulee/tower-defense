@@ -1,9 +1,15 @@
+package towerdefense.towers;
+
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.util.ArrayList;
-import java.io.IOException;
+import java.io.InputStream;
 
-//container for all tower sprites
+import towerdefense.TowerDefense;
+
+/**
+ * Container for tower sprites and their icons
+ */
 public class TowerSprites
 {
 	private static ArrayList<BufferedImage> sprites;
@@ -36,15 +42,27 @@ public class TowerSprites
 		return null;
 	}
 	
+	public static BufferedImage getSpriteIcon(TowerType tt)
+	{
+		String fname = tt.getFileName();
+		int extensionIndex = fname.lastIndexOf(".");
+		String extension = fname.substring(extensionIndex + 1);
+		fname = fname.substring(0, extensionIndex) + "_icon." + extension;
+		BufferedImage img = loadSprite(fname);
+		return img;
+	}
+	
 	// initial sprite loading
-	private BufferedImage loadSprite(String fname)
+	private static BufferedImage loadSprite(String fname)
 	{
 		BufferedImage img = null;
+		fname = "Resources/Towers/" + fname;
 		try {
-			img = ImageIO.read(getClass().getResource("/Resources/Towers/"+fname));
+			InputStream is = TowerDefense.class.getResourceAsStream(fname);
+			img = ImageIO.read(is);
 		} 
-		catch (IOException e) {
-			System.out.println("Unable to load /Resources/Towers/"+fname);
+		catch (Exception e) {
+			System.out.println("Unable to load " + fname);
 		}
 		return img;
 	}

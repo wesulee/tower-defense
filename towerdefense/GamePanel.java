@@ -1,12 +1,14 @@
-import javax.swing.*;
-import java.io.*;
-import java.util.ArrayList;
-import javax.imageio.*;
-import java.awt.image.*;
-import java.awt.event.*;
-import java.awt.*;
+package towerdefense;
 
-public class GamePanel extends JPanel implements Runnable
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+
+import towerdefense.creatures.*;
+import towerdefense.towers.*;
+
+public class GamePanel extends JPanel implements Runnable, MouseMotionListener
 {
 	private final static int TARGET_FPS = 60;
 	public final static int WIDTH = 900;
@@ -16,7 +18,7 @@ public class GamePanel extends JPanel implements Runnable
 	
 	private Thread animator;
 	private boolean running = false;
-	private boolean isPaused = false;
+	//private boolean isPaused = false;
 	private long period; // redraw delay, nanoseconds
 	
 	protected long gameStartTime;
@@ -27,7 +29,7 @@ public class GamePanel extends JPanel implements Runnable
 	private Graphics2D dbg;
 	private Image dbImage = null;
 
-	private BufferedImage background;
+	private Map map;
 	private Player player;
 	private Menu menu;
 	private TowerSprites tSprites;
@@ -47,14 +49,10 @@ public class GamePanel extends JPanel implements Runnable
 			public void mousePressed(MouseEvent e)
 			{ testPress(e.getX(), e.getY()); }
 		});
+		addMouseMotionListener(this);
 		
 		// load/setup game data
-		try {
-			background = ImageIO.read(getClass().getResource("/Resources/Maps/test_map.png"));
-		} 
-		catch (IOException e) {
-			System.out.println("Unable to load test_map.png");
-		}
+		map = new Map();
 		player = new Player();
 		menu = new Menu(WIDTH, HEIGHT, MENU_X, player);
 		tSprites = new TowerSprites();
@@ -126,6 +124,7 @@ public class GamePanel extends JPanel implements Runnable
 	
 	private void gameUpdate()
 	{
+		long currentTime = System.nanoTime();
 		gameUpdateCount++;
 		// not implemented
 	}
@@ -146,7 +145,7 @@ public class GamePanel extends JPanel implements Runnable
 		// draw background
 		dbg.setColor(Color.white);
 		dbg.fillRect(0, 0, WIDTH, HEIGHT);
-		dbg.drawImage(background, 0, 0, null);
+		map.draw(dbg);
 		
 		for (Tower t : towers) {
 			t.draw(dbg);
@@ -166,6 +165,14 @@ public class GamePanel extends JPanel implements Runnable
 		}
 		catch (Exception e) {
 			System.out.println("Graphics context error: + e");
+		}
+	}
+	
+	public void mouseDragged(MouseEvent e) {}
+	public void mouseMoved(MouseEvent e)
+	{
+		if (e.getX() >= MENU_X) {
+			menu.notifyMouseMoved(e.getX(), e.getY());
 		}
 	}
 
