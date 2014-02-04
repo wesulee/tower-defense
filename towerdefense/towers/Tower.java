@@ -2,7 +2,7 @@ package towerdefense.towers;
 
 import java.awt.Graphics2D;
 
-public class Tower
+public abstract class Tower
 {
 	private double damage;		// damage per attack
 	private int range;			// distance tower can hit target
@@ -34,11 +34,18 @@ public class Tower
 		return time - lastAttack > attackPeriod;
 	}
 	
-	public void setLastAttack(long time) {lastAttack = time;}
 	public double getDamage() {return damage;}
+	public int getRange() {return range;}
+	public void setRange(int range) {this.range = range;}
+	public double getSpeed() {return speed;}
+	public void setSpeed(double speed) {this.speed = speed;}
 	public int getSize() {return size;}
 	public int getCost() {return cost;}
-	public int getPositionX() {return pos_x;}
-	public int getPositionY() {return pos_y;}
-	public void draw(Graphics2D g) {return;}
+	public long getAttackPeriod() {return attackPeriod;}
+	public void setAttackPeriod(long p) {attackPeriod = p;}
+	public void setLastAttack(long time) {lastAttack = time;}
+	public int getX() {return pos_x;}
+	public int getY() {return pos_y;}
+	public abstract void draw(Graphics2D g);
+	public abstract TowerType getTowerType();
 }

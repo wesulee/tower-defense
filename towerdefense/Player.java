@@ -1,4 +1,9 @@
 package towerdefense;
+
+/**
+ * Menu must be set in order to function correctly.
+ * Correct order: p = new Player(); m = new Menu(...); p.setMenu(m);
+ */
 public class Player
 {
 	private int health;
@@ -8,6 +13,8 @@ public class Player
 	private final static int DEFAULT_HEALTH = 20;
 	private final static int DEFAULT_GOLD = 50;
 	
+	private Menu menu;
+	
 	public Player()
 	{
 		this.health = DEFAULT_HEALTH;
@@ -15,11 +22,11 @@ public class Player
 		this.gold = DEFAULT_GOLD;
 	}
 	
-	// return false when health <= health, else true
-	public boolean decreaseHealth(int amount)
+	// return remaining health
+	public int decreaseHealth(int amount)
 	{
 		health -= amount;
-		return health <= 0;
+		return health;
 	}
 	
 	public boolean isAlive()
@@ -27,6 +34,15 @@ public class Player
 		return health > 0;
 	}
 	
+	// returns remaining gold
+	public int decreaseGold(int amount)
+	{
+		gold -= amount;
+		menu.notifyGoldChange();
+		return gold;
+	}
+	
+	public void setMenu(Menu menu) {this.menu = menu;}
 	public int getHealth() {return health;}
 	public int getMaxHealth() {return maxHealth;}
 	public int getGold() {return gold;}

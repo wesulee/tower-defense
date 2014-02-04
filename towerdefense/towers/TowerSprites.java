@@ -19,7 +19,7 @@ public class TowerSprites
 		sprites = new ArrayList<BufferedImage>();
 		
 		for (TowerType tt : TowerType.values()) {
-			BufferedImage img = loadSprite(tt.getFileName());
+			BufferedImage img = loadSprite(tt.getSpriteName());
 			if (img == null) {
 				// unable to load tower sprite...exit
 				System.exit(1);
@@ -44,7 +44,7 @@ public class TowerSprites
 	
 	public static BufferedImage getSpriteIcon(TowerType tt)
 	{
-		String fname = tt.getFileName();
+		String fname = tt.getSpriteName();
 		int extensionIndex = fname.lastIndexOf(".");
 		String extension = fname.substring(extensionIndex + 1);
 		fname = fname.substring(0, extensionIndex) + "_icon." + extension;

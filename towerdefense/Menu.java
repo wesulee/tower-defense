@@ -3,6 +3,7 @@ package towerdefense;
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.*;
+import java.util.ArrayList;
 
 import towerdefense.towers.TowerSprites;
 import towerdefense.towers.TowerType;
@@ -66,8 +67,8 @@ public class Menu
 	private final BufferedImage staticMenu;
 	private MenuIcon selectedIcon = null;
 	
-	//private ArrayList<MenuIcon> icons;
 	private MenuIcon[] icons;
+	private ArrayList<MenuIcon> availableTowers;
 	
 	public Menu(int width, int height, int width_offset, Player player)
 	{
@@ -96,7 +97,6 @@ public class Menu
 			}
 			sprite = createIconImage(sprite);
 			MenuIcon icon = new MenuIcon(sprite, x, y);
-			System.out.println(tt.toString() + " " + x + " " + y);
 			icons[i] = icon;
 			if (i % 2 == 0)
 				x += dx;
@@ -108,6 +108,8 @@ public class Menu
 		}
 		
 		staticMenu = createStaticMenuImage();
+		
+		availableTowers = new ArrayList<MenuIcon>();
 		
 		MOUSE_C1_X1 = icons[0].getX();
 		MOUSE_C1_X2 = MOUSE_C1_X1 + ICON_TOTAL_SIZE;
@@ -138,6 +140,12 @@ public class Menu
 	}
 	
 	public void setWaveNumber(int n) {wave = n;}
+	
+	// the player's gold has been changed, update available towers
+	public void notifyGoldChange()
+	{
+		
+	}
 	
 	public void notifyMouseMoved(int x, int y)
 	{

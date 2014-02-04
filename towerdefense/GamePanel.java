@@ -28,6 +28,8 @@ public class GamePanel extends JPanel implements Runnable, MouseMotionListener
 	
 	private Graphics2D dbg;
 	private Image dbImage = null;
+	
+	private Class[] towerClasses = {TestTower.class};
 
 	private Map map;
 	private Player player;
@@ -55,6 +57,7 @@ public class GamePanel extends JPanel implements Runnable, MouseMotionListener
 		map = new Map();
 		player = new Player();
 		menu = new Menu(WIDTH, HEIGHT, MENU_X, player);
+		player.setMenu(menu);
 		tSprites = new TowerSprites();
 		towers.add(new TestTower(400, 220));
 		towers.add(new TestTower(500, 220));
