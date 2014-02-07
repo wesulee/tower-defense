@@ -6,7 +6,8 @@ package towerdefense.towers;
 public enum TowerType 
 {
 	TestTowerType("Test Tower", "test_tower.png", 10.0, 100, 2.0, 15, 1), 
-	TestTower2Type("Test Tower 2", "test_tower2.png", 10.0, 100, 2.0, 15, 1);
+	TestTower2Type("Test Tower 2", "test_tower2.png", 10.0, 100, 2.0, 15, 1),
+	TestTower3Type("Test Tower 3", "test_tower2.png", 10.0, 100, 2.0, 15, 1);
 	
 	TowerType(String name, String spriteName, double damage, int range, 
 			double speed, int size, int cost)

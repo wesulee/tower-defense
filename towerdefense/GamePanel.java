@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import towerdefense.creatures.*;
 import towerdefense.towers.*;
 
-public class GamePanel extends JPanel implements Runnable, MouseMotionListener
+public class GamePanel extends JPanel implements Runnable
 {
 	private final static int TARGET_FPS = 60;
-	public final static int WIDTH = 900;
+	public final static int WIDTH = 950;
 	public final static int HEIGHT = 600;
 	// MENU_X determines where menu is drawn
 	private static int MENU_X = 800;
@@ -48,10 +48,15 @@ public class GamePanel extends JPanel implements Runnable, MouseMotionListener
 		requestFocus();
 		
 		addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e)
-			{ testPress(e.getX(), e.getY()); }
+			public void mouseClicked(MouseEvent e) {
+				_mouseClicked(e.getX(), e.getY());
+			}
 		});
-		addMouseMotionListener(this);
+		addMouseMotionListener(new MouseAdapter() {
+			public void mouseMoved(MouseEvent e) {
+				_mouseMoved(e.getX(), e.getY());
+			}
+		});
 		
 		// load/setup game data
 		map = new Map();
@@ -115,16 +120,6 @@ public class GamePanel extends JPanel implements Runnable, MouseMotionListener
 		System.exit(0);
 	}
 	
-	private void testPress(int x, int y)
-	{
-		System.out.println("Mouse clicked at ("+x+", "+y+")");
-		// not implemented
-		if (x > MENU_X) {
-			// inside menu
-			return;
-		}
-	}
-	
 	private void gameUpdate()
 	{
 		long currentTime = System.nanoTime();
@@ -171,11 +166,18 @@ public class GamePanel extends JPanel implements Runnable, MouseMotionListener
 		}
 	}
 	
-	public void mouseDragged(MouseEvent e) {}
-	public void mouseMoved(MouseEvent e)
+	public void _mouseMoved(int x, int y)
 	{
-		if (e.getX() >= MENU_X) {
-			menu.notifyMouseMoved(e.getX(), e.getY());
+		if (x >= MENU_X) {
+			menu.notifyMouseMoved(x, y);
+		}
+	}
+	
+	public void _mouseClicked(int x, int y)
+	{
+		System.out.println("Mouse clicked at ("+x+", "+y+")");
+		if (x >= MENU_X) {
+			menu.notifyMouseClicked(x, y);
 		}
 	}
 
