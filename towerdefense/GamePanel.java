@@ -3,7 +3,6 @@ package towerdefense;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 
 import towerdefense.creatures.*;
 import towerdefense.towers.*;
@@ -29,13 +28,12 @@ public class GamePanel extends JPanel implements Runnable
 	private Graphics2D dbg;
 	private Image dbImage = null;
 	
-	private Class[] towerClasses = {TestTower.class};
-
 	private Map map;
 	private Player player;
 	private Menu menu;
-	private TowerSprites tSprites;
-	private ArrayList<Tower> towers = new ArrayList<Tower>();
+	private TowerContainer towers;
+	private int mouseX = 0;
+	private int mouseY = 0;
 
 	public GamePanel(TowerDefense td)
 	{
@@ -57,15 +55,21 @@ public class GamePanel extends JPanel implements Runnable
 				_mouseMoved(e.getX(), e.getY());
 			}
 		});
+		addKeyListener(new KeyAdapter() {
+			public void keyTyped(KeyEvent e) {
+				processKey(e);
+			}
+		});
 		
 		// load/setup game data
+		new TowerSprites();
 		map = new Map();
 		player = new Player();
-		menu = new Menu(WIDTH, HEIGHT, MENU_X, player);
+		towers = new TowerContainer(this, MENU_X);
+		menu = new Menu(WIDTH, HEIGHT, MENU_X, this, player);
 		player.setMenu(menu);
-		tSprites = new TowerSprites();
-		towers.add(new TestTower(400, 220));
-		towers.add(new TestTower(500, 220));
+		//towers.add(new TestTower(400, 220));
+		//towers.add(new TestTower(500, 220));
 		
 	}
 	
@@ -86,6 +90,11 @@ public class GamePanel extends JPanel implements Runnable
 	public void stopGame() {running = false;}
 	public void pauseGame() {/* not implemented */}
 	public void resumeGame() {/* not implemented */}
+	public int getMouseX() {return mouseX;}
+	public int getMouseY() {return mouseY;}
+	public Player getPlayer() {return player;}
+	public Menu getMenu() {return menu;}
+	public TowerContainer getTowerContainer() {return towers;}
 	
 	public void run()
 	{
@@ -124,7 +133,8 @@ public class GamePanel extends JPanel implements Runnable
 	{
 		long currentTime = System.nanoTime();
 		gameUpdateCount++;
-		// not implemented
+		
+		towers.processChanges();
 	}
 	
 	private void gameRender()
@@ -138,6 +148,8 @@ public class GamePanel extends JPanel implements Runnable
 			else
 				dbg = (Graphics2D) dbImage.getGraphics();
 		}
+		dbg.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
 		// Drawing order: background, towers, creatures, projectiles, menu
 		
 		// draw background
@@ -145,9 +157,7 @@ public class GamePanel extends JPanel implements Runnable
 		dbg.fillRect(0, 0, WIDTH, HEIGHT);
 		map.draw(dbg);
 		
-		for (Tower t : towers) {
-			t.draw(dbg);
-		}
+		towers.draw(dbg);
 		
 		menu.draw(dbg);
 	}
@@ -168,8 +178,12 @@ public class GamePanel extends JPanel implements Runnable
 	
 	public void _mouseMoved(int x, int y)
 	{
+		mouseX = x;
+		mouseY = y;
+		
 		if (x >= MENU_X) {
 			menu.notifyMouseMoved(x, y);
+			return;
 		}
 	}
 	
@@ -178,13 +192,29 @@ public class GamePanel extends JPanel implements Runnable
 		System.out.println("Mouse clicked at ("+x+", "+y+")");
 		if (x >= MENU_X) {
 			menu.notifyMouseClicked(x, y);
+			return;
+		}
+		
+		// check if need to create new tower
+		if (menu.towerIsSelected()) {
+			TowerType tt = menu.getSelectedTower();
+			menu.clearSelectedTower();
+			Tower newTower = Tower.newTower(tt, x, y);
+			if (newTower == null) return;
+			towers.add(newTower);
+			player.decreaseGold(newTower.getCost());
+			menu.notifyGoldChange();
 		}
 	}
 
 	private void processKey(KeyEvent e)
 	{
-		int code = e.getKeyCode();
-		// not implemented
+		int code = (int)e.getKeyChar();
+		// Escape key
+		if (code == 27) {
+			menu.clearSelectedTower();
+			return;
+		}
 	}
 	
 	private void printStats()

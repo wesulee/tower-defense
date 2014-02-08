@@ -65,23 +65,25 @@ public class Menu
 	private final int MOUSE_Y1;
 	private final int MOUSE_Y2;
 	
+	private final GamePanel gp;
 	private final Player player;
 	private Font font;
 	private int wave = 0;
 	private final BufferedImage staticMenu;
 	// type that mouse cursor is over
 	private TowerType typeHovered = null;
-	// type that mouse clicked on
+	// type that mouse clicked on, activated only if sufficient funds
 	private TowerType typeSelected = null;
 	
 	private MenuIcon[] icons;
 	private ArrayList<MenuIcon> availableTowers;
 	
-	public Menu(int width, int height, int width_offset, Player player)
+	public Menu(int width, int height, int width_offset, GamePanel gp, Player player)
 	{
 		WIDTH = width;
 		HEIGHT = height;
 		WIDTH_OFFSET = width_offset;
+		this.gp = gp;
 		this.player = player;
 		font = new Font("SansSerif", Font.BOLD, 12);
 		ICON_TOTAL_SIZE = ICON_SIZE + (ICON_MARGIN * 2) + 2;
@@ -151,6 +153,7 @@ public class Menu
 	}
 	
 	public void setWaveNumber(int n) {wave = n;}
+	public TowerType getSelectedTower() {return typeSelected;}
 	
 	// the player's gold has been changed, update available towers
 	public void notifyGoldChange()
@@ -178,14 +181,28 @@ public class Menu
 	public void notifyMouseClicked(int x, int y)
 	{
 		int i = getIconIndexSelected(x, y);
-		if (i != -1) {
+		if (i == -1) {
+			if (typeSelected != null) {
+				gp.getTowerContainer().clearMenuSelectedTower();
+			}
+			typeSelected = null;
+			return;
+		}
+		// only set typeSelected when player has money for tower
+		// and tower is different from current typeSelected
+		if ((icons[i].getTowerType().getCost() <= player.getGold()) &&
+				(typeSelected != icons[i].getTowerType())) {
 			typeSelected = icons[i].getTowerType();
 			System.out.println("type selected: "+typeSelected.getName());
-		}
-		else {
-			typeSelected = null;
+			gp.getTowerContainer().setMenuSelectedTower(typeSelected);
 		}
 	}
+	
+	// is a tower currently selected from menu?
+	public boolean towerIsSelected() {return typeSelected != null;}
+	
+	// player is no longer selecting a tower
+	public void clearSelectedTower() {typeSelected = null;}
 	
 	// returns index of icon at (x, y) if exists, else -1
 	private int getIconIndexSelected(int x, int y)
@@ -238,7 +255,8 @@ public class Menu
 		for (MenuIcon icon : icons) {
 			BufferedImage img = icon.getImage();
 			ColorConvertOp op = 
-					new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
+					new ColorConvertOp(ColorSpace.getInstance(
+							ColorSpace.CS_GRAY), null);
 			op.filter(img, img);
 			
 			g.drawImage(img, icon.getX() - WIDTH_OFFSET, icon.getY(), null);
