@@ -3,6 +3,7 @@ package towerdefense;
 import java.util.ArrayList;
 
 import towerdefense.creatures.Creature;
+import towerdefense.creatures.CreatureType;
 
 /**
  * General Usage:
@@ -13,12 +14,31 @@ public class Wave
 {
 	private ArrayList<Creature> creatureList;
 	
-	public Wave()
-	{
-		creatureList = new ArrayList<Creature>();
-	}
+	public Wave() {creatureList = new ArrayList<Creature>();}
 	
 	public void addCreature(Creature c) {creatureList.add(c);}
-	public Creature getCreature() {return creatureList.get(0);}
+	
+	public Creature getNextCreature()
+	{
+		if (creatureList.isEmpty()) {
+			return null;
+		}
+		else {
+			return creatureList.remove(0);
+		}
+	}
+	
+	public CreatureType nextCreatureType()
+	{
+		if (creatureList.isEmpty()) {
+			return null;
+		}
+		else {
+			return creatureList.get(0).getType();
+		}
+		
+	}
 	public boolean isEmpty() {return creatureList.isEmpty();}
+	
+	public ArrayList<Creature> getCreatureList() {return creatureList;}
 }

@@ -42,6 +42,8 @@ public class Player
 		return gold;
 	}
 	
+	public void increaseGold(int amount) {gold += amount;}
+	
 	public void setMenu(Menu menu) {this.menu = menu;}
 	public int getHealth() {return health;}
 	public int getMaxHealth() {return maxHealth;}

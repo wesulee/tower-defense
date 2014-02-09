@@ -1,6 +1,7 @@
 package towerdefense.towers;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -30,6 +31,11 @@ public class TowerContainer
 		add(Tower.newTower(TowerType.TestTowerType, 541, 226));
 	}
 	
+	public void update()
+	{
+		processChanges();
+	}
+	
 	public void draw(Graphics2D g)
 	{
 		if (gameSelectedTower != null) {
@@ -56,8 +62,10 @@ public class TowerContainer
 	
 	public void clearMenuSelectedTower() {menuSelectedTower = null;}
 	public boolean menuTowerIsSelected() {return menuSelectedTower != null;}
+	// should call update between adding multiple towers
+	public void add(Tower t) {newTowerToAdd = t;}
 	
-	public void processChanges()
+	private void processChanges()
 	{
 		if (newTowerToAdd != null) {
 			currentTowers.add(newTowerToAdd);
@@ -65,5 +73,13 @@ public class TowerContainer
 		}
 	}
 	
-	public void add(Tower t) {newTowerToAdd = t;}
+	// does the given rectangle intersect any towers?
+	public boolean intersectsTowers(Rectangle r)
+	{
+		for (int i = 0; i < currentTowers.size(); i++) {
+			if (r.intersects(currentTowers.get(i).getRectangle()))
+				return true;
+		}
+		return false;
+	}
 }

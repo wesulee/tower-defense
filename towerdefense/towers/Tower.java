@@ -5,6 +5,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 
@@ -19,6 +20,7 @@ public abstract class Tower
 	private long attackPeriod;	// delay between attacks, ns
 	private final int pos_x;	// tower position, x
 	private final int pos_y;	// tower position, y
+	private final Rectangle rect;
 	
 	private static final Color rangeCircleColor = 
 			new Color(217, 230, 255);
@@ -41,6 +43,8 @@ public abstract class Tower
 		attackPeriod = (long)(1000.0 / speed) * 1000000L;
 		// tower can attack immediately after created
 		lastAttack = System.nanoTime() - attackPeriod;
+		
+		rect = new Rectangle(pos_x - size, pos_y - size, size * 2, size * 2);
 	}
 	
 	public boolean canAttack(long time)
@@ -61,7 +65,8 @@ public abstract class Tower
 	public int getX() {return pos_x;}
 	public int getY() {return pos_y;}
 	public abstract void draw(Graphics2D g);
-	public abstract TowerType getTowerType();
+	public abstract TowerType getType();
+	public Rectangle getRectangle() {return rect;}
 	
 	public void drawRangeCircle(Graphics2D g)
 	{

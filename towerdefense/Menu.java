@@ -3,7 +3,6 @@ package towerdefense;
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.*;
-import java.util.ArrayList;
 
 import towerdefense.towers.TowerSprites;
 import towerdefense.towers.TowerType;
@@ -76,7 +75,7 @@ public class Menu
 	private TowerType typeSelected = null;
 	
 	private MenuIcon[] icons;
-	private ArrayList<MenuIcon> availableTowers;
+	private boolean[] availableTowers;
 	
 	public Menu(int width, int height, int width_offset, GamePanel gp, Player player)
 	{
@@ -98,7 +97,6 @@ public class Menu
 		// initialize icons
 		int i = 0;
 		int column = 1;
-		//icons = new ArrayList<MenuIcon>();
 		icons = new MenuIcon[ICON_COUNT];
 		for (TowerType tt : TowerType.values()) {
 			BufferedImage sprite = TowerSprites.getSpriteIcon(tt);
@@ -122,7 +120,9 @@ public class Menu
 		
 		staticMenu = createStaticMenuImage();
 		
-		availableTowers = new ArrayList<MenuIcon>();
+		availableTowers = new boolean[ICON_COUNT];
+		for (i = 0; i < ICON_COUNT; i++)
+			availableTowers[i] = false;
 		
 		MOUSE_X1 = icons[0].getX();
 		MOUSE_X2 = MOUSE_X1 + ICON_TOTAL_SIZE * ICON_COLUMNS + 
@@ -148,8 +148,10 @@ public class Menu
 				WIDTH_OFFSET + 15, HEIGHT - 45);
 		g.drawString("Gold: " + gold, WIDTH_OFFSET + 15, HEIGHT - 25);
 		
-		for (MenuIcon available : availableTowers)
-			available.draw(g);
+		for (int i = 0; i < ICON_COUNT; i++) {
+			if (availableTowers[i])
+				icons[i].draw(g);
+		}
 	}
 	
 	public void setWaveNumber(int n) {wave = n;}
@@ -158,12 +160,9 @@ public class Menu
 	// the player's gold has been changed, update available towers
 	public void notifyGoldChange()
 	{
-		int i = 0;
 		int gold = player.getGold();
-		availableTowers.clear();
-		for (TowerType tt : TowerType.values()) {
-			if (gold >= tt.getCost()) availableTowers.add(icons[i]);
-			i++;
+		for (int i = 0; i < ICON_COUNT; i++) {
+			availableTowers[i] = (gold >= icons[i].getTowerType().getCost());
 		}
 	}
 	

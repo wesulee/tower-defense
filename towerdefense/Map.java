@@ -2,24 +2,23 @@ package towerdefense;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.Rectangle;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
-
-import towerdefense.creatures.TestCreature;
 
 /**
  * Map is used only to contain Wave data and the background sprite.
  */
 public class Map
 {
+	private final GamePanel gp;
 	private BufferedImage backgroundSprite;
-	private long lastWaveTime;
-	private final int waveCooldown = 15;
-	private final long waveCooldownNano;
+	private final Rectangle creaturePath;
+	private final Rectangle spawnRect;
 	
-	public Map()
+	public Map(GamePanel gp)
 	{
-		waveCooldownNano = 15 * 1000000L;
+		this.gp = gp;
 		String fname = "Resources/Maps/test_map.png";
 		try {
 			InputStream is = TowerDefense.class.getResourceAsStream(fname);
@@ -29,27 +28,22 @@ public class Map
 			System.out.println("Unable to load " + fname);
 			System.exit(1);
 		}
-		lastWaveTime = System.nanoTime() - waveCooldownNano;
+		
+		creaturePath = new Rectangle(-50, 273, 900, 54);
+		spawnRect = new Rectangle(800, 273, 50, 54);
 	}
 	
-	public void draw(Graphics2D g) {g.drawImage(backgroundSprite, 0, 0, null);}
-	
-	public Wave getWave(int n)
+	public Rectangle getSpawnRectangle() {return spawnRect;}
+		
+	public void draw(Graphics2D g)
 	{
-		Wave newWave = new Wave();
-		newWave.addCreature(new TestCreature(500, 500));
-		return newWave;
+		g.drawImage(backgroundSprite, 0, 0, null);
 	}
 	
-	// the wave has been completed, begin cooldown to next wave
-	public void notifyWaveFinished(long time)
+	// can a tower be built at given location?
+	// (x, y) should be position of center of tower
+	public boolean spotAvailableForTower(Rectangle r)
 	{
-		lastWaveTime = time;
-	}
-	
-	// is it time for another wave?
-	public boolean nextWaveAvailable()
-	{
-		return true;
+		return !creaturePath.intersects(r);
 	}
 }

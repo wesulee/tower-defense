@@ -26,5 +26,5 @@ public class TestTower2 extends Tower
 		g.drawImage(sprite, getX() - spriteX, getY() - spriteY, null);
 	}
 	
-	public TowerType getTowerType() {return tt;}
+	public TowerType getType() {return tt;}
 }

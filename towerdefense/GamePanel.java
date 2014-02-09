@@ -32,6 +32,7 @@ public class GamePanel extends JPanel implements Runnable
 	private Player player;
 	private Menu menu;
 	private TowerContainer towers;
+	private CreatureContainer creatures;
 	private int mouseX = 0;
 	private int mouseY = 0;
 
@@ -63,13 +64,13 @@ public class GamePanel extends JPanel implements Runnable
 		
 		// load/setup game data
 		new TowerSprites();
-		map = new Map();
+		map = new Map(this);
 		player = new Player();
 		towers = new TowerContainer(this, MENU_X);
+		creatures = new CreatureContainer(this);
 		menu = new Menu(WIDTH, HEIGHT, MENU_X, this, player);
 		player.setMenu(menu);
-		//towers.add(new TestTower(400, 220));
-		//towers.add(new TestTower(500, 220));
+		menu.notifyGoldChange();
 		
 	}
 	
@@ -94,7 +95,9 @@ public class GamePanel extends JPanel implements Runnable
 	public int getMouseY() {return mouseY;}
 	public Player getPlayer() {return player;}
 	public Menu getMenu() {return menu;}
+	public Map getMap() {return map;}
 	public TowerContainer getTowerContainer() {return towers;}
+	public CreatureContainer getCreatureContainer() {return creatures;}
 	
 	public void run()
 	{
@@ -134,7 +137,7 @@ public class GamePanel extends JPanel implements Runnable
 		long currentTime = System.nanoTime();
 		gameUpdateCount++;
 		
-		towers.processChanges();
+		towers.update();
 	}
 	
 	private void gameRender()
@@ -198,12 +201,20 @@ public class GamePanel extends JPanel implements Runnable
 		// check if need to create new tower
 		if (menu.towerIsSelected()) {
 			TowerType tt = menu.getSelectedTower();
-			menu.clearSelectedTower();
-			Tower newTower = Tower.newTower(tt, x, y);
-			if (newTower == null) return;
-			towers.add(newTower);
-			player.decreaseGold(newTower.getCost());
-			menu.notifyGoldChange();
+			int size = tt.getSize();
+			Rectangle r = new Rectangle(x-size, y-size, size*2, size*2);
+			if (map.spotAvailableForTower(r) &&
+					!towers.intersectsTowers(r)) {
+				menu.clearSelectedTower();
+				Tower newTower = Tower.newTower(tt, x, y);
+				if (newTower == null) return;
+				towers.add(newTower);
+				player.decreaseGold(newTower.getCost());
+				menu.notifyGoldChange();
+			}
+			else {
+				System.out.println("Cannot build tower there.");
+			}
 		}
 	}
 
