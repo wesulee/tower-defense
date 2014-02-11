@@ -1,15 +1,19 @@
 package towerdefense.creatures;
 
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 import towerdefense.Direction;
+import towerdefense.SpriteContainer;
 
-public class TestCreature extends Creature
+public class CreatureSpider extends Creature
 {
-	private static final CreatureType ct = CreatureType.TestCreatureType;
-	private Direction spriteDir;
+	private static final CreatureType ct = CreatureType.Spider;
+	private static final BufferedImage sprites[] = 
+			SpriteContainer.loadCreature(ct);
+	private Direction spriteDir = Direction.N;	//default value
 	
-	public TestCreature(double pos_x, double pos_y)
+	public CreatureSpider(double pos_x, double pos_y)
 	{
 		super(ct.getHealth(), ct.getSpeed(), ct.getGoldDrop(), pos_x, pos_y);
 		super.rect.width = ct.getSizeX();
@@ -19,7 +23,9 @@ public class TestCreature extends Creature
 
 	public void draw(Graphics2D g)
 	{
-		
+		// incomplete
+		g.drawImage(sprites[spriteDir.toIndex()],
+				(int)getPositionX(), (int)getPositionY(), null);
 	}
 	
 	public void setPosition(double x, double y)

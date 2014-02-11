@@ -1,14 +1,18 @@
 package towerdefense.creatures;
 
+/**
+ * Speed is distance (in pixels) traveled in 1 sec
+ */
 public enum CreatureType
 {
-	TestCreatureType("Test Creature", "creature_spider.png", 50, 10, 10, 10, 5);
+	Spider("Spider", "spider", ".png", 20, 50, 50, 50, 5);
 	
-	CreatureType(String name, String spriteName, int health, int speed,
-			int sizeX, int sizeY, int goldDrop)
+	CreatureType(String name, String spriteName, String extension,
+			int health, int speed, int sizeX, int sizeY, int goldDrop)
 	{
 		this.name = name;
 		this.spriteName = spriteName;
+		this.spriteExtension = extension;
 		this.health = health;
 		this.speed = speed;
 		this.sizeX = sizeX;
@@ -18,6 +22,7 @@ public enum CreatureType
 	
 	private final String name;
 	private final String spriteName;
+	private final String spriteExtension;
 	private final int health;
 	private final int speed;
 	// pixel size for creature sprite going north
@@ -27,6 +32,7 @@ public enum CreatureType
 	
 	public String getName() {return name;}
 	public String getSpriteName() {return spriteName;}
+	public String getSpriteExtension() {return spriteExtension;}
 	public int getHealth() {return health;}
 	public int getSpeed() {return speed;}
 	public int getSizeX() {return sizeX;}

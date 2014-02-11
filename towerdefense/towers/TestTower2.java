@@ -3,6 +3,8 @@ package towerdefense.towers;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import towerdefense.SpriteContainer;
+
 public class TestTower2 extends Tower
 {
 	private static final TowerType tt = TowerType.TestTower2Type;
@@ -15,7 +17,7 @@ public class TestTower2 extends Tower
 		super(tt.getDamage(), tt.getRange(), tt.getSpeed(), tt.getSize(),
 				tt.getCost(), pos_x, pos_y);
 		if (sprite == null) {
-			sprite = TowerSprites.getSprite(tt);
+			sprite = SpriteContainer.getSprite(tt);
 			spriteX = sprite.getWidth() / 2;
 			spriteY = sprite.getHeight() / 2;
 		}

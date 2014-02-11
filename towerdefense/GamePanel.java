@@ -14,6 +14,8 @@ public class GamePanel extends JPanel implements Runnable
 	public final static int HEIGHT = 600;
 	// MENU_X determines where menu is drawn
 	private static int MENU_X = 800;
+	private int mouseX = 0;
+	private int mouseY = 0;
 	
 	private Thread animator;
 	private boolean running = false;
@@ -24,18 +26,18 @@ public class GamePanel extends JPanel implements Runnable
 	protected long gameUpdateCount = 0L;
 	
 	private TowerDefense tdTop;
-	
 	private Graphics2D dbg;
 	private Image dbImage = null;
 	
-	private Map map;
+	// game components
+	private SpriteContainer sprites = new SpriteContainer();
+	private GameMap map;
 	private Player player;
 	private Menu menu;
 	private TowerContainer towers;
 	private CreatureContainer creatures;
-	private int mouseX = 0;
-	private int mouseY = 0;
-
+	private WaveController wc;
+	
 	public GamePanel(TowerDefense td)
 	{
 		tdTop = td;
@@ -63,14 +65,15 @@ public class GamePanel extends JPanel implements Runnable
 		});
 		
 		// load/setup game data
-		new TowerSprites();
-		map = new Map(this);
+		map = new GameMap(this);
 		player = new Player();
 		towers = new TowerContainer(this, MENU_X);
 		creatures = new CreatureContainer(this);
+		wc = new WaveController(this);
 		menu = new Menu(WIDTH, HEIGHT, MENU_X, this, player);
 		player.setMenu(menu);
 		menu.notifyGoldChange();
+		
 		
 	}
 	
@@ -91,13 +94,15 @@ public class GamePanel extends JPanel implements Runnable
 	public void stopGame() {running = false;}
 	public void pauseGame() {/* not implemented */}
 	public void resumeGame() {/* not implemented */}
+	public long getRedrawDelay() {return period;}
 	public int getMouseX() {return mouseX;}
 	public int getMouseY() {return mouseY;}
 	public Player getPlayer() {return player;}
 	public Menu getMenu() {return menu;}
-	public Map getMap() {return map;}
+	public GameMap getMap() {return map;}
 	public TowerContainer getTowerContainer() {return towers;}
 	public CreatureContainer getCreatureContainer() {return creatures;}
+	public WaveController getWaveController() {return wc;}
 	
 	public void run()
 	{
@@ -137,7 +142,9 @@ public class GamePanel extends JPanel implements Runnable
 		long currentTime = System.nanoTime();
 		gameUpdateCount++;
 		
-		towers.update();
+		towers.update(currentTime);
+		creatures.update();
+		wc.update(currentTime);
 	}
 	
 	private void gameRender()
@@ -161,6 +168,7 @@ public class GamePanel extends JPanel implements Runnable
 		map.draw(dbg);
 		
 		towers.draw(dbg);
+		creatures.draw(dbg);
 		
 		menu.draw(dbg);
 	}

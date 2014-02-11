@@ -31,9 +31,16 @@ public class TowerContainer
 		add(Tower.newTower(TowerType.TestTowerType, 541, 226));
 	}
 	
-	public void update()
+	public void update(long time)
 	{
 		processChanges();
+		
+		// not implemented
+		/*for (Tower t : currentTowers) {
+			if (t.canAttack(time)) {
+				t.attack();
+			}
+		}*/
 	}
 	
 	public void draw(Graphics2D g)
@@ -57,7 +64,7 @@ public class TowerContainer
 	public void setMenuSelectedTower(TowerType tt)
 	{
 		menuSelectedTower = tt;
-		menuSelectedTowerSprite = TowerSprites.getSprite(tt);
+		menuSelectedTowerSprite = SpriteContainer.getSprite(tt);
 	}
 	
 	public void clearMenuSelectedTower() {menuSelectedTower = null;}

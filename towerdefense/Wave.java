@@ -30,14 +30,12 @@ public class Wave
 	
 	public CreatureType nextCreatureType()
 	{
-		if (creatureList.isEmpty()) {
+		if (creatureList.isEmpty())
 			return null;
-		}
-		else {
+		else
 			return creatureList.get(0).getType();
-		}
-		
 	}
+	
 	public boolean isEmpty() {return creatureList.isEmpty();}
 	
 	public ArrayList<Creature> getCreatureList() {return creatureList;}

@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.*;
 
-import towerdefense.towers.TowerSprites;
 import towerdefense.towers.TowerType;
 
 /**
@@ -99,7 +98,7 @@ public class Menu
 		int column = 1;
 		icons = new MenuIcon[ICON_COUNT];
 		for (TowerType tt : TowerType.values()) {
-			BufferedImage sprite = TowerSprites.getSpriteIcon(tt);
+			BufferedImage sprite = SpriteContainer.getSpriteIcon(tt);
 			if (sprite == null) {
 				System.exit(1);
 			}
@@ -192,7 +191,6 @@ public class Menu
 		if ((icons[i].getTowerType().getCost() <= player.getGold()) &&
 				(typeSelected != icons[i].getTowerType())) {
 			typeSelected = icons[i].getTowerType();
-			System.out.println("type selected: "+typeSelected.getName());
 			gp.getTowerContainer().setMenuSelectedTower(typeSelected);
 		}
 	}
