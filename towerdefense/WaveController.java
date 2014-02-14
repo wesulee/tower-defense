@@ -64,8 +64,8 @@ public class WaveController
 		CreatureType ct = CreatureType.Spider;
 		Wave nw = new Wave();
 		// initial creature position is middle of spawn rectangle
-		int x = spawnRect.x + (spawnRect.width - ct.getSizeX()) / 2;
-		int y = spawnRect.y + (spawnRect.height - ct.getSizeY()) / 2;
+		int x = spawnRect.x + spawnRect.width / 2;
+		int y = spawnRect.y + spawnRect.height / 2;
 		for (int i = 0; i < level; i++) {
 			Creature c = Creature.newCreature(ct, x, y);
 			nw.addCreature(c);

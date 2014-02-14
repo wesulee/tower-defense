@@ -1,8 +1,13 @@
 package towerdefense;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.color.ColorSpace;
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 
 import towerdefense.towers.TowerType;
 
@@ -68,8 +73,6 @@ public class Menu
 	private Font font;
 	private int wave = 0;
 	private final BufferedImage staticMenu;
-	// type that mouse cursor is over
-	private TowerType typeHovered = null;
 	// type that mouse clicked on, activated only if sufficient funds
 	private TowerType typeSelected = null;
 	
@@ -165,16 +168,7 @@ public class Menu
 		}
 	}
 	
-	public void notifyMouseMoved(int x, int y)
-	{
-		int i = getIconIndexSelected(x, y);
-		if (i != -1) {
-			typeHovered = icons[i].getTowerType();
-		}
-		else {
-			typeHovered = null;
-		}
-	}
+	public void notifyMouseMoved(int x, int y) {}
 	
 	public void notifyMouseClicked(int x, int y)
 	{

@@ -38,7 +38,7 @@ public class Player
 	public int decreaseGold(int amount)
 	{
 		gold -= amount;
-		menu.notifyGoldChange();
+		if (menu != null) menu.notifyGoldChange();
 		return gold;
 	}
 	

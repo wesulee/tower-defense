@@ -34,8 +34,11 @@ public class TestTower extends Tower
 	
 	public TowerType getType() {return tt;}
 	
+	// assumes tower is not on attack cooldown and
+	// eligible targets are all in range
 	public void attack(ArrayList<Creature> eligibleTargets)
 	{
-		// not implemented
+		Creature c = eligibleTargets.get(0);
+		
 	}
 }

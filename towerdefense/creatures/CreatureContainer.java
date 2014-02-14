@@ -44,9 +44,10 @@ public class CreatureContainer
 		// try to spawn creature
 		if (!spawnQueue.isEmpty() && ((spawnCreature == null) ||
 				!spawnCreature.getRectangle().intersects(spawnRect))) {
-			System.out.println("Creature spawned");
 			c = spawnQueue.remove(0);
 			creatures.add(c);
+			System.out.println("Creature spawned at ("+c.getPositionX()+", "+
+					c.getPositionY()+")");
 		}
 		
 		// remove dead creatures, update positions

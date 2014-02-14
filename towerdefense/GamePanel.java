@@ -9,18 +9,20 @@ import towerdefense.towers.*;
 
 public class GamePanel extends JPanel implements Runnable
 {
-	private final static int TARGET_FPS = 60;
-	public final static int WIDTH = 950;
+	public static final int TARGET_FPS = 60;
+	public static final int WIDTH = 950;
 	public final static int HEIGHT = 600;
 	// MENU_X determines where menu is drawn
-	private static int MENU_X = 800;
+	public static final int MENU_X = 800;
 	private int mouseX = 0;
 	private int mouseY = 0;
 	
 	private Thread animator;
 	private boolean running = false;
 	//private boolean isPaused = false;
-	private long period; // redraw delay, nanoseconds
+	// redraw delay, nanoseconds
+	public static final long period =
+			((long)(1000.0 / TARGET_FPS)) * 1000000L;
 	
 	protected long gameStartTime;
 	protected long gameUpdateCount = 0L;
@@ -37,11 +39,11 @@ public class GamePanel extends JPanel implements Runnable
 	private TowerContainer towers;
 	private CreatureContainer creatures;
 	private WaveController wc;
+	private Tower selectedTower = null;
 	
 	public GamePanel(TowerDefense td)
 	{
 		tdTop = td;
-		this.period = ((long)(1000.0 / TARGET_FPS)) * 1000000L;
 		
 		//setBackground(Color.white);
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -73,8 +75,6 @@ public class GamePanel extends JPanel implements Runnable
 		menu = new Menu(WIDTH, HEIGHT, MENU_X, this, player);
 		player.setMenu(menu);
 		menu.notifyGoldChange();
-		
-		
 	}
 	
 	public void addNotify()
@@ -218,7 +218,6 @@ public class GamePanel extends JPanel implements Runnable
 				if (newTower == null) return;
 				towers.add(newTower);
 				player.decreaseGold(newTower.getCost());
-				menu.notifyGoldChange();
 			}
 			else {
 				System.out.println("Cannot build tower there.");
@@ -232,6 +231,7 @@ public class GamePanel extends JPanel implements Runnable
 		// Escape key
 		if (code == 27) {
 			menu.clearSelectedTower();
+			selectedTower = null;
 			return;
 		}
 	}

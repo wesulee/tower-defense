@@ -69,6 +69,7 @@ public class TowerContainer
 	
 	public void clearMenuSelectedTower() {menuSelectedTower = null;}
 	public boolean menuTowerIsSelected() {return menuSelectedTower != null;}
+	
 	// should call update between adding multiple towers
 	public void add(Tower t) {newTowerToAdd = t;}
 	
@@ -88,5 +89,22 @@ public class TowerContainer
 				return true;
 		}
 		return false;
+	}
+	
+	public Tower getTowerAt(int x, int y)
+	{
+		for (Tower t : currentTowers) {
+			if (getDistance(x, y, t) < t.getSize())
+				return t;
+		}
+		return null;
+	}
+	
+	// get the distance between t and (x, y)
+	private double getDistance(int x, int y, Tower t)
+	{
+		int dx = t.getX() - x;
+		int dy = t.getY() - y;
+		return Math.sqrt(dx*dx + dy*dy);
 	}
 }

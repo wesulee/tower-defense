@@ -12,6 +12,10 @@ public class CreatureSpider extends Creature
 	private static final BufferedImage sprites[] = 
 			SpriteContainer.loadCreature(ct);
 	private Direction spriteDir = Direction.N;	//default value
+	private static final int spriteOffsetsX[] =
+			getSpriteOffsetsX(sprites);
+	private static final int spriteOffsetsY[] =
+			getSpriteOffsetsY(sprites);
 	
 	public CreatureSpider(double pos_x, double pos_y)
 	{
@@ -23,9 +27,12 @@ public class CreatureSpider extends Creature
 
 	public void draw(Graphics2D g)
 	{
-		// incomplete
 		g.drawImage(sprites[spriteDir.toIndex()],
-				(int)getPositionX(), (int)getPositionY(), null);
+				(int)getPositionX() - spriteOffsetsX[spriteDir.toIndex()],
+				(int)getPositionY() - spriteOffsetsY[spriteDir.toIndex()],
+				null);
+		g.draw(super.rect);
+		drawHealthBar(g);
 	}
 	
 	public void setPosition(double x, double y)
@@ -37,4 +44,20 @@ public class CreatureSpider extends Creature
 	}
 	
 	public CreatureType getType() {return ct;}
+	
+	private static int[] getSpriteOffsetsX(BufferedImage sprites[])
+	{
+		int offsets[] = new int[sprites.length];
+		for (int i = 0; i < sprites.length; i++)
+			offsets[i] = sprites[i].getWidth() / 2;
+		return offsets;
+	}
+	
+	private static int[] getSpriteOffsetsY(BufferedImage sprites[])
+	{
+		int offsets[] = new int[sprites.length];
+		for (int i = 0; i < sprites.length; i++)
+			offsets[i] = sprites[i].getHeight() / 2;
+		return offsets;
+	}
 }
