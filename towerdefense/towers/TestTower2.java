@@ -2,8 +2,10 @@ package towerdefense.towers;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 import towerdefense.SpriteContainer;
+import towerdefense.creatures.Creature;
 
 public class TestTower2 extends Tower
 {
@@ -29,4 +31,6 @@ public class TestTower2 extends Tower
 	}
 	
 	public TowerType getType() {return tt;}
+	
+	public void attack(long time, List<Creature> eligibleTargets) {}
 }

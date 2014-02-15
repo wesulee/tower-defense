@@ -4,7 +4,9 @@ import towerdefense.GamePanel;
 
 /**
  * General projectile that travels from source to fixed destination
- * in a given amount of milliseconds
+ * in a given amount of milliseconds.
+ * Subclasses should implement draw(), override/extend update(),
+ * and effect of impact.
  */
 public abstract class TimedMovingProjectile
 {
@@ -28,8 +30,8 @@ public abstract class TimedMovingProjectile
 		
 		this.x = sourceX;
 		this.y = sourceY;
-		this.dx = (destX - sourceX) / maxUpdateTicks;
-		this.dy = (destY - sourceY) / maxUpdateTicks;
+		this.dx = (double)(destX - sourceX) / maxUpdateTicks;
+		this.dy = (double)(destY - sourceY) / maxUpdateTicks;
 	}
 
 	// returns true when projectile should be destroyed

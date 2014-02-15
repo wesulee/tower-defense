@@ -2,10 +2,13 @@ package towerdefense.towers;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
+import java.util.List;
 
+import towerdefense.GamePanel;
 import towerdefense.SpriteContainer;
 import towerdefense.creatures.Creature;
+import towerdefense.projectiles.Projectile;
+import towerdefense.projectiles.TestTowerProjectile;
 
 public class TestTower extends Tower
 {
@@ -14,9 +17,9 @@ public class TestTower extends Tower
 	// drawing offsets
 	private static int spriteX = 0;
 	private static int spriteY = 0;
-	private Creature target = null;
+	private static TowerContainer tc;
 	
-	public TestTower(int pos_x, int pos_y)
+	public TestTower(TowerContainer tc, int pos_x, int pos_y)
 	{
 		super(tt.getDamage(), tt.getRange(), tt.getSpeed(), tt.getSize(),
 				tt.getCost(), pos_x, pos_y);
@@ -25,6 +28,7 @@ public class TestTower extends Tower
 			spriteX = sprite.getWidth() / 2;
 			spriteY = sprite.getHeight() / 2;
 		}
+		this.tc = tc;
 	}
 
 	public void draw(Graphics2D g)
@@ -36,9 +40,13 @@ public class TestTower extends Tower
 	
 	// assumes tower is not on attack cooldown and
 	// eligible targets are all in range
-	public void attack(ArrayList<Creature> eligibleTargets)
+	public void attack(long time, List<Creature> eligibleTargets)
 	{
-		Creature c = eligibleTargets.get(0);
-		
+		if (!eligibleTargets.isEmpty()) {
+			Creature c = eligibleTargets.get(0);
+			Projectile proj = new TestTowerProjectile(getX(), getY(), c);
+			tc.getProjectileContainer().add(proj);
+			setLastAttack(time);
+		}
 	}
 }

@@ -5,14 +5,20 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import towerdefense.*;
+import towerdefense.GamePanel;
+import towerdefense.SpriteContainer;
+import towerdefense.creatures.CreatureContainer;
+import towerdefense.projectiles.ProjectileContainer;
 
 /**
  * All game towers should be stored in this class
  */
 public class TowerContainer
 {
-	private GamePanel gp;
+	private final GamePanel gp;
+	private final TowerFactory tf;
+	private final ProjectileContainer pc;
+	
 	private final int drawLimitX;	// do not draw towers past this
 	private ArrayList<Tower> currentTowers;
 	private Tower newTowerToAdd = null;
@@ -26,21 +32,25 @@ public class TowerContainer
 	public TowerContainer(GamePanel gp, int drawLimitX)
 	{
 		this.gp = gp;
+		this.tf = new TowerFactory(this);
+		this.pc = new ProjectileContainer();
 		this.drawLimitX = drawLimitX;
 		currentTowers = new ArrayList<Tower>();
-		add(Tower.newTower(TowerType.TestTowerType, 541, 226));
+		add(TowerType.TestTowerType, 541, 226);
 	}
 	
-	public void update(long time)
+	public void update(long time, CreatureContainer cc)
 	{
 		processChanges();
 		
-		// not implemented
-		/*for (Tower t : currentTowers) {
+		for (Tower t : currentTowers) {
 			if (t.canAttack(time)) {
-				t.attack();
+				t.attack(time, cc.getCreaturesNear(
+						t.getX(), t.getY(), t.getRange()));
 			}
-		}*/
+		}
+		
+		pc.update();
 	}
 	
 	public void draw(Graphics2D g)
@@ -59,7 +69,11 @@ public class TowerContainer
 					gp.getMouseX(), gp.getMouseY(),
 					menuSelectedTower.getRange());
 		}
+		
+		pc.draw(g);
 	}
+	
+	public ProjectileContainer getProjectileContainer() {return pc;}
 	
 	public void setMenuSelectedTower(TowerType tt)
 	{
@@ -70,8 +84,13 @@ public class TowerContainer
 	public void clearMenuSelectedTower() {menuSelectedTower = null;}
 	public boolean menuTowerIsSelected() {return menuSelectedTower != null;}
 	
+	// assumes tower can be built at given location
 	// should call update between adding multiple towers
-	public void add(Tower t) {newTowerToAdd = t;}
+	public void add(TowerType tt, int x, int y)
+	{
+		Tower t = tf.newTower(tt, x, y);
+		newTowerToAdd = t;
+	}
 	
 	private void processChanges()
 	{
@@ -82,13 +101,20 @@ public class TowerContainer
 	}
 	
 	// does the given rectangle intersect any towers?
-	public boolean intersectsTowers(Rectangle r)
+	private boolean intersectsTowers(Rectangle r)
 	{
 		for (int i = 0; i < currentTowers.size(); i++) {
 			if (r.intersects(currentTowers.get(i).getRectangle()))
 				return true;
 		}
 		return false;
+	}
+	
+	public boolean canAddTower(TowerType tt, int x, int y)
+	{
+		int size = tt.getSize();
+		Rectangle r = new Rectangle(x-size, y-size, size*2, size*2);
+		return gp.getMap().spotAvailable(r) && !intersectsTowers(r);
 	}
 	
 	public Tower getTowerAt(int x, int y)

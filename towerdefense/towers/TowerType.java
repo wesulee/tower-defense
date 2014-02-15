@@ -5,7 +5,7 @@ package towerdefense.towers;
  */
 public enum TowerType 
 {
-	TestTowerType("Test Tower", "test_tower.png", 10.0, 100, 2.0, 25, 1), 
+	TestTowerType("Test Tower", "test_tower.png", 10.0, 500, 2.0, 25, 1), 
 	TestTower2Type("Test Tower 2", "test_tower2.png", 10.0, 100, 2.0, 25, 10),
 	TestTower3Type("Test Tower 3", "test_tower2.png", 10.0, 100, 2.0, 25, 20);
 	

@@ -142,7 +142,7 @@ public class GamePanel extends JPanel implements Runnable
 		long currentTime = System.nanoTime();
 		gameUpdateCount++;
 		
-		towers.update(currentTime);
+		towers.update(currentTime, creatures);
 		creatures.update();
 		wc.update(currentTime);
 	}
@@ -211,13 +211,10 @@ public class GamePanel extends JPanel implements Runnable
 			TowerType tt = menu.getSelectedTower();
 			int size = tt.getSize();
 			Rectangle r = new Rectangle(x-size, y-size, size*2, size*2);
-			if (map.spotAvailableForTower(r) &&
-					!towers.intersectsTowers(r)) {
+			if (towers.canAddTower(tt, x, y)) {
 				menu.clearSelectedTower();
-				Tower newTower = Tower.newTower(tt, x, y);
-				if (newTower == null) return;
-				towers.add(newTower);
-				player.decreaseGold(newTower.getCost());
+				towers.add(tt, x, y);
+				player.decreaseGold(tt.getCost());
 			}
 			else {
 				System.out.println("Cannot build tower there.");

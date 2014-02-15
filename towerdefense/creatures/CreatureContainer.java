@@ -3,6 +3,7 @@ package towerdefense.creatures;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import towerdefense.Direction;
 import towerdefense.GamePanel;
@@ -42,12 +43,17 @@ public class CreatureContainer
 	{
 		Creature c;
 		// try to spawn creature
-		if (!spawnQueue.isEmpty() && ((spawnCreature == null) ||
-				!spawnCreature.getRectangle().intersects(spawnRect))) {
-			c = spawnQueue.remove(0);
-			creatures.add(c);
-			System.out.println("Creature spawned at ("+c.getPositionX()+", "+
-					c.getPositionY()+")");
+		if (!spawnQueue.isEmpty()) {
+			if (spawnCreature == null)
+				spawnCreature = spawnQueue.get(0);
+			
+			if (creatures.isEmpty())
+				creatures.add(spawnQueue.remove(0));
+			else {
+				c = creatures.get(creatures.size() - 1);
+				if (!c.getRectangle().intersects(spawnRect))
+					creatures.add(spawnQueue.remove(0));
+			}
 		}
 		
 		// remove dead creatures, update positions
@@ -85,7 +91,7 @@ public class CreatureContainer
 	private boolean closeEnough(double x1, double y1, double x2, double y2,
 			int maxDistance)
 	{
-		return (Math.sqrt(x2 - x1 + y2 - y1) < maxDistance);
+		return (Math.sqrt(x2 - x1 + y2 - y1) <= maxDistance);
 	}
 	
 	private Direction getDirection(double x1, double x2, double y1, double y2)
@@ -127,4 +133,23 @@ public class CreatureContainer
 	
 	// no other class should modify size of creatures
 	public ArrayList<Creature> getCreatureList() {return creatures;}
+	
+	public LinkedList<Creature> getCreaturesNear(int x, int y, int range)
+	{
+		LinkedList<Creature> inRange = new LinkedList<Creature>();
+		
+		for (Creature c : creatures) {
+			if (getDistanceFrom(x, y, c) <= range)
+				inRange.add(c);
+		}
+		
+		return inRange;
+	}
+	
+	private double getDistanceFrom(int x, int y, Creature c)
+	{
+		int dx = x - (int)c.getPositionX();
+		int dy = y - (int)c.getPositionY();
+		return Math.sqrt(dx*dx + dy*dy);
+	}
 }

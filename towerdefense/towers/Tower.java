@@ -8,6 +8,9 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
+import java.util.List;
+
+import towerdefense.creatures.Creature;
 
 public abstract class Tower
 {
@@ -64,9 +67,10 @@ public abstract class Tower
 	public void setLastAttack(long time) {lastAttack = time;}
 	public int getX() {return pos_x;}
 	public int getY() {return pos_y;}
+	public Rectangle getRectangle() {return rect;}
 	public abstract void draw(Graphics2D g);
 	public abstract TowerType getType();
-	public Rectangle getRectangle() {return rect;}
+	public abstract void attack(long time, List<Creature> creatures);
 	
 	public void drawRangeCircle(Graphics2D g)
 	{
@@ -98,22 +102,5 @@ public abstract class Tower
 		drawRangeCircleAt(g, x, y, range);
 		g.drawImage(img, x - (img.getWidth() / 2),
 				y - (img.getHeight() / 2), null);
-	}
-	
-	public static Tower newTower(TowerType tt, int x, int y)
-	{
-		Tower nt;
-		switch (tt) {
-		case TestTowerType:
-			nt = new TestTower(x, y);
-			break;
-		case TestTower2Type:
-			nt = new TestTower2(x, y);
-			break;
-		default:
-			nt = null;
-		}
-		
-		return nt;
 	}
 }

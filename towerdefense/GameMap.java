@@ -53,7 +53,7 @@ public class GameMap
 	
 	// can a tower be built at given location?
 	// (x, y) should be position of center of tower
-	public boolean spotAvailableForTower(Rectangle r)
+	public boolean spotAvailable(Rectangle r)
 	{
 		return !creaturePath.intersects(r);
 	}
