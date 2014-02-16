@@ -16,13 +16,13 @@ public class HealthBar
 		new Color(138, 23, 23),		// 0-9%
 		new Color(173, 26, 26),		// 10-19%
 		new Color(255, 23, 23),		// 20-29%
-		new Color(255, 23, 23),		// 30-39%
-		new Color(255, 23, 23),		// 40-49%
-		new Color(255, 23, 23),		// 50-59%
-		new Color(255, 23, 23),		// 60-69%
+		new Color(239, 62, 41),		// 30-39%
+		new Color(231, 189, 40),	// 40-49%
+		new Color(255, 255, 0),		// 50-59%
+		new Color(108, 154, 14),	// 60-69%
 		new Color(2, 158, 37),		// 70-79%
 		new Color(2, 212, 37),		// 80-89%
-		new Color(2, 235, 37),		// 90-100%
+		new Color(2, 235, 37)		// 90-100%
 	};
 	private final int xOffset;
 	private final int yOffset;

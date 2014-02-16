@@ -1,10 +1,12 @@
 package towerdefense;
-import javax.swing.*;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Container;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-public class TowerDefense extends JFrame implements WindowListener
+import javax.swing.JFrame;
+
+public class TowerDefense extends JFrame
 {
 	private GamePanel gp;
 
@@ -14,26 +16,24 @@ public class TowerDefense extends JFrame implements WindowListener
 		Container c = getContentPane();
 		gp = new GamePanel(this);
 		c.add(gp);
-
-		addWindowListener(this);
+		
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				gp.stopGame();
+			}
+		});
+		
 		setIgnoreRepaint(true);
 		setResizable(false);
 		setVisible(true);
 		pack();
+		
+		
 	}
-	
-	public void windowActivated(WindowEvent e) {}
-	public void windowDeactivated(WindowEvent e) {}
-	public void windowDeiconified(WindowEvent e) {}
-	public void windowIconified(WindowEvent e) {}
-	public void windowClosing(WindowEvent e) {gp.stopGame();}
-	public void windowClosed(WindowEvent e) {}
-	public void windowOpened(WindowEvent e) {}
-	
 
 	public static void main(String[] args)
 	{
-		TowerDefense td = new TowerDefense();
+		new TowerDefense();
 	}
 
 }

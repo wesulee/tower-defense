@@ -13,8 +13,8 @@ import towerdefense.creatures.Creature;
  */
 public class TestTowerProjectile extends TimedMovingProjectile implements Projectile
 {
-	private static final int beamDamage = 5;
-	private static final int beamWidth = 10;
+	private static final int beamDamage = 4;
+	private static final int beamWidth = 12;
 	private static final int beamHeight = 5;
 	private static final Color beamColor = Color.red;
 	private static final int milliseconds = 100;
@@ -37,9 +37,9 @@ public class TestTowerProjectile extends TimedMovingProjectile implements Projec
 		beam = new Path2D.Double();
 		beam.append(beamRect, false);
 		AffineTransform t = new AffineTransform();
-		t.rotate(angle, beamRect.x, beamRect.y);
+		t.rotate(angle, beamRect.x + beamRect.width / 2,
+				beamRect.y + beamRect.height / 2);
 		beam.transform(t);
-		
 	}
 
 	public void draw(Graphics2D g) {

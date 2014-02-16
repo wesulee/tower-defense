@@ -4,7 +4,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-import towerdefense.GamePanel;
 import towerdefense.SpriteContainer;
 import towerdefense.creatures.Creature;
 import towerdefense.projectiles.Projectile;

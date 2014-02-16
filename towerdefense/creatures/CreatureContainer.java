@@ -66,7 +66,10 @@ public class CreatureContainer
 				i--;
 			}
 			else {
-				updatePosition(c);
+				if (updatePosition(c)) {
+					creatures.remove(i);
+					i--;
+				}
 			}
 		}
 		
@@ -74,24 +77,58 @@ public class CreatureContainer
 			gp.getWaveController().notifyWaveFinished();
 	}
 	
-	private void updatePosition(Creature c)
+	// returns true when creature reaches goal
+	private boolean updatePosition(Creature c)
 	{
+		int pathIndex = c.getPathIndex();
 		double creatureX = c.getPositionX();
 		double creatureY = c.getPositionY();
-		double dirX = map.getPathX(c.getPathIndex()) - creatureX;
-		double dirY = map.getPathY(c.getPathIndex()) - creatureY;
+		double dirX = map.getPathX(pathIndex) - creatureX;
+		double dirY = map.getPathY(pathIndex) - creatureY;
 		double dirLen = Math.sqrt(dirX*dirX + dirY*dirY);
 		double dx = c.getSpeed() * dirX / dirLen * delayTime;
 		double dy = c.getSpeed() * dirY / dirLen * delayTime;
+		double newX = creatureX + dx;
+		double newY = creatureY + dy;
 		
-		// incomplete implementation
-		c.setPosition(creatureX + dx, creatureY + dy);
+		if ((int)newX == creatureX && (int)newY == creatureY) {
+			c.setPosition(newX, newY);
+		}
+		else {
+			Rectangle newRect = new Rectangle(c.getRectangle());
+			newRect.x = (int)newX - c.getType().getSizeX() / 2;
+			newRect.y = (int)newY - c.getType().getSizeY() / 2;
+			if (!intersectsOtherCreatures(c, newRect)) {
+				c.setPosition(newX, newY);
+			}
+			else
+				return false;
+		}
+		
+		if (closeEnough(
+				map.getPathX(pathIndex),
+				map.getPathY(pathIndex),
+				c.getPositionX(),
+				c.getPositionY(),
+				map.getPathDistance(pathIndex))) {
+			if (pathIndex == END_INDEX) {
+				player.decreaseHealth(1);
+				return true;
+			}
+			else {
+				c.setPathIndex(pathIndex + 1);
+			}
+		}
+		
+		return false;
 	}
 	
 	private boolean closeEnough(double x1, double y1, double x2, double y2,
 			int maxDistance)
 	{
-		return (Math.sqrt(x2 - x1 + y2 - y1) <= maxDistance);
+		double dx = x2 - x1;
+		double dy = y2 - y1;
+		return (Math.sqrt(dx*dx + dy*dy) <= maxDistance);
 	}
 	
 	private Direction getDirection(double x1, double x2, double y1, double y2)
@@ -99,18 +136,10 @@ public class CreatureContainer
 		double dx = x2 - x1;
 		double dy = y2 - y1;
 		
-		if (dx == 0) {
-			if (dy >= 0)
-				return Direction.N;
-			else
-				return Direction.S;
-		}
-		if (dy == 0) {
-			if (dx >= 0)
-				return Direction.E;
-			else
-				return Direction.W;
-		}
+		if (dx == 0)
+			return dy >= 0 ? Direction.N : Direction.S;
+		if (dy == 0)
+			return dx >= 0 ? Direction.E : Direction.W;
 		
 		if (Math.abs(dx) > Math.abs(dy))
 			return dx >= 0 ? Direction.E : Direction.W;
@@ -151,5 +180,15 @@ public class CreatureContainer
 		int dx = x - (int)c.getPositionX();
 		int dy = y - (int)c.getPositionY();
 		return Math.sqrt(dx*dx + dy*dy);
+	}
+	
+	private boolean intersectsOtherCreatures(Creature c, Rectangle cRect)
+	{
+		for (Creature test : creatures) {
+			if (c != test && cRect.intersects(test.getRectangle())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

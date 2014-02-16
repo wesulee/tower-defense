@@ -5,7 +5,7 @@ package towerdefense.creatures;
  */
 public enum CreatureType
 {
-	Spider("Spider", "spider", ".png", 20, 50, 50, 50, 5);
+	Spider("Spider", "spider", ".png", 50, 60, 50, 50, 5);
 	
 	CreatureType(String name, String spriteName, String extension,
 			int health, int speed, int sizeX, int sizeY, int goldDrop)

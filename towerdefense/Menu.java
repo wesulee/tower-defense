@@ -4,10 +4,18 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.color.ColorSpace;
+import java.awt.font.FontRenderContext;
+import java.awt.font.LineBreakMeasurer;
+import java.awt.font.TextAttribute;
+import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
+import java.text.AttributedCharacterIterator;
+import java.text.AttributedString;
+import java.util.EnumMap;
+import java.util.LinkedList;
 
 import towerdefense.towers.TowerType;
 
@@ -23,7 +31,7 @@ public class Menu
 		private final int size;
 		private final TowerType tt;
 		
-		private MenuIcon(BufferedImage img, int pos_x, int pos_y,
+		public MenuIcon(BufferedImage img, int pos_x, int pos_y,
 				TowerType tt) {
 			this.img = img;
 			this.pos_x = pos_x;
@@ -39,6 +47,57 @@ public class Menu
 		public boolean contains(int x, int y) {
 			return ((x >= pos_x) && (x <= pos_x + size) && 
 					(y >= pos_y) && (y <= pos_y + size));
+		}
+	}
+	private class DescriptionLayout {
+		private Font font = new Font("SansSerif", Font.BOLD, 12);
+		private final float drawX;
+		private final float drawWidth;
+		private final float drawYStart;
+		private LineBreakMeasurer lineMeasurer;
+		private AttributedString description;
+		private int paragraphStart;
+		private int paragraphEnd;
+		private LinkedList<TextLayout> layouts;
+		
+		public DescriptionLayout(String text, int x1, int x2, int y) {
+			this.description = new AttributedString(text);
+			description.addAttribute(TextAttribute.FONT, font);
+			this.drawX = (float)x1;
+			this.drawWidth = (float)(x2 - x1);
+			this.drawYStart = (float)y;
+			layouts = new LinkedList<TextLayout>();
+		}
+		
+		public void draw(Graphics2D g) {
+			float drawY = drawYStart;
+			
+			if (lineMeasurer == null) {
+				AttributedCharacterIterator paragraph = 
+						description.getIterator();
+				paragraphStart = paragraph.getBeginIndex();
+				paragraphEnd = paragraph.getEndIndex();
+				FontRenderContext frc = g.getFontRenderContext();
+				lineMeasurer = new LineBreakMeasurer(paragraph, frc);
+				
+				lineMeasurer.setPosition(paragraphStart);
+				while (lineMeasurer.getPosition() < paragraphEnd) {
+					TextLayout layout = lineMeasurer.nextLayout(drawWidth);
+					layouts.add(layout);
+					drawY += layout.getAscent();
+					layout.draw(g, drawX, drawY);
+					drawY += layout.getDescent() + layout.getLeading();
+				}
+			}
+			else {
+				lineMeasurer.setPosition(paragraphStart);
+				for (TextLayout layout : layouts) {
+					drawY += layout.getAscent();
+					layout.draw(g, drawX, drawY);
+					drawY += layout.getDescent() + layout.getLeading();
+				}
+			}
+			
 		}
 	}
 	private final int WIDTH;
@@ -60,6 +119,10 @@ public class Menu
 	private final int ICON_COUNT;	// number of icons
 	private final Color ICON_BG_COLOR = Color.white;
 	private final Color ICON_OUTLINE_COLOR = Color.black;
+	// positions of rectangle that description will be drawn
+	private final int DESC_X1;
+	private final int DESC_X2;
+	private final int DESC_Y1;
 	
 	// constants for mouse movement
 	// coordinates for rectangle that icons are contained in
@@ -71,10 +134,11 @@ public class Menu
 	private final GamePanel gp;
 	private final Player player;
 	private Font font;
-	private int wave = 0;
 	private final BufferedImage staticMenu;
 	// type that mouse clicked on, activated only if sufficient funds
 	private TowerType typeSelected = null;
+	private final EnumMap<TowerType, DescriptionLayout> tDescMap;
+	private DescriptionLayout descToDraw = null;
 	
 	private MenuIcon[] icons;
 	private boolean[] availableTowers;
@@ -87,8 +151,12 @@ public class Menu
 		this.gp = gp;
 		this.player = player;
 		font = new Font("SansSerif", Font.BOLD, 12);
+		tDescMap = new EnumMap<TowerType, DescriptionLayout>(TowerType.class);
 		ICON_TOTAL_SIZE = ICON_SIZE + (ICON_MARGIN * 2) + 2;
 		ICON_COUNT = TowerType.values().length;
+		DESC_X1 = WIDTH_OFFSET + 5;
+		DESC_X2 = WIDTH - 5;
+		DESC_Y1 = 200;
 		
 		// initialize variables for icon position
 		int x = WIDTH_OFFSET + (WIDTH - WIDTH_OFFSET - 
@@ -101,6 +169,8 @@ public class Menu
 		int column = 1;
 		icons = new MenuIcon[ICON_COUNT];
 		for (TowerType tt : TowerType.values()) {
+			tDescMap.put(tt, new DescriptionLayout(
+					tt.getDescription(),DESC_X1, DESC_X2, DESC_Y1));
 			BufferedImage sprite = SpriteContainer.getSpriteIcon(tt);
 			if (sprite == null) {
 				System.exit(1);
@@ -131,7 +201,7 @@ public class Menu
 				ICON_PADDING_X * (ICON_COLUMNS - 1);
 		MOUSE_Y1 = ICON_Y_START;
 		MOUSE_Y2 = MOUSE_Y1 + (ICON_TOTAL_SIZE + ICON_PADDING_Y) * 
-				(ICON_COUNT / ICON_COLUMNS + 1) - ICON_PADDING_Y;		
+				(ICON_COUNT / ICON_COLUMNS + 1) - ICON_PADDING_Y;
 	}
 	
 	public void draw(Graphics2D g)
@@ -143,7 +213,8 @@ public class Menu
 		g.setFont(font);
 		g.setColor(Color.white);
 		
-		g.drawString("Wave " + wave, WIDTH_OFFSET + 20, 20);
+		g.drawString("Wave " + gp.getWaveController().getWaveNumber(),
+				WIDTH_OFFSET + 20, 20);
 		
 		// display health and gold
 		g.drawString("Health: " + player.getHealth(),
@@ -154,9 +225,11 @@ public class Menu
 			if (availableTowers[i])
 				icons[i].draw(g);
 		}
+		
+		if (descToDraw != null)
+			descToDraw.draw(g);
 	}
 	
-	public void setWaveNumber(int n) {wave = n;}
 	public TowerType getSelectedTower() {return typeSelected;}
 	
 	// the player's gold has been changed, update available towers
@@ -168,7 +241,18 @@ public class Menu
 		}
 	}
 	
-	public void notifyMouseMoved(int x, int y) {}
+	public void notifyMouseMoved(int x, int y)
+	{
+		int i = getIconIndexSelected(x, y);
+		if (i == -1) {
+			if (gp.getCurrentCursor() != gp.getDefaultCursor())
+				gp.setCurrentCursor(gp.getDefaultCursor());
+		}
+		else {
+			if (gp.getCurrentCursor() != gp.getHandCursor())
+				gp.setCurrentCursor(gp.getHandCursor());
+		}
+	}
 	
 	public void notifyMouseClicked(int x, int y)
 	{
@@ -185,6 +269,7 @@ public class Menu
 		if ((icons[i].getTowerType().getCost() <= player.getGold()) &&
 				(typeSelected != icons[i].getTowerType())) {
 			typeSelected = icons[i].getTowerType();
+			descToDraw = tDescMap.get(typeSelected);
 			gp.getTowerContainer().setMenuSelectedTower(typeSelected);
 		}
 	}

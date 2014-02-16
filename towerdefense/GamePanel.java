@@ -1,8 +1,9 @@
 package towerdefense;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+
+import javax.swing.JPanel;
 
 import towerdefense.creatures.*;
 import towerdefense.towers.*;
@@ -16,13 +17,21 @@ public class GamePanel extends JPanel implements Runnable
 	public static final int MENU_X = 800;
 	private int mouseX = 0;
 	private int mouseY = 0;
+	private int mousePressedX;
+	private int mousePressedY;
+	private long mousePressedTime;
+	private final long mouseReleaseTimeLimit = 500000000L;
+	private final double mouseDistanceLimit = 5.0;
+	private final Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
+	private final Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
+	private Cursor currentCursor = defaultCursor;
 	
 	private Thread animator;
 	private boolean running = false;
 	//private boolean isPaused = false;
 	// redraw delay, nanoseconds
 	public static final long period =
-			((long)(1000.0 / TARGET_FPS)) * 1000000L;
+			(long)(1000.0 / TARGET_FPS * 1000000.0);
 	
 	protected long gameStartTime;
 	protected long gameUpdateCount = 0L;
@@ -32,27 +41,39 @@ public class GamePanel extends JPanel implements Runnable
 	private Image dbImage = null;
 	
 	// game components
-	private SpriteContainer sprites = new SpriteContainer();
-	private GameMap map;
-	private Player player;
-	private Menu menu;
-	private TowerContainer towers;
-	private CreatureContainer creatures;
-	private WaveController wc;
+	private final SpriteContainer sprites = new SpriteContainer();
+	private final GameMap map;
+	private final Player player;
+	private final Menu menu;
+	private final TowerContainer towers;
+	private final CreatureContainer creatures;
+	private final WaveController wc;
 	private Tower selectedTower = null;
 	
 	public GamePanel(TowerDefense td)
 	{
-		tdTop = td;
-		
-		//setBackground(Color.white);
+		setCursor(defaultCursor);
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		setFocusable(true);
 		requestFocus();
 		
 		addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				_mouseClicked(e.getX(), e.getY());
+			public void mousePressed(MouseEvent e) {
+				mousePressedTime = System.nanoTime();
+				mousePressedX = e.getX();
+				mousePressedY = e.getY();
+			}
+		});
+		addMouseListener(new MouseAdapter() {
+			public void mouseReleased(MouseEvent e) {
+				long time = System.nanoTime();
+				if ((time - mousePressedTime < mouseReleaseTimeLimit) &&
+						(Math.sqrt(
+								Math.pow(e.getX() - mousePressedX, 2.0) +
+								Math.pow(e.getY() - mousePressedY, 2.0)
+								) <= mouseDistanceLimit)) {
+					_mouseClicked(mousePressedX, mousePressedY);
+				}
 			}
 		});
 		addMouseMotionListener(new MouseAdapter() {
@@ -66,6 +87,7 @@ public class GamePanel extends JPanel implements Runnable
 			}
 		});
 		
+		tdTop = td;
 		// load/setup game data
 		map = new GameMap(this);
 		player = new Player();
@@ -118,12 +140,12 @@ public class GamePanel extends JPanel implements Runnable
 			paintScreen();
 			
 			afterTime = System.nanoTime();
-			timeDiff = afterTime - beforeTime - period;
-			if (timeDiff < 0) {
+			timeDiff = afterTime - beforeTime;
+			if (period - timeDiff < 0) {
 				sleepTime = 5000000L;	// 5 ms
 			}
 			else {
-				sleepTime = timeDiff;
+				sleepTime = period - timeDiff;
 			}
 			try {
 				Thread.sleep(sleepTime / 1000000L);	// ms
@@ -194,7 +216,9 @@ public class GamePanel extends JPanel implements Runnable
 		
 		if (x >= MENU_X) {
 			menu.notifyMouseMoved(x, y);
-			return;
+		}
+		else if (currentCursor != defaultCursor) {
+			setCurrentCursor(defaultCursor);
 		}
 	}
 	
@@ -209,8 +233,6 @@ public class GamePanel extends JPanel implements Runnable
 		// check if need to create new tower
 		if (menu.towerIsSelected()) {
 			TowerType tt = menu.getSelectedTower();
-			int size = tt.getSize();
-			Rectangle r = new Rectangle(x-size, y-size, size*2, size*2);
 			if (towers.canAddTower(tt, x, y)) {
 				menu.clearSelectedTower();
 				towers.add(tt, x, y);
@@ -221,6 +243,16 @@ public class GamePanel extends JPanel implements Runnable
 			}
 		}
 	}
+	
+	public Cursor getDefaultCursor() {return defaultCursor;}
+	public Cursor getHandCursor() {return handCursor;}
+	public Cursor getCurrentCursor() {return currentCursor;}
+	public void setCurrentCursor(Cursor cursor)
+	{
+		this.setCursor(cursor);
+		currentCursor = cursor;
+	}
+	
 
 	private void processKey(KeyEvent e)
 	{

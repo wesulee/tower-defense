@@ -3,8 +3,6 @@ package towerdefense;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
-import java.io.InputStream;
-import javax.imageio.ImageIO;
 
 /**
  * Map is used only to contain background sprite and appropriate information
@@ -25,7 +23,6 @@ public class GameMap
 	// maximum distance allowed from (pathX[i], pathY[i]) to consider
 	// creature reaching the point
 	private final int[] pathDistance;
-	private final int CREATURE_END_INDEX;
 	
 	public GameMap(GamePanel gp)
 	{
@@ -34,10 +31,9 @@ public class GameMap
 		
 		creaturePath = new Rectangle(-50, 273, 900, 54);
 		spawnRect = new Rectangle(800, 273, 50, 54);
-		pathX = new int[]{0};
+		pathX = new int[]{-30};
 		pathY = new int[]{300};
 		pathDistance = new int[]{5};
-		CREATURE_END_INDEX = pathX.length;
 	}
 	
 	public Rectangle getSpawnRectangle() {return spawnRect;}

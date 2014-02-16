@@ -42,7 +42,6 @@ public class WaveController
 			// see if time for new wave
 			if (time - lastWaveTime > waveCooldownNano) {
 				currentWave = newWave(++waveNumber);
-				System.out.println("New wave: "+waveNumber);
 				creatures.setSpawnQueue(currentWave.getCreatureList());
 				inCooldown = false;
 			}
@@ -72,4 +71,6 @@ public class WaveController
 		}
 		return nw;
 	}
+	
+	public int getWaveNumber() {return waveNumber;}
 }

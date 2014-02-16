@@ -39,8 +39,8 @@ public class CreatureSpider extends Creature
 	{
 		super.pos_x = x;
 		super.pos_y = y;
-		super.rect.x = (int) (x - ct.getSizeX() / 2);
-		super.rect.y = (int) (y - ct.getSizeY() / 2);
+		super.rect.x = (int)x - ct.getSizeX() / 2;
+		super.rect.y = (int)y - ct.getSizeY() / 2;
 	}
 	
 	public CreatureType getType() {return ct;}
