@@ -14,7 +14,7 @@ public class TowerFactory
 			nt = new TestTower(tc, x, y);
 			break;
 		case TestTower2Type:
-			nt = new TestTower2(x, y);
+			nt = new TestTower2(tc, x, y);
 			break;
 		default:
 			nt = null;

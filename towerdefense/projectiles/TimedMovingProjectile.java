@@ -10,7 +10,6 @@ import towerdefense.GamePanel;
  */
 public abstract class TimedMovingProjectile
 {
-	private static final long updateElapse = GamePanel.period;
 	// how many times update should have been called before destroyed
 	private final int maxUpdateTicks;
 	// number of calls to update()
@@ -26,7 +25,7 @@ public abstract class TimedMovingProjectile
 			int destX, int destY, int milliseconds)
 	{
 		long milliToNano = milliseconds * 1000000L;
-		this.maxUpdateTicks = (int)(milliToNano / updateElapse) + 1;
+		this.maxUpdateTicks = (int)(milliToNano / GamePanel.period) + 1;
 		
 		this.x = sourceX;
 		this.y = sourceY;

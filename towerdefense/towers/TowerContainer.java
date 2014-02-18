@@ -37,6 +37,9 @@ public class TowerContainer
 		this.drawLimitX = drawLimitX;
 		currentTowers = new ArrayList<Tower>();
 		add(TowerType.TestTowerType, 541, 226);
+		processChanges();
+		add(TowerType.TestTower2Type, 600, 226);
+		//add(TowerType.TestTower2Type, 541, 299);
 	}
 	
 	public void update(long time, CreatureContainer cc)
@@ -74,6 +77,7 @@ public class TowerContainer
 	}
 	
 	public ProjectileContainer getProjectileContainer() {return pc;}
+	public GamePanel getGamePanel() {return gp;}
 	
 	public void setMenuSelectedTower(TowerType tt)
 	{
