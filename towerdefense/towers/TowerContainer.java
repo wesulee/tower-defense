@@ -16,7 +16,6 @@ import towerdefense.projectiles.ProjectileContainer;
 public class TowerContainer
 {
 	private final GamePanel gp;
-	private final TowerFactory tf;
 	private final ProjectileContainer pc;
 	
 	private final int drawLimitX;	// do not draw towers past this
@@ -32,7 +31,6 @@ public class TowerContainer
 	public TowerContainer(GamePanel gp, int drawLimitX)
 	{
 		this.gp = gp;
-		this.tf = new TowerFactory(this);
 		this.pc = new ProjectileContainer();
 		this.drawLimitX = drawLimitX;
 		currentTowers = new ArrayList<Tower>();
@@ -92,7 +90,7 @@ public class TowerContainer
 	// should call update between adding multiple towers
 	public void add(TowerType tt, int x, int y)
 	{
-		Tower t = tf.newTower(tt, x, y);
+		Tower t = TowerFactory.newTower(this, tt, x, y);
 		newTowerToAdd = t;
 	}
 	

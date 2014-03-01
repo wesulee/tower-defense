@@ -11,10 +11,9 @@ import java.awt.Rectangle;
 public class GameMap
 {
 	private final GamePanel gp;
-	private final String fileName = "test_map.png";
 	private final BufferedImage backgroundSprite;
 	// creature's rectangle must always be within creaturePath
-	private final Rectangle creaturePath;
+	private final Rectangle[] creaturePath;
 	// where creature's spawn and then move inside creaturePath
 	private final Rectangle spawnRect;
 	// coordinates for guiding creature through map
@@ -24,16 +23,58 @@ public class GameMap
 	// creature reaching the point
 	private final int[] pathDistance;
 	
-	public GameMap(GamePanel gp)
+	public GameMap(GamePanel gp, String fileName)
 	{
 		this.gp = gp;
 		backgroundSprite = SpriteContainer.loadMap(fileName);
 		
-		creaturePath = new Rectangle(-50, 273, 900, 54);
-		spawnRect = new Rectangle(800, 273, 50, 54);
-		pathX = new int[]{-30};
-		pathY = new int[]{300};
-		pathDistance = new int[]{5};
+		String data = Utility.readStrFromFile(
+				"Maps/" + Utility.excludeExt(fileName) + ".txt");
+		if (data.isEmpty()) 
+			mapDataError("file could not be read");
+		
+		int str_i = 0;
+		String tmp;
+		// read creaturePath rectangles
+		tmp = data.substring(str_i, data.indexOf('\n'));
+		str_i += tmp.length() + 1;
+		int creaturePathRectCount = Integer.parseInt(tmp);
+		creaturePath = new Rectangle[creaturePathRectCount];
+		for (int i = 0; i < creaturePathRectCount; i++) {
+			tmp = data.substring(str_i, data.indexOf('\n', str_i));
+			str_i += tmp.length() + 1;
+			int[] ints = Utility.getInts(tmp);
+			if (ints.length != 4)
+				mapDataError("creaturePath incorrect");
+			creaturePath[i] = new Rectangle(
+					ints[0], ints[1], ints[2], ints[3]
+			);
+		}
+		str_i++;
+		// read spawnRect rectangle
+		tmp = data.substring(str_i, data.indexOf('\n', str_i));
+		str_i += tmp.length() + 2;
+		int[] ints = Utility.getInts(tmp);
+		if (ints.length != 4)
+			mapDataError("spawnRect incorrect");
+		spawnRect = new Rectangle(ints[0], ints[1], ints[2], ints[3]);
+		// read creature path points
+		tmp = data.substring(str_i, data.indexOf('\n', str_i));
+		str_i += tmp.length() + 1;
+		int pathCount = Integer.parseInt(tmp);
+		pathX = new int[pathCount];
+		pathY = new int[pathCount];
+		pathDistance = new int[pathCount];
+		for (int i = 0; i < pathCount; i++) {
+			tmp = data.substring(str_i, data.indexOf('\n', str_i));
+			str_i += tmp.length() + 1;
+			ints = Utility.getInts(tmp);
+			if (ints.length != 3)
+				mapDataError("creature path points incorrect");
+			pathX[i] = ints[0];
+			pathY[i] = ints[1];
+			pathDistance[i] = ints[2];
+		}
 	}
 	
 	public Rectangle getSpawnRectangle() {return spawnRect;}
@@ -51,6 +92,15 @@ public class GameMap
 	// (x, y) should be position of center of tower
 	public boolean spotAvailable(Rectangle r)
 	{
-		return !creaturePath.intersects(r);
+		for (int i = 0; i < creaturePath.length; i++)
+			if (creaturePath[i].intersects(r))
+				return false;
+		return true;
+	}
+	
+	private void mapDataError(String msg)
+	{
+		System.out.println("Error reading map data: " + msg + '.');
+		System.exit(1);
 	}
 }

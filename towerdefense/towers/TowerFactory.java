@@ -1,12 +1,10 @@
 package towerdefense.towers;
 
 public class TowerFactory
-{
-	private static TowerContainer tc;
+{	
+	private TowerFactory() {}
 	
-	public TowerFactory(TowerContainer tc) {this.tc = tc;}
-	
-	public Tower newTower(TowerType tt, int x, int y)
+	public static Tower newTower(TowerContainer tc, TowerType tt, int x, int y)
 	{
 		Tower nt;
 		switch (tt) {

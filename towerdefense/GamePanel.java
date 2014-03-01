@@ -89,7 +89,7 @@ public class GamePanel extends JPanel implements Runnable
 		
 		tdTop = td;
 		// load/setup game data
-		map = new GameMap(this);
+		map = new GameMap(this, "test_map.png");
 		player = new Player();
 		towers = new TowerContainer(this, MENU_X);
 		creatures = new CreatureContainer(this);
