@@ -17,6 +17,11 @@ public final class Utility
 		return Math.sqrt(a*a + b*b);
 	}
 	
+	public static double length(double a, double b)
+	{
+		return Math.sqrt(a*a + b*b);
+	}
+	
 	// returns fname with file extension
 	public static String excludeExt(String fname)
 	{

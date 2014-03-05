@@ -10,7 +10,6 @@ import java.awt.Rectangle;
  */
 public class GameMap
 {
-	private final GamePanel gp;
 	private final BufferedImage backgroundSprite;
 	// creature's rectangle must always be within creaturePath
 	private final Rectangle[] creaturePath;
@@ -23,9 +22,8 @@ public class GameMap
 	// creature reaching the point
 	private final int[] pathDistance;
 	
-	public GameMap(GamePanel gp, String fileName)
+	public GameMap(String fileName)
 	{
-		this.gp = gp;
 		backgroundSprite = SpriteContainer.loadMap(fileName);
 		
 		String data = Utility.readStrFromFile(

@@ -20,13 +20,13 @@ public class WaveController
 	private long lastWaveTime;
 	private final long waveCooldownNano;
 	private Wave currentWave = null;
-	private final GamePanel gp;
+	private final RunningGame gp;
 	private final CreatureContainer creatures;
 	// used to set initial position for creature
 	private final Rectangle spawnRect;
 	
 	
-	public WaveController(GamePanel gp)
+	public WaveController(RunningGame gp)
 	{
 		waveCooldownNano = waveCooldown * 1000000L;
 		lastWaveTime = System.nanoTime();

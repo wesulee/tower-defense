@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import towerdefense.GamePanel;
+import towerdefense.RunningGame;
 import towerdefense.SpriteContainer;
 import towerdefense.creatures.CreatureContainer;
 import towerdefense.projectiles.ProjectileContainer;
@@ -15,7 +16,7 @@ import towerdefense.projectiles.ProjectileContainer;
  */
 public class TowerContainer
 {
-	private final GamePanel gp;
+	private final RunningGame rg;
 	private final ProjectileContainer pc;
 	
 	private final int drawLimitX;	// do not draw towers past this
@@ -28,15 +29,15 @@ public class TowerContainer
 	private TowerType menuSelectedTower = null;
 	private BufferedImage menuSelectedTowerSprite = null;
 	
-	public TowerContainer(GamePanel gp, int drawLimitX)
+	public TowerContainer(RunningGame rg, int drawLimitX)
 	{
-		this.gp = gp;
+		this.rg = rg;
 		this.pc = new ProjectileContainer();
 		this.drawLimitX = drawLimitX;
 		currentTowers = new ArrayList<Tower>();
-		add(TowerType.TestTowerType, 541, 226);
-		processChanges();
-		add(TowerType.TestTower2Type, 600, 226);
+		//add(TowerType.TestTowerType, 541, 226);
+		//processChanges();
+		//add(TowerType.TestTower2Type, 600, 226);
 		//add(TowerType.TestTower2Type, 541, 299);
 	}
 	
@@ -64,10 +65,10 @@ public class TowerContainer
 			t.draw(g);
 		}
 		
-		if (gp.getMenu().towerIsSelected() &&
-				(gp.getMouseX() < drawLimitX)) {
+		if (rg.getMenu().towerIsSelected() &&
+				(rg.getMouseX() < drawLimitX)) {
 			Tower.drawRangeCircleWithTower(g, menuSelectedTowerSprite, 
-					gp.getMouseX(), gp.getMouseY(),
+					rg.getMouseX(), rg.getMouseY(),
 					menuSelectedTower.getRange());
 		}
 		
@@ -75,7 +76,7 @@ public class TowerContainer
 	}
 	
 	public ProjectileContainer getProjectileContainer() {return pc;}
-	public GamePanel getGamePanel() {return gp;}
+	public RunningGame getGameState() {return rg;}
 	
 	public void setMenuSelectedTower(TowerType tt)
 	{
@@ -116,7 +117,7 @@ public class TowerContainer
 	{
 		int size = tt.getSize();
 		Rectangle r = new Rectangle(x-size, y-size, size*2, size*2);
-		return gp.getMap().spotAvailable(r) && !intersectsTowers(r);
+		return rg.getMap().spotAvailable(r) && !intersectsTowers(r);
 	}
 	
 	public Tower getTowerAt(int x, int y)

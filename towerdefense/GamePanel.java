@@ -1,79 +1,56 @@
 package towerdefense;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
-
-import towerdefense.creatures.*;
-import towerdefense.towers.*;
 
 public class GamePanel extends JPanel implements Runnable
 {
 	public static final int TARGET_FPS = 60;
 	public static final int WIDTH = 950;
 	public final static int HEIGHT = 600;
-	// MENU_X determines where menu is drawn
-	public static final int MENU_X = 800;
+	
 	private int mouseX = 0;
 	private int mouseY = 0;
-	private int mousePressedX;
-	private int mousePressedY;
-	private long mousePressedTime;
-	private final long mouseReleaseTimeLimit = 500000000L;
-	private final double mouseDistanceLimit = 5.0;
 	private final Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
 	private final Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
-	private Cursor currentCursor = defaultCursor;
+	private int currentCursor = Cursor.DEFAULT_CURSOR;
 	
 	private Thread animator;
 	private boolean running = false;
 	//private boolean isPaused = false;
 	// redraw delay, nanoseconds
-	public static final long period =
-			(long)(1000.0 / TARGET_FPS * 1000000.0);
-	
-	protected long gameStartTime;
-	protected long gameUpdateCount = 0L;
-	
+	public static long period;
+		
 	private TowerDefense tdTop;
 	private Graphics2D dbg;
 	private Image dbImage = null;
-	
-	// game components
-	private final SpriteContainer sprites = new SpriteContainer();
-	private final GameMap map;
-	private final Player player;
-	private final Menu menu;
-	private final TowerContainer towers;
-	private final CreatureContainer creatures;
-	private final WaveController wc;
-	private Tower selectedTower = null;
+	private GameState gs;
 	
 	public GamePanel(TowerDefense td)
 	{
-		setCursor(defaultCursor);
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		setFocusable(true);
 		requestFocus();
 		
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				mousePressedTime = System.nanoTime();
-				mousePressedX = e.getX();
-				mousePressedY = e.getY();
+				gs.mousePressed(e);
 			}
 		});
 		addMouseListener(new MouseAdapter() {
 			public void mouseReleased(MouseEvent e) {
-				long time = System.nanoTime();
-				if ((time - mousePressedTime < mouseReleaseTimeLimit) &&
-						(Math.sqrt(
-								Math.pow(e.getX() - mousePressedX, 2.0) +
-								Math.pow(e.getY() - mousePressedY, 2.0)
-								) <= mouseDistanceLimit)) {
-					_mouseClicked(mousePressedX, mousePressedY);
-				}
+				gs.mouseReleased(e);
 			}
 		});
 		addMouseMotionListener(new MouseAdapter() {
@@ -83,20 +60,12 @@ public class GamePanel extends JPanel implements Runnable
 		});
 		addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
-				processKey(e);
+				gs.processKey(e);
 			}
 		});
 		
 		tdTop = td;
-		// load/setup game data
-		map = new GameMap(this, "test_map.png");
-		player = new Player();
-		towers = new TowerContainer(this, MENU_X);
-		creatures = new CreatureContainer(this);
-		wc = new WaveController(this);
-		menu = new Menu(WIDTH, HEIGHT, MENU_X, this, player);
-		player.setMenu(menu);
-		menu.notifyGoldChange();
+		gs = new RunningGame(this, "test_map.png");
 	}
 	
 	public void addNotify()
@@ -119,18 +88,12 @@ public class GamePanel extends JPanel implements Runnable
 	public long getRedrawDelay() {return period;}
 	public int getMouseX() {return mouseX;}
 	public int getMouseY() {return mouseY;}
-	public Player getPlayer() {return player;}
-	public Menu getMenu() {return menu;}
-	public GameMap getMap() {return map;}
-	public TowerContainer getTowerContainer() {return towers;}
-	public CreatureContainer getCreatureContainer() {return creatures;}
-	public WaveController getWaveController() {return wc;}
+	
 	
 	public void run()
 	{
 		long beforeTime, afterTime, timeDiff, sleepTime;
 		
-		gameStartTime = System.nanoTime();
 		beforeTime = System.nanoTime();
 		
 		running = true;
@@ -155,18 +118,13 @@ public class GamePanel extends JPanel implements Runnable
 			
 			beforeTime = System.nanoTime();
 		}
-		printStats();
+		gs.cleanUp();
 		System.exit(0);
 	}
 	
 	private void gameUpdate()
 	{
-		long currentTime = System.nanoTime();
-		gameUpdateCount++;
-		
-		towers.update(currentTime, creatures);
-		creatures.update();
-		wc.update(currentTime);
+		gs.update(System.nanoTime());
 	}
 	
 	private void gameRender()
@@ -182,17 +140,12 @@ public class GamePanel extends JPanel implements Runnable
 		}
 		dbg.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
-		// Drawing order: background, towers, creatures, projectiles, menu
 		
 		// draw background
 		dbg.setColor(Color.white);
 		dbg.fillRect(0, 0, WIDTH, HEIGHT);
-		map.draw(dbg);
 		
-		towers.draw(dbg);
-		creatures.draw(dbg);
-		
-		menu.draw(dbg);
+		gs.draw(dbg);
 	}
 	
 	private void paintScreen()
@@ -213,67 +166,34 @@ public class GamePanel extends JPanel implements Runnable
 	{
 		mouseX = x;
 		mouseY = y;
-		
-		if (x >= MENU_X) {
-			menu.notifyMouseMoved(x, y);
-		}
-		else if (currentCursor != defaultCursor) {
-			setCurrentCursor(defaultCursor);
-		}
+		gs.mouseMoved(x, y);
 	}
-	
-	public void _mouseClicked(int x, int y)
-	{
-		System.out.println("Mouse clicked at ("+x+", "+y+")");
-		if (x >= MENU_X) {
-			menu.notifyMouseClicked(x, y);
-			return;
-		}
-		
-		// check if need to create new tower
-		if (menu.towerIsSelected()) {
-			TowerType tt = menu.getSelectedTower();
-			if (towers.canAddTower(tt, x, y)) {
-				menu.clearSelectedTower();
-				towers.add(tt, x, y);
-				player.decreaseGold(tt.getCost());
-			}
-			else {
-				System.out.println("Cannot build tower there.");
-			}
-		}
-	}
-	
-	public Cursor getDefaultCursor() {return defaultCursor;}
-	public Cursor getHandCursor() {return handCursor;}
-	public Cursor getCurrentCursor() {return currentCursor;}
-	public void setCurrentCursor(Cursor cursor)
-	{
-		this.setCursor(cursor);
-		currentCursor = cursor;
-	}
-	
 
 	private void processKey(KeyEvent e)
 	{
-		int code = (int)e.getKeyChar();
-		// Escape key
-		if (code == 27) {
-			menu.clearSelectedTower();
-			selectedTower = null;
-			return;
-		}
+		gs.processKey(e);
 	}
 	
-	private void printStats()
+	public void setFPS(int fps)
 	{
-		long elapseTime = (System.nanoTime()-gameStartTime) / 1000000L; // ms
-		double elapse = elapseTime / 1000.0;
-		double targetFPS = 1000.0 / period * 1000000L;
-		System.out.println("Target FPS: "+targetFPS);
-		System.out.println("Period: " + (period / 1000) / 1000.0 + " ms");
-		System.out.println("Average FPS: " + gameUpdateCount / elapse);
-		System.out.println("gameUpdateCount: " + gameUpdateCount);
-		System.out.println("Elapse time: " + elapse + " s");
+		period = (long)(1000.0 / fps * 1000000.0);
+	}
+	
+	public long getPeriod() {return period;}
+	public int getCurrentCursor() {return currentCursor;}
+	
+	public void setCurrentCursor(int cursor)
+	{
+		switch(cursor) {
+		case Cursor.HAND_CURSOR:
+			setCursor(handCursor);
+			break;
+		case Cursor.DEFAULT_CURSOR:
+			setCursor(defaultCursor);
+			break;
+		default:
+			setCursor(defaultCursor);
+		}
+		currentCursor = cursor;
 	}
 }

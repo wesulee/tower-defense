@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import towerdefense.Direction;
-import towerdefense.GamePanel;
 import towerdefense.GameMap;
 import towerdefense.Player;
+import towerdefense.RunningGame;
 
 public class CreatureContainer
 {
@@ -21,22 +21,22 @@ public class CreatureContainer
 	// used to implement creature's speed
 	private final double delayTime;
 	
-	private final GamePanel gp;
+	private final RunningGame rg;
 	private final GameMap map;
 	private final Player player;
 	
-	public CreatureContainer(GamePanel gp)
+	public CreatureContainer(RunningGame rg)
 	{
-		this.gp = gp;
-		this.map = gp.getMap();
-		this.player = gp.getPlayer();
+		this.rg = rg;
+		this.map = rg.getMap();
+		this.player = rg.getPlayer();
 		this.spawnRect = map.getSpawnRectangle();
 		
 		creatures = new ArrayList<Creature>();
 		spawnQueue = new ArrayList<Creature>();
 		END_INDEX = map.getPointsLength() - 1;
 		
-		delayTime = (double) gp.getRedrawDelay() / 1000000000.0;
+		delayTime = (double)rg.getGamePanel().getPeriod() / 1000000000.0;
 	}
 
 	public void update()
@@ -74,7 +74,7 @@ public class CreatureContainer
 		}
 		
 		if (creatures.isEmpty() && spawnQueue.isEmpty())
-			gp.getWaveController().notifyWaveFinished();
+			rg.getWaveController().notifyWaveFinished();
 	}
 	
 	// returns true when creature reaches goal

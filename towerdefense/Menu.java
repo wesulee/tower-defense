@@ -1,6 +1,7 @@
 package towerdefense;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.color.ColorSpace;
@@ -131,7 +132,7 @@ public class Menu
 	private final int MOUSE_Y1;
 	private final int MOUSE_Y2;
 	
-	private final GamePanel gp;
+	private final RunningGame rg;
 	private final Player player;
 	private Font font;
 	private final BufferedImage staticMenu;
@@ -143,12 +144,12 @@ public class Menu
 	private MenuIcon[] icons;
 	private boolean[] availableTowers;
 	
-	public Menu(int width, int height, int width_offset, GamePanel gp, Player player)
+	public Menu(int width, int height, int width_offset, RunningGame rg, Player player)
 	{
 		WIDTH = width;
 		HEIGHT = height;
 		WIDTH_OFFSET = width_offset;
-		this.gp = gp;
+		this.rg = rg;
 		this.player = player;
 		font = new Font("SansSerif", Font.BOLD, 12);
 		tDescMap = new EnumMap<TowerType, DescriptionLayout>(TowerType.class);
@@ -213,7 +214,7 @@ public class Menu
 		g.setFont(font);
 		g.setColor(Color.white);
 		
-		g.drawString("Wave " + gp.getWaveController().getWaveNumber(),
+		g.drawString("Wave " + rg.getWaveController().getWaveNumber(),
 				WIDTH_OFFSET + 20, 20);
 		
 		// display health and gold
@@ -245,12 +246,10 @@ public class Menu
 	{
 		int i = getIconIndexSelected(x, y);
 		if (i == -1) {
-			if (gp.getCurrentCursor() != gp.getDefaultCursor())
-				gp.setCurrentCursor(gp.getDefaultCursor());
+			rg.setCurrentCursor(Cursor.DEFAULT_CURSOR);
 		}
 		else {
-			if (gp.getCurrentCursor() != gp.getHandCursor())
-				gp.setCurrentCursor(gp.getHandCursor());
+			rg.setCurrentCursor(Cursor.HAND_CURSOR);
 		}
 	}
 	
@@ -259,7 +258,7 @@ public class Menu
 		int i = getIconIndexSelected(x, y);
 		if (i == -1) {
 			if (typeSelected != null) {
-				gp.getTowerContainer().clearMenuSelectedTower();
+				rg.getTowerContainer().clearMenuSelectedTower();
 			}
 			typeSelected = null;
 			return;
@@ -270,7 +269,7 @@ public class Menu
 				(typeSelected != icons[i].getTowerType())) {
 			typeSelected = icons[i].getTowerType();
 			descToDraw = tDescMap.get(typeSelected);
-			gp.getTowerContainer().setMenuSelectedTower(typeSelected);
+			rg.getTowerContainer().setMenuSelectedTower(typeSelected);
 		}
 	}
 	

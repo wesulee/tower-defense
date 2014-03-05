@@ -9,6 +9,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 
 import towerdefense.GamePanel;
+import towerdefense.RunningGame;
 import towerdefense.Utility;
 import towerdefense.creatures.Creature;
 import towerdefense.creatures.CreatureContainer;
@@ -20,7 +21,7 @@ import towerdefense.towers.TowerContainer;
  */
 public class RailBeam implements Projectile
 {
-	private static int beamLength = (int)Utility.length(GamePanel.MENU_X,
+	private static int beamLength = (int)Utility.length(RunningGame.MENU_X,
 			GamePanel.HEIGHT);
 	private final int maxUpdateTicks;
 	private int updateTickCounter = 0;
@@ -41,7 +42,7 @@ public class RailBeam implements Projectile
 	{
 		long milliToNano = milliseconds * 1000000L;
 		this.maxUpdateTicks = (int)(milliToNano / GamePanel.period) + 1;
-		this.cc = tc.getGamePanel().getCreatureContainer();
+		this.cc = tc.getGameState().getCreatureContainer();
 		this.beamColor = beamColor;
 		this.beamStroke = new BasicStroke(beamWidth);
 		
@@ -57,7 +58,7 @@ public class RailBeam implements Projectile
 		Rectangle beamRect = new Rectangle(
 				x1,
 				y1 - (beamWidth+beamHitAllowance) / 2,
-				GamePanel.MENU_X,
+				RunningGame.MENU_X,
 				beamWidth + beamHitAllowance
 		);
 		beam = new Path2D.Double();
