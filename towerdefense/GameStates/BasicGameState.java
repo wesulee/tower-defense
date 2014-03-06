@@ -1,8 +1,11 @@
-package towerdefense;
+package towerdefense.GameStates;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+
+import towerdefense.GamePanel;
+import towerdefense.Utility;
 
 /**
  * Provides basic mouse input for a GameState.

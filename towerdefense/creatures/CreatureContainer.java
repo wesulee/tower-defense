@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import towerdefense.Direction;
 import towerdefense.GameMap;
 import towerdefense.Player;
-import towerdefense.RunningGame;
+import towerdefense.GameStates.RunningGame;
 
 public class CreatureContainer
 {

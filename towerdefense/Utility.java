@@ -1,5 +1,8 @@
 package towerdefense;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -76,5 +79,13 @@ public final class Utility
 		
 		return ints;
 	}
-
+	
+	// return a clone of img
+	public static BufferedImage createCopy(BufferedImage img)
+	{
+		ColorModel cm = img.getColorModel();
+		boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+		WritableRaster raster = img.copyData(null);
+		return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+	}
 }

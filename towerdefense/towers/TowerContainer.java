@@ -6,8 +6,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import towerdefense.GamePanel;
-import towerdefense.RunningGame;
 import towerdefense.SpriteContainer;
+import towerdefense.GameStates.RunningGame;
 import towerdefense.creatures.CreatureContainer;
 import towerdefense.projectiles.ProjectileContainer;
 

@@ -14,6 +14,9 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
 
+import towerdefense.GameStates.GameState;
+import towerdefense.GameStates.RunningGame;
+
 public class GamePanel extends JPanel implements Runnable
 {
 	public static final int TARGET_FPS = 60;
@@ -135,11 +138,12 @@ public class GamePanel extends JPanel implements Runnable
 				System.out.println("dbImage is null");
 				return;
 			}
-			else
+			else {
 				dbg = (Graphics2D) dbImage.getGraphics();
+				dbg.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+						RenderingHints.VALUE_ANTIALIAS_ON);
+			}
 		}
-		dbg.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		// draw background
 		dbg.setColor(Color.white);

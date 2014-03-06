@@ -2,6 +2,7 @@ package towerdefense;
 
 import java.awt.Rectangle;
 
+import towerdefense.GameStates.RunningGame;
 import towerdefense.creatures.Creature;
 import towerdefense.creatures.CreatureContainer;
 import towerdefense.creatures.CreatureType;

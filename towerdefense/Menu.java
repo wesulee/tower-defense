@@ -5,19 +5,13 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.color.ColorSpace;
-import java.awt.font.FontRenderContext;
-import java.awt.font.LineBreakMeasurer;
-import java.awt.font.TextAttribute;
-import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
-import java.awt.image.ColorModel;
-import java.awt.image.WritableRaster;
-import java.text.AttributedCharacterIterator;
-import java.text.AttributedString;
 import java.util.EnumMap;
-import java.util.LinkedList;
 
+import towerdefense.GameStates.RunningGame;
+import towerdefense.Interface.MenuIcon;
+import towerdefense.Interface.TextBox;
 import towerdefense.towers.TowerType;
 
 /**
@@ -25,82 +19,6 @@ import towerdefense.towers.TowerType;
  */
 public class Menu 
 {
-	private class MenuIcon {
-		private final BufferedImage img;
-		private final int pos_x;
-		private final int pos_y;
-		private final int size;
-		private final TowerType tt;
-		
-		public MenuIcon(BufferedImage img, int pos_x, int pos_y,
-				TowerType tt) {
-			this.img = img;
-			this.pos_x = pos_x;
-			this.pos_y = pos_y;
-			this.size = img.getHeight();
-			this.tt = tt;
-		}
-		public BufferedImage getImage() {return createCopy(img);}
-		public int getX() {return pos_x;}
-		public int getY() {return pos_y;}
-		public TowerType getTowerType() {return tt;}
-		public void draw(Graphics2D g) {g.drawImage(img, pos_x, pos_y, null);}
-		public boolean contains(int x, int y) {
-			return ((x >= pos_x) && (x <= pos_x + size) && 
-					(y >= pos_y) && (y <= pos_y + size));
-		}
-	}
-	private class DescriptionLayout {
-		private Font font = new Font("SansSerif", Font.BOLD, 12);
-		private final float drawX;
-		private final float drawWidth;
-		private final float drawYStart;
-		private LineBreakMeasurer lineMeasurer;
-		private AttributedString description;
-		private int paragraphStart;
-		private int paragraphEnd;
-		private LinkedList<TextLayout> layouts;
-		
-		public DescriptionLayout(String text, int x1, int x2, int y) {
-			this.description = new AttributedString(text);
-			description.addAttribute(TextAttribute.FONT, font);
-			this.drawX = (float)x1;
-			this.drawWidth = (float)(x2 - x1);
-			this.drawYStart = (float)y;
-			layouts = new LinkedList<TextLayout>();
-		}
-		
-		public void draw(Graphics2D g) {
-			float drawY = drawYStart;
-			
-			if (lineMeasurer == null) {
-				AttributedCharacterIterator paragraph = 
-						description.getIterator();
-				paragraphStart = paragraph.getBeginIndex();
-				paragraphEnd = paragraph.getEndIndex();
-				FontRenderContext frc = g.getFontRenderContext();
-				lineMeasurer = new LineBreakMeasurer(paragraph, frc);
-				
-				lineMeasurer.setPosition(paragraphStart);
-				while (lineMeasurer.getPosition() < paragraphEnd) {
-					TextLayout layout = lineMeasurer.nextLayout(drawWidth);
-					layouts.add(layout);
-					drawY += layout.getAscent();
-					layout.draw(g, drawX, drawY);
-					drawY += layout.getDescent() + layout.getLeading();
-				}
-			}
-			else {
-				lineMeasurer.setPosition(paragraphStart);
-				for (TextLayout layout : layouts) {
-					drawY += layout.getAscent();
-					layout.draw(g, drawX, drawY);
-					drawY += layout.getDescent() + layout.getLeading();
-				}
-			}
-			
-		}
-	}
 	private final int WIDTH;
 	private final int HEIGHT;
 	private final int WIDTH_OFFSET;
@@ -138,8 +56,8 @@ public class Menu
 	private final BufferedImage staticMenu;
 	// type that mouse clicked on, activated only if sufficient funds
 	private TowerType typeSelected = null;
-	private final EnumMap<TowerType, DescriptionLayout> tDescMap;
-	private DescriptionLayout descToDraw = null;
+	private final EnumMap<TowerType, TextBox> tDescMap;
+	private TextBox descToDraw = null;
 	
 	private MenuIcon[] icons;
 	private boolean[] availableTowers;
@@ -152,7 +70,7 @@ public class Menu
 		this.rg = rg;
 		this.player = player;
 		font = new Font("SansSerif", Font.BOLD, 12);
-		tDescMap = new EnumMap<TowerType, DescriptionLayout>(TowerType.class);
+		tDescMap = new EnumMap<TowerType, TextBox>(TowerType.class);
 		ICON_TOTAL_SIZE = ICON_SIZE + (ICON_MARGIN * 2) + 2;
 		ICON_COUNT = TowerType.values().length;
 		DESC_X1 = WIDTH_OFFSET + 5;
@@ -170,8 +88,8 @@ public class Menu
 		int column = 1;
 		icons = new MenuIcon[ICON_COUNT];
 		for (TowerType tt : TowerType.values()) {
-			tDescMap.put(tt, new DescriptionLayout(
-					tt.getDescription(),DESC_X1, DESC_X2, DESC_Y1));
+			tDescMap.put(tt, new TextBox(
+					tt.getDescription(), DESC_X1, DESC_X2, DESC_Y1));
 			BufferedImage sprite = SpriteContainer.getSpriteIcon(tt);
 			if (sprite == null) {
 				System.exit(1);
@@ -339,14 +257,4 @@ public class Menu
 		
 		return simg;
 	}
-	
-	// return a clone of img
-	private static BufferedImage createCopy(BufferedImage img)
-	{
-		ColorModel cm = img.getColorModel();
-		boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-		WritableRaster raster = img.copyData(null);
-		return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
-	}
-
 }

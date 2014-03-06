@@ -9,8 +9,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 
 import towerdefense.GamePanel;
-import towerdefense.RunningGame;
 import towerdefense.Utility;
+import towerdefense.GameStates.RunningGame;
 import towerdefense.creatures.Creature;
 import towerdefense.creatures.CreatureContainer;
 import towerdefense.towers.Tower;
