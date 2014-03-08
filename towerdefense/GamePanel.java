@@ -14,8 +14,8 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
 
-import towerdefense.GameStates.GameState;
-import towerdefense.GameStates.RunningGame;
+import towerdefense.gamestates.GameState;
+import towerdefense.gamestates.MapSelector;
 
 public class GamePanel extends JPanel implements Runnable
 {
@@ -68,7 +68,8 @@ public class GamePanel extends JPanel implements Runnable
 		});
 		
 		tdTop = td;
-		gs = new RunningGame(this, "test_map.png");
+		//gs = new RunningGame(this, "test_map.png");
+		gs = new MapSelector(this);
 	}
 	
 	public void addNotify()
@@ -121,13 +122,12 @@ public class GamePanel extends JPanel implements Runnable
 			
 			beforeTime = System.nanoTime();
 		}
-		gs.cleanUp();
-		System.exit(0);
 	}
 	
 	private void gameUpdate()
 	{
-		gs.update(System.nanoTime());
+		if(gs.update(System.nanoTime()))
+			gs = gs.transition();
 	}
 	
 	private void gameRender()

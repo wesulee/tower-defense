@@ -1,4 +1,4 @@
-package towerdefense.Interface;
+package towerdefense.ui;
 
 import java.awt.Font;
 import java.awt.Graphics2D;

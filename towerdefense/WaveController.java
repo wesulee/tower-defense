@@ -2,10 +2,10 @@ package towerdefense;
 
 import java.awt.Rectangle;
 
-import towerdefense.GameStates.RunningGame;
 import towerdefense.creatures.Creature;
 import towerdefense.creatures.CreatureContainer;
 import towerdefense.creatures.CreatureType;
+import towerdefense.gamestates.RunningGame;
 
 /**
  * Manages when waves occur and what creatures spawn.

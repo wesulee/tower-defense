@@ -9,16 +9,21 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.util.EnumMap;
 
-import towerdefense.GameStates.RunningGame;
-import towerdefense.Interface.MenuIcon;
-import towerdefense.Interface.TextBox;
+import towerdefense.gamestates.RunningGame;
 import towerdefense.towers.TowerType;
+import towerdefense.ui.GenericIcon;
+import towerdefense.ui.TextBox;
 
 /**
  * Menu layout in vertical order: wave, icons, description, health/gold
  */
 public class Menu 
 {
+	private class MenuIcon extends GenericIcon<TowerType> {
+		MenuIcon(BufferedImage img, int pos_x, int pos_y, TowerType tt) {
+			super(img, pos_x, pos_y, tt);
+		}
+	}
 	private final int WIDTH;
 	private final int HEIGHT;
 	private final int WIDTH_OFFSET;
@@ -156,7 +161,7 @@ public class Menu
 	{
 		int gold = player.getGold();
 		for (int i = 0; i < ICON_COUNT; i++) {
-			availableTowers[i] = (gold >= icons[i].getTowerType().getCost());
+			availableTowers[i] = (gold >= icons[i].getEntity().getCost());
 		}
 	}
 	
@@ -183,9 +188,9 @@ public class Menu
 		}
 		// only set typeSelected when player has money for tower
 		// and tower is different from current typeSelected
-		if ((icons[i].getTowerType().getCost() <= player.getGold()) &&
-				(typeSelected != icons[i].getTowerType())) {
-			typeSelected = icons[i].getTowerType();
+		if ((icons[i].getEntity().getCost() <= player.getGold()) &&
+				(typeSelected != icons[i].getEntity())) {
+			typeSelected = icons[i].getEntity();
 			descToDraw = tDescMap.get(typeSelected);
 			rg.getTowerContainer().setMenuSelectedTower(typeSelected);
 		}

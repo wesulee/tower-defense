@@ -1,5 +1,7 @@
 package towerdefense;
 
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
@@ -87,5 +89,33 @@ public final class Utility
 		boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
 		WritableRaster raster = img.copyData(null);
 		return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+	}
+	
+	// return rescaled image that fits inside a rectangle of x by y
+	public static BufferedImage scaledResize(BufferedImage img, int x, int y)
+	{
+		double scaleDiv = minimum((double)img.getWidth() / (double)x,
+				(double)img.getHeight() / (double)y);
+		BufferedImage resized = new BufferedImage(
+				(int)(img.getWidth() / scaleDiv),
+				(int)(img.getHeight() / scaleDiv),
+				img.getType()
+		);
+		Graphics2D g = resized.createGraphics();
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		g.drawImage(img, 0, 0, resized.getWidth(), resized.getHeight(), null);
+		g.dispose();
+		return resized;
+	}
+	
+	public static double minimum(double a, double b)
+	{
+		return a > b ? b : a;
+	}
+	
+	public static int minimum(int a, int b)
+	{
+		return a > b ? b : a;
 	}
 }

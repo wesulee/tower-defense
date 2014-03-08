@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 import towerdefense.GamePanel;
 import towerdefense.SpriteContainer;
-import towerdefense.GameStates.RunningGame;
 import towerdefense.creatures.CreatureContainer;
+import towerdefense.gamestates.RunningGame;
 import towerdefense.projectiles.ProjectileContainer;
 
 /**

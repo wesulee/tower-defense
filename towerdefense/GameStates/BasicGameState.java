@@ -1,4 +1,4 @@
-package towerdefense.GameStates;
+package towerdefense.gamestates;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -49,8 +49,9 @@ public abstract class BasicGameState implements GameState
 	public int getMouseX() {return gp.getMouseX();}
 	public int getMouseY() {return gp.getMouseY();}
 	public void setCurrentCursor(int c) {gp.setCurrentCursor(c);}
+	public GamePanel getGamePanel() {return gp;}
 	
-	public abstract void update(long time);
+	public abstract boolean update(long time);
 	public abstract void draw(Graphics2D g);
 	public abstract void processKey(KeyEvent e);
 	public abstract void mouseClicked(int x, int y);

@@ -1,4 +1,4 @@
-package towerdefense.GameStates;
+package towerdefense.gamestates;
 
 import java.awt.Cursor;
 import java.awt.Graphics2D;
@@ -59,12 +59,13 @@ public class RunningGame extends BasicGameState
 	public CreatureContainer getCreatureContainer() {return creatures;}
 	public WaveController getWaveController() {return wc;}
 
-	public void update(long time)
+	public boolean update(long time)
 	{
 		updateCount++;
 		towers.update(time, creatures);
 		creatures.update();
 		wc.update(time);
+		return false;
 	}
 
 	public void draw(Graphics2D g)
@@ -120,13 +121,13 @@ public class RunningGame extends BasicGameState
 			return;
 		}
 	}
-		
-	public void cleanUp()
+	
+	public GameState transition()
 	{
-		printStats();
+		return new ExitGame(gp, this);
 	}
 	
-	private void printStats()
+	public void printStats()
 	{
 		long elapseTime = (System.nanoTime()-startTime) / 1000000L; // ms
 		double elapse = elapseTime / 1000.0;
