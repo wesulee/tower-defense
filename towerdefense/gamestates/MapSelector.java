@@ -5,9 +5,9 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 import towerdefense.GamePanel;
-import towerdefense.MapType;
 import towerdefense.SpriteContainer;
 import towerdefense.Utility;
+import towerdefense.maps.MapType;
 import towerdefense.ui.GenericIcon;
 
 public class MapSelector extends BasicGameState
@@ -86,6 +86,6 @@ public class MapSelector extends BasicGameState
 	
 	public GameState transition()
 	{
-		return new RunningGame(getGamePanel(), selectedMap.getFileName());
+		return new RunningGame(getGamePanel(), selectedMap);
 	}
 }

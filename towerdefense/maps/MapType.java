@@ -1,4 +1,4 @@
-package towerdefense;
+package towerdefense.maps;
 
 public enum MapType
 {

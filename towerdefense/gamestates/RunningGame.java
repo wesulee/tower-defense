@@ -4,13 +4,14 @@ import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
-import towerdefense.GameMap;
 import towerdefense.GamePanel;
 import towerdefense.Menu;
 import towerdefense.Player;
 import towerdefense.SpriteContainer;
 import towerdefense.WaveController;
 import towerdefense.creatures.CreatureContainer;
+import towerdefense.maps.GameMap;
+import towerdefense.maps.MapType;
 import towerdefense.towers.Tower;
 import towerdefense.towers.TowerContainer;
 import towerdefense.towers.TowerType;
@@ -32,14 +33,14 @@ public class RunningGame extends BasicGameState
 	private final WaveController wc;
 	private Tower selectedTower = null;
 	
-	public RunningGame(GamePanel gp, String mapName)
+	public RunningGame(GamePanel gp, MapType mt)
 	{
 		super(gp, 500, 5.0);
 		this.gp = gp;
 		gp.setFPS(TARGET_FPS);
 		gp.setCurrentCursor(Cursor.DEFAULT_CURSOR);
 		
-		map = new GameMap(mapName);
+		map = new GameMap(mt);
 		player = new Player();
 		towers = new TowerContainer(this, MENU_X);
 		creatures = new CreatureContainer(this);
@@ -126,7 +127,7 @@ public class RunningGame extends BasicGameState
 	{
 		return new ExitGame(gp, this);
 	}
-	
+		
 	public void printStats()
 	{
 		long elapseTime = (System.nanoTime()-startTime) / 1000000L; // ms

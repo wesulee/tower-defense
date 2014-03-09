@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import towerdefense.Direction;
-import towerdefense.GameMap;
 import towerdefense.Player;
 import towerdefense.gamestates.RunningGame;
+import towerdefense.maps.GameMap;
 
 public class CreatureContainer
 {

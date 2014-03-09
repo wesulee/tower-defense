@@ -5,13 +5,8 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+
+import java.io.InputStream;
 
 public final class Utility
 {
@@ -35,40 +30,17 @@ public final class Utility
 	
 	public static String readStrFromFile(String path)
 	{
-		URI uri = null;
-		try {
-			uri = TowerDefense.class.getResource("Resources/"+path).toURI();
+		path = "Resources/" + path;
+		InputStream is = TowerDefense.class.getResourceAsStream(path);
+		if (is == null) {
+			return null;
 		}
-		catch (URISyntaxException e) {
-			return "";
-		}
-		File f = new File(uri);
-		StringBuilder sb = new StringBuilder();
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(f));
-			String line = br.readLine();
-			while (line != null) {
-				sb.append(line + '\n');
-				line = br.readLine();
-			}
-		}
-		catch (FileNotFoundException e) {
-			//System.out.println("Unable to read " + path);
-		} catch (IOException e) {
-			//System.out.println("Error reading from " + path);
-		}
-		finally {
-			try {
-				if (br != null)
-					br.close();
-			}
-			catch (IOException e) {
-				//System.out.println("Error closing file " + path);
-			}
-		}
-		
-		return sb.toString();
+		java.util.Scanner s = new java.util.Scanner(is);
+		java.util.Scanner s2 = s.useDelimiter("\\A");
+		String output = s2.hasNext() ? s2.next() : "";
+		s.close();
+		s2.close();
+		return output;
 	}
 	
 	public static int[] getInts(String str)

@@ -7,10 +7,18 @@ import towerdefense.GamePanel;
 
 public class ExitGame extends BasicGameState {
 	
-	public ExitGame(GamePanel gp, RunningGame rg)
+	public ExitGame(GamePanel gp, GameState gs)
 	{
 		super(gp, 0, 0.0);
-		rg.printStats();
+		switch (gs.getType()) {
+		case RunningGame:
+			((RunningGame) gs).printStats();
+			break;
+		case MapSelector:
+			break;
+		case Default:
+			break;
+		}
 		System.exit(0);
 	}
 

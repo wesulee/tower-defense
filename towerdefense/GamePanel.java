@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
 
+import towerdefense.gamestates.ExitGame;
 import towerdefense.gamestates.GameState;
 import towerdefense.gamestates.MapSelector;
 
@@ -86,7 +87,7 @@ public class GamePanel extends JPanel implements Runnable
 		}
 	}
 	
-	public void stopGame() {running = false;}
+	public void stopGame() {gs = new ExitGame(this, gs);}
 	public void pauseGame() {/* not implemented */}
 	public void resumeGame() {/* not implemented */}
 	public long getRedrawDelay() {return period;}

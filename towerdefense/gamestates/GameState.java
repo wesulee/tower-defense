@@ -13,4 +13,5 @@ public interface GameState
 	void mouseMoved(int x, int y);
 	void processKey(KeyEvent e);
 	GameState transition();
+	GameStateType getType();
 }
