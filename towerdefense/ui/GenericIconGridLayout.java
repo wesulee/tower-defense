@@ -10,11 +10,14 @@ import java.util.ArrayList;
  */
 public class GenericIconGridLayout<T>
 {
-	// smallest rectangle to contain all icons
+	// rectangle that completely contains layout
 	private final Rectangle layoutRect;
+	// smallest rectangle to contain all icons
+	private final Rectangle minLayoutRect;
 	private ArrayList<BufferedImage> imgList;
 	private ArrayList<T> entityList;
 	private Icon[] icons;
+	private boolean enabled[];	// draw icons[i] only if enabled[i] == true
 	private boolean finalized = false;
 	private final int rowSize;	// icon count per row
 	private final int rowHeight;
@@ -31,7 +34,7 @@ public class GenericIconGridLayout<T>
 		this.rowHeight = rowHeight;
 		this.xStart = x;
 		this.yStart = y;
-		this.cellWidth = (x + width) / rowSize;
+		this.cellWidth = width / rowSize;
 		if ((cellVertAlign == Alignment.Top) ||
 				(cellVertAlign == Alignment.Center) ||
 				(cellVertAlign == Alignment.Bottom))
@@ -45,6 +48,7 @@ public class GenericIconGridLayout<T>
 		else
 			this.cellHorizAlign = Alignment.Left; // default
 		layoutRect = new Rectangle(x, y, width, rowHeight);
+		minLayoutRect = new Rectangle(layoutRect);
 		imgList = new ArrayList<BufferedImage>();
 		entityList = new ArrayList<T>();
 	}
@@ -52,7 +56,7 @@ public class GenericIconGridLayout<T>
 	public void draw(Graphics2D g)
 	{
 		for (int i = 0; i < icons.length; i++)
-			icons[i].draw(g);
+			if (enabled[i]) icons[i].draw(g);
 	}
 	
 	public boolean add(BufferedImage img, T entity)
@@ -66,7 +70,7 @@ public class GenericIconGridLayout<T>
 	// is (x, y) inside the smallest rect containing all icons?
 	public boolean contains(int x, int y)
 	{
-		return layoutRect.contains(x, y);
+		return minLayoutRect.contains(x, y);
 	}
 	
 	// is (x, y) inside an icon?
@@ -87,9 +91,22 @@ public class GenericIconGridLayout<T>
 			return null;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public GenericIcon<T> getIcon(int index)
+	{
+		if (validIndex(index))
+			return (GenericIcon<T>) icons[index];
+		else
+			return null;
+	}
+	
 	// call once all icons have been added
 	public void finalize()
 	{
+		enabled = new boolean[imgList.size()];
+		for (int i = 0; i < enabled.length; i++)
+			enabled[i] = true;
+		
 		BufferedImage img;
 		T entity;
 		icons = new Icon[imgList.size()];
@@ -118,17 +135,24 @@ public class GenericIconGridLayout<T>
 			if (rect.y + rect.height > yMax) yMax = rect.y + rect.height;
 		}
 		
-		layoutRect.setBounds(xMin, yMin, xMax - xMin, yMax - yMin);
+		minLayoutRect.setBounds(xMin, yMin, xMax - xMin, yMax - yMin);
+		layoutRect.setBounds(layoutRect.x, layoutRect.y, layoutRect.width,
+				minLayoutRect.y - layoutRect.y + minLayoutRect.height);
 		finalized = true;
 		imgList.clear();
 		entityList.clear();
 	}
 	
+	public void enable(int i) {if (validIndex(i)) enabled[i] = true;}
+	public void disable(int i) {if (validIndex(i)) enabled[i] = false;}
 	public Rectangle getRect() {return new Rectangle(layoutRect);}
-	private int getRow(int y) {return (yStart - y) / rowHeight;}
-	private int getColumn(int x) {return (x - xStart) / cellWidth;}
-	private int getIndex(int row, int column) {return row*rowSize + column;}
-	private boolean validIndex(int i) {return (i >= 0 && i < icons.length);}
+	public Rectangle getMinRect() {return new Rectangle(minLayoutRect);}
+	public int size() {return icons.length;}
+	protected int getRow(int y) {return (yStart - y) / rowHeight;}
+	protected int getColumn(int x) {return (x - xStart) / cellWidth;}
+	protected int getIndex(int row, int column) {return row*rowSize + column;}
+	protected boolean validIndex(int i) {return (i >= 0 && i < icons.length);}
+	protected void drawIcon(Graphics2D g, int i) {icons[i].draw(g);}
 	
 	private int getCellX(BufferedImage img, int column)
 	{

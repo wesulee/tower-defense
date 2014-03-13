@@ -14,7 +14,8 @@ public class Icon
 	private final int x2;
 	private final int y2;
 	
-	public Icon(BufferedImage img, int pos_x, int pos_y) {
+	public Icon(BufferedImage img, int pos_x, int pos_y)
+	{
 		this.img = img;
 		this.x1 = pos_x;
 		this.y1 = pos_y;

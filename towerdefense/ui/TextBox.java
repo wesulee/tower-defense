@@ -25,7 +25,10 @@ public class TextBox
 	private int paragraphEnd;
 	private LinkedList<TextLayout> layouts;
 	
-	public TextBox(String text, int x1, int x2, int y) {
+	public TextBox(String text, int x1, int x2, int y)
+	{
+		if (x2 <= x1)
+			throw new IllegalArgumentException("x2 <= x1");
 		this.description = new AttributedString(text);
 		description.addAttribute(TextAttribute.FONT, font);
 		this.drawX = (float)x1;
@@ -34,7 +37,8 @@ public class TextBox
 		layouts = new LinkedList<TextLayout>();
 	}
 	
-	public void draw(Graphics2D g) {
+	public void draw(Graphics2D g)
+	{
 		float drawY = drawYStart;
 		
 		if (lineMeasurer == null) {

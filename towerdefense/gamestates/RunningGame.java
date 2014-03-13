@@ -45,7 +45,7 @@ public class RunningGame extends BasicGameState
 		towers = new TowerContainer(this, MENU_X);
 		creatures = new CreatureContainer(this);
 		wc = new WaveController(this);
-		menu = new Menu(GamePanel.WIDTH, GamePanel.HEIGHT, MENU_X, this, player);
+		menu = new Menu(MENU_X, this, player);
 		player.setMenu(menu);
 		menu.notifyGoldChange();
 		

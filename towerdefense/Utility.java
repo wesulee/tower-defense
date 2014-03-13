@@ -1,11 +1,13 @@
 package towerdefense;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
-
 import java.io.InputStream;
 
 public final class Utility
@@ -71,7 +73,7 @@ public final class Utility
 		BufferedImage resized = new BufferedImage(
 				(int)(img.getWidth() / scaleDiv),
 				(int)(img.getHeight() / scaleDiv),
-				img.getType()
+				BufferedImage.TYPE_INT_ARGB
 		);
 		Graphics2D g = resized.createGraphics();
 		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
@@ -79,6 +81,39 @@ public final class Utility
 		g.drawImage(img, 0, 0, resized.getWidth(), resized.getHeight(), null);
 		g.dispose();
 		return resized;
+	}
+	
+	// converts the given img to grayscale
+	public static BufferedImage toGrayscale(BufferedImage img)
+	{
+		ColorConvertOp op = 
+				new ColorConvertOp(ColorSpace.getInstance(
+						ColorSpace.CS_GRAY), null);
+		op.filter(img, img);
+		return img;
+	}
+	
+	// returns an image that has a border around given img
+	public static BufferedImage borderImage(BufferedImage img, Color color,
+			int thickness)
+	{
+		BufferedImage newImg = new BufferedImage(img.getWidth() + thickness*2,
+				img.getHeight() + thickness*2, img.getType());
+		Graphics2D g = newImg.createGraphics();
+		g.setColor(color);
+		g.drawImage(img, thickness, thickness, null);
+		// top border
+		g.fillRect(0, 0, newImg.getWidth(), thickness);
+		// bottom border
+		g.fillRect(0, newImg.getHeight() - thickness, newImg.getWidth(),
+				thickness);
+		// left border
+		g.fillRect(0, 0, thickness, newImg.getHeight());
+		// right border
+		g.fillRect(newImg.getWidth() - thickness, 0, thickness,
+				newImg.getHeight());
+		g.dispose();
+		return newImg;
 	}
 	
 	public static double minimum(double a, double b)
