@@ -101,7 +101,7 @@ public class TowerIconLayout
 		BufferedImage newImg = new BufferedImage(
 				menu.ICON_SIZE + menu.ICON_MARGIN * 2,
 				menu.ICON_SIZE + menu.ICON_MARGIN * 2,
-				BufferedImage.TYPE_INT_ARGB
+				BufferedImage.TYPE_INT_RGB
 		);
 		Graphics2D g = newImg.createGraphics();
 		g.setColor(menu.ICON_BG_COLOR);

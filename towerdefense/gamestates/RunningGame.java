@@ -75,6 +75,10 @@ public class RunningGame extends BasicGameState
 		map.draw(g);
 		
 		towers.draw(g);
+		if (selectedTower != null) {
+			selectedTower.drawRangeCircle(g);
+		}
+		
 		creatures.draw(g);
 		
 		menu.draw(g);
@@ -99,6 +103,9 @@ public class RunningGame extends BasicGameState
 			else {
 				System.out.println("Cannot build tower there.");
 			}
+		}
+		else {
+			selectedTower = towers.getTowerAt(x, y);
 		}
 	}
 	

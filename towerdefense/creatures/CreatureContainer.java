@@ -2,18 +2,20 @@ package towerdefense.creatures;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import towerdefense.Direction;
 import towerdefense.Player;
+import towerdefense.animation.AnimationContainer;
+import towerdefense.animation.CreatureGoldDrop;
 import towerdefense.gamestates.RunningGame;
 import towerdefense.maps.GameMap;
 
 public class CreatureContainer
 {
-	private ArrayList<Creature> creatures;
-	private ArrayList<Creature> spawnQueue;
+	private LinkedList<Creature> creatures;
+	private LinkedList<Creature> spawnQueue;
 	// most recent creature spawned
 	private Creature spawnCreature = null;
 	private final Rectangle spawnRect;
@@ -24,16 +26,18 @@ public class CreatureContainer
 	private final RunningGame rg;
 	private final GameMap map;
 	private final Player player;
+	private final AnimationContainer ac;
 	
 	public CreatureContainer(RunningGame rg)
 	{
 		this.rg = rg;
 		this.map = rg.getMap();
 		this.player = rg.getPlayer();
+		this.ac = new AnimationContainer();
 		this.spawnRect = map.getSpawnRectangle();
 		
-		creatures = new ArrayList<Creature>();
-		spawnQueue = new ArrayList<Creature>();
+		creatures = new LinkedList<Creature>();
+		spawnQueue = new LinkedList<Creature>();
 		END_INDEX = map.getPointsLength() - 1;
 		
 		delayTime = (double)rg.getGamePanel().getPeriod() / 1000000000.0;
@@ -56,25 +60,23 @@ public class CreatureContainer
 			}
 		}
 		
-		// remove dead creatures, update positions
-		for (int i = 0; i < creatures.size(); i++) {
-			c = creatures.get(i);
-			// is creature dead?
-			if (c.getHealth() <= 0) {
-				player.increaseGold(c.getGoldDrop());
-				creatures.remove(i);
-				i--;
-			}
-			else {
-				if (updatePosition(c)) {
-					creatures.remove(i);
-					i--;
+		if (!creatures.isEmpty()) {
+			Iterator<Creature> iter = creatures.iterator();
+			while (iter.hasNext()) {
+				c = iter.next();
+				if (c.getHealth() <= 0) {
+					ac.add(new CreatureGoldDrop(c));
+					player.increaseGold(c.getGoldDrop());
+					iter.remove();
 				}
+				else if (updatePosition(c))
+					iter.remove();
 			}
 		}
-		
-		if (creatures.isEmpty() && spawnQueue.isEmpty())
+		else if (spawnQueue.isEmpty())
 			rg.getWaveController().notifyWaveFinished();
+		
+		ac.update();
 	}
 	
 	// returns true when creature reaches goal
@@ -149,19 +151,19 @@ public class CreatureContainer
 	
 	public void draw(Graphics2D g)
 	{
-		for (int i = 0; i < creatures.size(); i++) {
-			Creature c = creatures.get(i);
-			c.draw(g);
-		}
+		for (int i = 0; i < creatures.size(); i++)
+			creatures.get(i).draw(g);
+		
+		ac.draw(g);
 	}
 	
-	public void setSpawnQueue(ArrayList<Creature> spawn)
+	public void setSpawnQueue(LinkedList<Creature> spawn)
 	{
 		spawnQueue = spawn;
 	}
 	
 	// no other class should modify size of creatures
-	public ArrayList<Creature> getCreatureList() {return creatures;}
+	public LinkedList<Creature> getCreatureList() {return creatures;}
 	
 	public LinkedList<Creature> getCreaturesNear(int x, int y, int range)
 	{

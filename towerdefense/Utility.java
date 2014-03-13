@@ -73,7 +73,7 @@ public final class Utility
 		BufferedImage resized = new BufferedImage(
 				(int)(img.getWidth() / scaleDiv),
 				(int)(img.getHeight() / scaleDiv),
-				BufferedImage.TYPE_INT_ARGB
+				getImageType(img)
 		);
 		Graphics2D g = resized.createGraphics();
 		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
@@ -114,6 +114,14 @@ public final class Utility
 				newImg.getHeight());
 		g.dispose();
 		return newImg;
+	}
+	
+	public static int getImageType(BufferedImage img)
+	{
+		if (img.getColorModel().hasAlpha())
+			return BufferedImage.TYPE_INT_ARGB;
+		else
+			return BufferedImage.TYPE_INT_RGB;
 	}
 	
 	public static double minimum(double a, double b)

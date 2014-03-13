@@ -1,6 +1,6 @@
 package towerdefense;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 import towerdefense.creatures.Creature;
 import towerdefense.creatures.CreatureType;
@@ -12,9 +12,9 @@ import towerdefense.creatures.CreatureType;
  */
 public class Wave
 {
-	private ArrayList<Creature> creatureList;
+	private LinkedList<Creature> creatureList;
 	
-	public Wave() {creatureList = new ArrayList<Creature>();}
+	public Wave() {creatureList = new LinkedList<Creature>();}
 	
 	public void addCreature(Creature c) {creatureList.add(c);}
 	
@@ -38,5 +38,5 @@ public class Wave
 	
 	public boolean isEmpty() {return creatureList.isEmpty();}
 	
-	public ArrayList<Creature> getCreatureList() {return creatureList;}
+	public LinkedList<Creature> getCreatureList() {return creatureList;}
 }
