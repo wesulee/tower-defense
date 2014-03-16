@@ -6,6 +6,7 @@ import java.util.List;
 
 import towerdefense.SpriteContainer;
 import towerdefense.creatures.Creature;
+import towerdefense.gamestates.RunningGame;
 import towerdefense.projectiles.Projectile;
 import towerdefense.projectiles.TestTowerProjectile;
 
@@ -18,7 +19,7 @@ public class TestTower extends Tower
 	private static int spriteY = 0;
 	private static TowerContainer tc;
 	
-	public TestTower(TowerContainer tc, int pos_x, int pos_y)
+	public TestTower(RunningGame rg, int pos_x, int pos_y)
 	{
 		super(tt.getDamage(), tt.getRange(), tt.getSpeed(), tt.getSize(),
 				tt.getCost(), pos_x, pos_y);
@@ -27,7 +28,7 @@ public class TestTower extends Tower
 			spriteX = sprite.getWidth() / 2;
 			spriteY = sprite.getHeight() / 2;
 		}
-		this.tc = tc;
+		this.tc = rg.getTowerContainer();
 	}
 
 	public void draw(Graphics2D g)

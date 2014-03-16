@@ -81,4 +81,9 @@ public class SpriteContainer
 		}
 		return images;
 	}
+	
+	public static BufferedImage loadProjectile(String name) {
+		BufferedImage img = loadResource("Projectiles/" + name);
+		return img;
+	}
 }

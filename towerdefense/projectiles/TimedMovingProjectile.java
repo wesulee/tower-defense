@@ -43,5 +43,7 @@ public abstract class TimedMovingProjectile
 		updateTickCounter++;
 		return false;
 	}
-
+	
+	protected double getX() {return x;}
+	protected double getY() {return y;}
 }

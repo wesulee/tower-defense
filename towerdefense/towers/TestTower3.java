@@ -1,6 +1,5 @@
 package towerdefense.towers;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -8,22 +7,20 @@ import java.util.List;
 import towerdefense.SpriteContainer;
 import towerdefense.creatures.Creature;
 import towerdefense.gamestates.RunningGame;
+import towerdefense.projectiles.Fireball;
 import towerdefense.projectiles.Projectile;
-import towerdefense.projectiles.RailBeam;
 
-public class TestTower2 extends Tower
+public class TestTower3 extends Tower
 {
-	private static final TowerType tt = TowerType.TestTower2Type;
+	private static final TowerType tt = TowerType.TestTower3Type;
 	private static BufferedImage sprite;
+	// drawing offsets
 	private static int spriteX = 0;
 	private static int spriteY = 0;
 	private static TowerContainer tc;
-	// projectile info
-	private final Color beamColor = Color.green;
-	private final int beamWidth = 6;
-	private final int beamDuration = 100;
+	private final RunningGame rg;
 	
-	public TestTower2(RunningGame rg, int pos_x, int pos_y)
+	public TestTower3(RunningGame rg, int pos_x, int pos_y)
 	{
 		super(tt.getDamage(), tt.getRange(), tt.getSpeed(), tt.getSize(),
 				tt.getCost(), pos_x, pos_y);
@@ -32,6 +29,7 @@ public class TestTower2 extends Tower
 			spriteX = sprite.getWidth() / 2;
 			spriteY = sprite.getHeight() / 2;
 		}
+		this.rg = rg;
 		this.tc = rg.getTowerContainer();
 	}
 
@@ -40,16 +38,16 @@ public class TestTower2 extends Tower
 		g.drawImage(sprite, getX() - spriteX, getY() - spriteY, null);
 	}
 	
-	public TowerType getType() {return tt;}
-	
 	public void attack(long time, List<Creature> eligibleTargets)
 	{
 		if (!eligibleTargets.isEmpty()) {
 			Creature c = eligibleTargets.get(0);
-			Projectile proj = new RailBeam(tc, this, c, beamDuration,
-					beamWidth, beamColor);
+			Projectile proj = new Fireball(this, (int)c.getPositionX(),
+					(int)c.getPositionY(), rg.getCreatureContainer());
 			tc.getProjectileContainer().add(proj);
 			setLastAttack(time);
 		}
 	}
+	
+	public TowerType getType() {return tt;}
 }

@@ -91,7 +91,7 @@ public class TowerContainer
 	// should call update between adding multiple towers
 	public void add(TowerType tt, int x, int y)
 	{
-		Tower t = TowerFactory.newTower(this, tt, x, y);
+		Tower t = TowerFactory.newTower(rg, tt, x, y);
 		newTowerToAdd = t;
 	}
 	

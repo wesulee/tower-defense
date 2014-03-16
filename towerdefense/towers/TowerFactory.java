@@ -1,18 +1,23 @@
 package towerdefense.towers;
 
+import towerdefense.gamestates.RunningGame;
+
 public class TowerFactory
 {	
 	private TowerFactory() {}
 	
-	public static Tower newTower(TowerContainer tc, TowerType tt, int x, int y)
+	public static Tower newTower(RunningGame rg, TowerType tt, int x, int y)
 	{
 		Tower nt;
 		switch (tt) {
 		case TestTowerType:
-			nt = new TestTower(tc, x, y);
+			nt = new TestTower(rg, x, y);
 			break;
 		case TestTower2Type:
-			nt = new TestTower2(tc, x, y);
+			nt = new TestTower2(rg, x, y);
+			break;
+		case TestTower3Type:
+			nt = new TestTower3(rg, x, y);
 			break;
 		default:
 			nt = null;
