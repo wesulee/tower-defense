@@ -3,19 +3,21 @@ package towerdefense;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.EnumMap;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
 import towerdefense.creatures.CreatureType;
 import towerdefense.towers.TowerType;
 
-public class SpriteContainer
+public class AssetLoader
 {
 	private static final boolean printFailure = true;
 	private static final boolean exitOnFailure = true;
 	private static EnumMap<TowerType, BufferedImage> tSpriteMap;
+	private final HashMap<String, BufferedImage> assets;
 	
-	public SpriteContainer()
+	public AssetLoader()
 	{
 		// initialize tower sprites
 		tSpriteMap = new EnumMap<TowerType, BufferedImage>(TowerType.class);
@@ -23,6 +25,7 @@ public class SpriteContainer
 			BufferedImage img = loadSprite(tt);
 			if (img != null) tSpriteMap.put(tt, img);
 		}
+		assets = new HashMap<String, BufferedImage>();
 	}
 	
 	public static BufferedImage getSprite(TowerType tt)
@@ -82,8 +85,26 @@ public class SpriteContainer
 		return images;
 	}
 	
-	public static BufferedImage loadProjectile(String name) {
+	public static BufferedImage loadProjectile(String name)
+	{
 		BufferedImage img = loadResource("Projectiles/" + name);
 		return img;
+	}
+	
+	public BufferedImage get(String path, boolean cache)
+	{
+		if (assets.containsKey(path))
+			return assets.get(path);
+		
+		BufferedImage img = loadResource(path);
+		if (cache)
+			assets.put(path, img);
+		
+		return img;
+	}
+	
+	public BufferedImage get(String path)
+	{
+		return get(path, false);
 	}
 }

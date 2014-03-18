@@ -5,8 +5,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import towerdefense.GamePanel;
-import towerdefense.SpriteContainer;
+import towerdefense.AssetLoader;
 import towerdefense.creatures.CreatureContainer;
 import towerdefense.gamestates.RunningGame;
 import towerdefense.projectiles.ProjectileContainer;
@@ -81,7 +80,7 @@ public class TowerContainer
 	public void setMenuSelectedTower(TowerType tt)
 	{
 		menuSelectedTower = tt;
-		menuSelectedTowerSprite = SpriteContainer.getSprite(tt);
+		menuSelectedTowerSprite = AssetLoader.getSprite(tt);
 	}
 	
 	public void clearMenuSelectedTower() {menuSelectedTower = null;}

@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-import towerdefense.SpriteContainer;
+import towerdefense.AssetLoader;
 import towerdefense.creatures.Creature;
 import towerdefense.gamestates.RunningGame;
 import towerdefense.projectiles.Fireball;
@@ -17,7 +17,7 @@ public class TestTower3 extends Tower
 	// drawing offsets
 	private static int spriteX = 0;
 	private static int spriteY = 0;
-	private static TowerContainer tc;
+	private final TowerContainer tc;
 	private final RunningGame rg;
 	
 	public TestTower3(RunningGame rg, int pos_x, int pos_y)
@@ -25,7 +25,7 @@ public class TestTower3 extends Tower
 		super(tt.getDamage(), tt.getRange(), tt.getSpeed(), tt.getSize(),
 				tt.getCost(), pos_x, pos_y);
 		if (sprite == null) {
-			sprite = SpriteContainer.getSprite(tt);
+			sprite = AssetLoader.getSprite(tt);
 			spriteX = sprite.getWidth() / 2;
 			spriteY = sprite.getHeight() / 2;
 		}
@@ -43,7 +43,7 @@ public class TestTower3 extends Tower
 		if (!eligibleTargets.isEmpty()) {
 			Creature c = eligibleTargets.get(0);
 			Projectile proj = new Fireball(this, (int)c.getPositionX(),
-					(int)c.getPositionY(), rg.getCreatureContainer());
+					(int)c.getPositionY(), rg);
 			tc.getProjectileContainer().add(proj);
 			setLastAttack(time);
 		}

@@ -6,7 +6,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 import towerdefense.GamePanel;
-import towerdefense.SpriteContainer;
+import towerdefense.AssetLoader;
 import towerdefense.Utility;
 import towerdefense.maps.MapType;
 import towerdefense.ui.Alignment;
@@ -38,7 +38,7 @@ public class MapSelector extends BasicGameState
 				Alignment.Center);		
 		
 		for (MapType mt : MapType.values()) {
-			BufferedImage img = SpriteContainer.loadMap(mt.getFileName());
+			BufferedImage img = AssetLoader.loadMap(mt.getFileName());
 			BufferedImage resized = Utility.scaledResize(img, 
 					iconRectangleX, iconRectangleY);
 			layout.add(resized, mt);

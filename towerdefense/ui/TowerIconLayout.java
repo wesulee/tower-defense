@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
 import towerdefense.Menu;
-import towerdefense.SpriteContainer;
+import towerdefense.AssetLoader;
 import towerdefense.Utility;
 import towerdefense.towers.TowerType;
 
@@ -38,7 +38,7 @@ public class TowerIconLayout
 				Alignment.Center, Alignment.Center);
 		
 		for (TowerType tt : TowerType.values()) {
-			BufferedImage img = SpriteContainer.getSpriteIcon(tt);
+			BufferedImage img = AssetLoader.getSpriteIcon(tt);
 			img = iconize(img);
 			if (!layout.add(img, tt)) {
 				System.out.println("Error creating menu layout.");
@@ -90,7 +90,10 @@ public class TowerIconLayout
 			return layout.insideIcon(x, y);
 		else {
 			int i = layout.getIndex(layout.getRow(y), layout.getColumn(x));
-			return (layout.validIndex(i) && enabled[i]);
+			if (layout.validIndex(i) && enabled[i])
+				return layout.getIcon(i).contains(x, y);
+			else
+				return false;
 		}
 	}
 	

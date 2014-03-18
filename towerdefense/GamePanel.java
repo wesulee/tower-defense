@@ -36,7 +36,6 @@ public class GamePanel extends JPanel implements Runnable
 	// redraw delay, nanoseconds
 	public static long period;
 		
-	private TowerDefense tdTop;
 	private Graphics2D dbg;
 	private Image dbImage = null;
 	private GameState gs;
@@ -68,8 +67,6 @@ public class GamePanel extends JPanel implements Runnable
 			}
 		});
 		
-		tdTop = td;
-		//gs = new RunningGame(this, "test_map.png");
 		gs = new MapSelector(this);
 	}
 	
@@ -173,11 +170,6 @@ public class GamePanel extends JPanel implements Runnable
 		mouseY = y;
 		gs.mouseMoved(x, y);
 	}
-
-	private void processKey(KeyEvent e)
-	{
-		gs.processKey(e);
-	}
 	
 	public void setFPS(int fps)
 	{
@@ -189,6 +181,8 @@ public class GamePanel extends JPanel implements Runnable
 	
 	public void setCurrentCursor(int cursor)
 	{
+		if (cursor == currentCursor)
+			return;
 		switch(cursor) {
 		case Cursor.HAND_CURSOR:
 			setCursor(handCursor);

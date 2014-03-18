@@ -7,7 +7,7 @@ import java.awt.event.KeyEvent;
 import towerdefense.GamePanel;
 import towerdefense.Menu;
 import towerdefense.Player;
-import towerdefense.SpriteContainer;
+import towerdefense.AssetLoader;
 import towerdefense.WaveController;
 import towerdefense.creatures.CreatureContainer;
 import towerdefense.maps.GameMap;
@@ -24,7 +24,7 @@ public class RunningGame extends BasicGameState
 	private final int TARGET_FPS = 60;
 	// MENU_X determines where menu is drawn
 	public static final int MENU_X = 800;
-	private final SpriteContainer sprites = new SpriteContainer();
+	private final AssetLoader assets;
 	private final GameMap map;
 	private final Player player;
 	private final Menu menu;
@@ -40,6 +40,10 @@ public class RunningGame extends BasicGameState
 		gp.setFPS(TARGET_FPS);
 		gp.setCurrentCursor(Cursor.DEFAULT_CURSOR);
 		
+		assets = new AssetLoader();
+		// preload necessary assets
+		assets.get("Projectiles/fireball_small.png", true);
+		assets.get("Projectiles/fireball_large.png", true);
 		map = new GameMap(mt);
 		player = new Player();
 		towers = new TowerContainer(this, MENU_X);
@@ -59,6 +63,7 @@ public class RunningGame extends BasicGameState
 	public TowerContainer getTowerContainer() {return towers;}
 	public CreatureContainer getCreatureContainer() {return creatures;}
 	public WaveController getWaveController() {return wc;}
+	public AssetLoader getAssetLoader() {return assets;}
 
 	public boolean update(long time)
 	{

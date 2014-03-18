@@ -12,6 +12,7 @@ public abstract class Creature
 	protected double pos_y;
 	protected Rectangle rect;
 	private int pathIndex = 0;
+	private double speedMultiplier = 1.0;
 	private final HealthBar healthBar;
 	
 	public Creature(int health, int speed, int goldDrop, double pos_x, 
@@ -40,6 +41,8 @@ public abstract class Creature
 	public Rectangle getRectangle() {return rect;}
 	public int getPathIndex() {return pathIndex;}
 	public void setPathIndex(int i) {pathIndex = i;}
+	public void setSpeedMultiplier(double v) {speedMultiplier = v;}
+	public double getSpeedMultiplier() {return speedMultiplier;}
 	
 	
 	public static Creature newCreature(CreatureType ct, double x, double y)

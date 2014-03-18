@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
 
-import towerdefense.SpriteContainer;
+import towerdefense.AssetLoader;
 
 /**
  * Map is used only to contain background sprite and appropriate information
@@ -27,7 +27,7 @@ public class GameMap
 	public GameMap(MapType mt)
 	{
 		String fileName = mt.getFileName();
-		backgroundSprite = SpriteContainer.loadMap(fileName);
+		backgroundSprite = AssetLoader.loadMap(fileName);
 		
 		MapParser parser = new MapParser(mt);
 		if (!parser.isValid())

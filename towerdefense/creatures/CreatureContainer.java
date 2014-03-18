@@ -7,6 +7,7 @@ import java.util.LinkedList;
 
 import towerdefense.Direction;
 import towerdefense.Player;
+import towerdefense.Utility;
 import towerdefense.animation.AnimationContainer;
 import towerdefense.animation.CreatureGoldDrop;
 import towerdefense.gamestates.RunningGame;
@@ -87,9 +88,10 @@ public class CreatureContainer
 		double creatureY = c.getPositionY();
 		double dirX = map.getPathX(pathIndex) - creatureX;
 		double dirY = map.getPathY(pathIndex) - creatureY;
-		double dirLen = Math.sqrt(dirX*dirX + dirY*dirY);
-		double dx = c.getSpeed() * dirX / dirLen * delayTime;
-		double dy = c.getSpeed() * dirY / dirLen * delayTime;
+		double dMult = c.getSpeed() * c.getSpeedMultiplier() * delayTime
+		               / Utility.length(dirX, dirY);
+		double dx = dirX * dMult;
+		double dy = dirY * dMult;
 		double newX = creatureX + dx;
 		double newY = creatureY + dy;
 		
@@ -128,9 +130,7 @@ public class CreatureContainer
 	private boolean closeEnough(double x1, double y1, double x2, double y2,
 			int maxDistance)
 	{
-		double dx = x2 - x1;
-		double dy = y2 - y1;
-		return (Math.sqrt(dx*dx + dy*dy) <= maxDistance);
+		return (Utility.length(x2 - x1, y2 - y1) <= maxDistance);
 	}
 	
 	private Direction getDirection(double x1, double x2, double y1, double y2)
@@ -179,9 +179,10 @@ public class CreatureContainer
 	
 	private double getDistanceFrom(int x, int y, Creature c)
 	{
-		int dx = x - (int)c.getPositionX();
-		int dy = y - (int)c.getPositionY();
-		return Math.sqrt(dx*dx + dy*dy);
+		return Utility.length(
+				x - (int)c.getPositionX(),
+				y - (int)c.getPositionY()
+		);
 	}
 	
 	private boolean intersectsOtherCreatures(Creature c, Rectangle cRect)
