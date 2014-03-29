@@ -18,6 +18,10 @@ public class ExitGame extends BasicGameState {
 			break;
 		case Default:
 			break;
+		case LoadingScreen:
+			break;
+		default:
+			break;
 		}
 		System.exit(0);
 	}

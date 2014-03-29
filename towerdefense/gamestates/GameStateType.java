@@ -2,7 +2,7 @@ package towerdefense.gamestates;
 
 public enum GameStateType
 {
-	Default, RunningGame, MapSelector;
+	Default, RunningGame, MapSelector, LoadingScreen;
 	
 	public static GameStateType getEnum(String str)
 	{

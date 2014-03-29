@@ -6,7 +6,6 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 import towerdefense.GamePanel;
-import towerdefense.AssetLoader;
 import towerdefense.Utility;
 import towerdefense.maps.MapType;
 import towerdefense.ui.Alignment;
@@ -29,7 +28,7 @@ public class MapSelector extends BasicGameState
 	private boolean mapSelected = false;
 	private MapType selectedMap;
 	
-	public MapSelector(GamePanel gp)
+	public MapSelector(GamePanel gp, LoadingScreen ls)
 	{
 		super(gp, 500, 5.0);
 		layout = new GenericIconGridLayout<MapType>(xPadding, iconYOffset,
@@ -38,7 +37,7 @@ public class MapSelector extends BasicGameState
 				Alignment.Center);		
 		
 		for (MapType mt : MapType.values()) {
-			BufferedImage img = AssetLoader.loadMap(mt.getFileName());
+			BufferedImage img = ls.getAssets().get(mt.getPath());
 			BufferedImage resized = Utility.scaledResize(img, 
 					iconRectangleX, iconRectangleY);
 			layout.add(resized, mt);
@@ -46,11 +45,13 @@ public class MapSelector extends BasicGameState
 		layout.finalize();
 	}
 
-	public boolean update(long time) {
+	public boolean update(long time)
+	{
 		return mapSelected;
 	}
 
-	public void draw(Graphics2D g) {
+	public void draw(Graphics2D g)
+	{
 		layout.draw(g);
 	}
 	

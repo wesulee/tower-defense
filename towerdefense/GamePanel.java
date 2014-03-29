@@ -3,6 +3,7 @@ package towerdefense;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -16,13 +17,14 @@ import javax.swing.JPanel;
 
 import towerdefense.gamestates.ExitGame;
 import towerdefense.gamestates.GameState;
-import towerdefense.gamestates.MapSelector;
+import towerdefense.gamestates.InitialLoadingScreen;
 
 public class GamePanel extends JPanel implements Runnable
 {
 	public static final int TARGET_FPS = 60;
 	public static final int WIDTH = 950;
-	public final static int HEIGHT = 600;
+	public static final int HEIGHT = 600;
+	public static final Font defaultFont = new Font("SansSerif", Font.BOLD, 12);
 	
 	private int mouseX = 0;
 	private int mouseY = 0;
@@ -66,8 +68,6 @@ public class GamePanel extends JPanel implements Runnable
 				gs.processKey(e);
 			}
 		});
-		
-		gs = new MapSelector(this);
 	}
 	
 	public void addNotify()
@@ -79,6 +79,19 @@ public class GamePanel extends JPanel implements Runnable
 	private void startGame()
 	{
 		if (animator == null || !running) {
+			if (dbImage == null) {
+				dbImage = createImage(WIDTH, HEIGHT);
+				if (dbImage == null) {
+					System.out.println("dbImage is null");
+					return;
+				}
+				else {
+					dbg = (Graphics2D) dbImage.getGraphics();
+					dbg.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+							RenderingHints.VALUE_ANTIALIAS_ON);
+				}
+			}
+			
 			animator = new Thread(this);
 			animator.start();
 		}
@@ -95,6 +108,8 @@ public class GamePanel extends JPanel implements Runnable
 	public void run()
 	{
 		long beforeTime, afterTime, timeDiff, sleepTime;
+		
+		gs = new InitialLoadingScreen(this);
 		
 		beforeTime = System.nanoTime();
 		
@@ -130,19 +145,6 @@ public class GamePanel extends JPanel implements Runnable
 	
 	private void gameRender()
 	{
-		if (dbImage == null) {
-			dbImage = createImage(WIDTH, HEIGHT);
-			if (dbImage == null) {
-				System.out.println("dbImage is null");
-				return;
-			}
-			else {
-				dbg = (Graphics2D) dbImage.getGraphics();
-				dbg.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-						RenderingHints.VALUE_ANTIALIAS_ON);
-			}
-		}
-		
 		// draw background
 		dbg.setColor(Color.white);
 		dbg.fillRect(0, 0, WIDTH, HEIGHT);

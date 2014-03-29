@@ -51,7 +51,7 @@ public class AssetLoader
 	}
 	
 	// path should exclude "Resources/"
-	private static BufferedImage loadResource(String path)
+	public static BufferedImage loadResource(String path)
 	{
 		path = "Resources/" + path;
 		BufferedImage img = null;

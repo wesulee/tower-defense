@@ -10,12 +10,14 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.LinkedList;
 
+import towerdefense.GamePanel;
+
 /**
  * Draw text inside a rectangle.
  */
 public class TextBox
 {
-	private Font font = new Font("SansSerif", Font.BOLD, 12);
+	private Font font = GamePanel.defaultFont;
 	private final float drawX;
 	private final float drawWidth;
 	private final float drawYStart;

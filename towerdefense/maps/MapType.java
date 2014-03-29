@@ -12,4 +12,5 @@ public enum MapType
 	private final String name;
 	
 	public String getFileName() {return name;}
+	public String getPath() {return "Maps/"+name;}
 }
