@@ -33,17 +33,15 @@ public class RunningGame extends BasicGameState
 	private final WaveController wc;
 	private Tower selectedTower = null;
 	
-	public RunningGame(GamePanel gp, MapType mt)
+	public RunningGame(GamePanel gp, MapType mt, AssetLoader assets)
 	{
 		super(gp, 500, 5.0);
 		this.gp = gp;
 		gp.setFPS(TARGET_FPS);
 		gp.setCurrentCursor(Cursor.DEFAULT_CURSOR);
 		
-		assets = new AssetLoader();
-		// preload necessary assets
-		assets.get("Projectiles/fireball_small.png", true);
-		assets.get("Projectiles/fireball_large.png", true);
+		this.assets = assets;
+		assets.unloadMapsExcept(mt);
 		map = new GameMap(mt);
 		player = new Player();
 		towers = new TowerContainer(this, MENU_X);

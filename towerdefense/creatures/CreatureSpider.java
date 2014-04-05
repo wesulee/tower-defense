@@ -9,12 +9,12 @@ import towerdefense.AssetLoader;
 public class CreatureSpider extends Creature
 {
 	private static final CreatureType ct = CreatureType.Spider;
-	private static final BufferedImage sprites[] = 
+	private static final BufferedImage[] sprites = 
 			AssetLoader.loadCreature(ct);
 	private Direction spriteDir = Direction.N;	//default value
-	private static final int spriteOffsetsX[] =
+	private static final int[] spriteOffsetsX =
 			getSpriteOffsetsX(sprites);
-	private static final int spriteOffsetsY[] =
+	private static final int[] spriteOffsetsY =
 			getSpriteOffsetsY(sprites);
 	
 	public CreatureSpider(double pos_x, double pos_y)
@@ -47,7 +47,7 @@ public class CreatureSpider extends Creature
 	
 	private static int[] getSpriteOffsetsX(BufferedImage sprites[])
 	{
-		int offsets[] = new int[sprites.length];
+		int[] offsets = new int[sprites.length];
 		for (int i = 0; i < sprites.length; i++)
 			offsets[i] = sprites[i].getWidth() / 2;
 		return offsets;
@@ -55,7 +55,7 @@ public class CreatureSpider extends Creature
 	
 	private static int[] getSpriteOffsetsY(BufferedImage sprites[])
 	{
-		int offsets[] = new int[sprites.length];
+		int[] offsets = new int[sprites.length];
 		for (int i = 0; i < sprites.length; i++)
 			offsets[i] = sprites[i].getHeight() / 2;
 		return offsets;

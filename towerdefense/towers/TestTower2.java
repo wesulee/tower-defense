@@ -1,47 +1,26 @@
 package towerdefense.towers;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.util.List;
 
-import towerdefense.AssetLoader;
 import towerdefense.creatures.Creature;
 import towerdefense.gamestates.RunningGame;
 import towerdefense.projectiles.Projectile;
 import towerdefense.projectiles.RailBeam;
 
-public class TestTower2 extends Tower
+public class TestTower2 extends GameTower
 {
 	private static final TowerType tt = TowerType.TestTower2Type;
-	private static BufferedImage sprite;
-	private static int spriteX = 0;
-	private static int spriteY = 0;
-	private final TowerContainer tc;
 	// projectile info
 	private final Color beamColor = Color.green;
 	private final int beamWidth = 6;
 	private final int beamDuration = 100;
 	
-	public TestTower2(RunningGame rg, int pos_x, int pos_y)
+	public TestTower2(RunningGame rg, int posX, int posY)
 	{
-		super(tt.getDamage(), tt.getRange(), tt.getSpeed(), tt.getSize(),
-				tt.getCost(), pos_x, pos_y);
-		if (sprite == null) {
-			sprite = AssetLoader.getSprite(tt);
-			spriteX = sprite.getWidth() / 2;
-			spriteY = sprite.getHeight() / 2;
-		}
-		this.tc = rg.getTowerContainer();
+		super(rg, tt, posX, posY);
 	}
-
-	public void draw(Graphics2D g)
-	{
-		g.drawImage(sprite, getX() - spriteX, getY() - spriteY, null);
-	}
-	
-	public TowerType getType() {return tt;}
-	
+		
 	public void attack(long time, List<Creature> eligibleTargets)
 	{
 		if (!eligibleTargets.isEmpty()) {

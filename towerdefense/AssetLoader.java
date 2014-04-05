@@ -8,13 +8,14 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 
 import towerdefense.creatures.CreatureType;
+import towerdefense.maps.MapType;
 import towerdefense.towers.TowerType;
 
 public class AssetLoader
 {
 	private static final boolean printFailure = true;
 	private static final boolean exitOnFailure = true;
-	private static EnumMap<TowerType, BufferedImage> tSpriteMap;
+	private final EnumMap<TowerType, BufferedImage> tSpriteMap;
 	private final HashMap<String, BufferedImage> assets;
 	
 	public AssetLoader()
@@ -28,7 +29,7 @@ public class AssetLoader
 		assets = new HashMap<String, BufferedImage>();
 	}
 	
-	public static BufferedImage getSprite(TowerType tt)
+	public BufferedImage getSprite(TowerType tt)
 	{
 		return tSpriteMap.get(tt);
 	}
@@ -106,5 +107,12 @@ public class AssetLoader
 	public BufferedImage get(String path)
 	{
 		return get(path, false);
+	}
+	
+	public void unloadMapsExcept(MapType mt)
+	{
+		for (MapType m : MapType.values())
+			if (m != mt && assets.containsKey(m.getPath()))
+				assets.remove(m.getPath());
 	}
 }

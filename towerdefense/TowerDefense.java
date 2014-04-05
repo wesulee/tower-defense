@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 public class TowerDefense extends JFrame
 {
 	private GamePanel gp;
+	public static final boolean DEBUG = false;
 
 	public TowerDefense()
 	{
@@ -27,8 +28,6 @@ public class TowerDefense extends JFrame
 		setResizable(false);
 		setVisible(true);
 		pack();
-		
-		
 	}
 
 	public static void main(String[] args)

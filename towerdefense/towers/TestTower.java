@@ -1,42 +1,20 @@
 package towerdefense.towers;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.util.List;
 
-import towerdefense.AssetLoader;
 import towerdefense.creatures.Creature;
 import towerdefense.gamestates.RunningGame;
 import towerdefense.projectiles.Projectile;
 import towerdefense.projectiles.TestTowerProjectile;
 
-public class TestTower extends Tower
+public class TestTower extends GameTower
 {
 	private static final TowerType tt = TowerType.TestTowerType;
-	private static BufferedImage sprite;
-	// drawing offsets
-	private static int spriteX = 0;
-	private static int spriteY = 0;
-	private final TowerContainer tc;
 	
-	public TestTower(RunningGame rg, int pos_x, int pos_y)
+	public TestTower(RunningGame rg, int posX, int posY)
 	{
-		super(tt.getDamage(), tt.getRange(), tt.getSpeed(), tt.getSize(),
-				tt.getCost(), pos_x, pos_y);
-		if (sprite == null) {
-			sprite = AssetLoader.getSprite(tt);
-			spriteX = sprite.getWidth() / 2;
-			spriteY = sprite.getHeight() / 2;
-		}
-		this.tc = rg.getTowerContainer();
+		super(rg, tt, posX, posY);
 	}
-
-	public void draw(Graphics2D g)
-	{
-		g.drawImage(sprite, getX() - spriteX, getY() - spriteY, null);
-	}
-	
-	public TowerType getType() {return tt;}
 	
 	// assumes tower is not on attack cooldown and
 	// eligible targets are all in range

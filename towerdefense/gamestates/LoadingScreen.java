@@ -6,8 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.util.HashMap;
+import java.util.LinkedList;
 
 import towerdefense.AssetLoader;
 import towerdefense.GamePanel;
@@ -21,16 +20,18 @@ public abstract class LoadingScreen implements GameState, Runnable
 	private static final Color bgColor = Color.black;
 	private static final Color fontColor = Color.white;
 	
-	private final HashMap<String, BufferedImage> assets;
+	private final GamePanel gp;
+	private final AssetLoader assets;
 	private final int drawStringX;
 	private final int drawStringY;
-	private final String[] files;
+	private final LinkedList<String> files;
 	private int strIndex = 0;
 	private int updateCount = 0;
 	private boolean finishedLoading = false;
 	
-	public LoadingScreen(GamePanel gp, String[] files)
+	public LoadingScreen(GamePanel gp, LinkedList<String> files)
 	{
+		this.gp = gp;
 		gp.setFPS(10);
 		Graphics2D g = (Graphics2D) gp.getGraphics();
 		FontMetrics fm = g.getFontMetrics(GamePanel.defaultFont);
@@ -39,7 +40,7 @@ public abstract class LoadingScreen implements GameState, Runnable
 		drawStringY = (GamePanel.HEIGHT - (int)rect.getHeight()) / 2;
 		g.dispose();
 		
-		assets = new HashMap<String, BufferedImage>();
+		assets = new AssetLoader();
 		this.files= files;
 		
 		Thread t = new Thread(this);
@@ -72,11 +73,8 @@ public abstract class LoadingScreen implements GameState, Runnable
 		long duration = 2000;
 		long time = System.currentTimeMillis();
 		
-		BufferedImage tmp;
-		for (String path : files) {
-			tmp = AssetLoader.loadResource(path);
-			assets.put(path, tmp);
-		}
+		for (String path : files)
+			assets.get(path, true);
 		
 		long diff = System.currentTimeMillis() - time;
 		if (diff < duration) {
@@ -88,13 +86,13 @@ public abstract class LoadingScreen implements GameState, Runnable
 		finishedLoading = true;
 	}
 	
-	public HashMap<String, BufferedImage> getAssets() {return assets;}
+	public AssetLoader getAssets() {return assets;}
+	public GameStateType getType() {return GameStateType.LoadingScreen;}
+	protected GamePanel getGamePanel() {return gp;}
 	
 	// ignore all input
 	public void mouseMoved(int x, int y) {}
 	public void processKey(KeyEvent e) {}
 	public void mousePressed(MouseEvent e) {}
 	public void mouseReleased(MouseEvent e) {}
-
-	public GameStateType getType() {return GameStateType.LoadingScreen;}
 }

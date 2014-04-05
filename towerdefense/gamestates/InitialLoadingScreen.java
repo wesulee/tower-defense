@@ -1,32 +1,32 @@
 package towerdefense.gamestates;
 
+import java.util.LinkedList;
+
 import towerdefense.GamePanel;
 import towerdefense.maps.MapType;
 
 public class InitialLoadingScreen extends LoadingScreen
-{
-	private final GamePanel gp;
-	
+{	
 	public InitialLoadingScreen(GamePanel gp)
 	{
 		super(gp, getPaths());
-		this.gp = gp;
 	}
 	
-	public static String[] getPaths()
+	public static LinkedList<String> getPaths()
 	{
-		int size = 0;
-		size += MapType.values().length;
-		int i = 0;
-		String[] paths = new String[size];
+		LinkedList<String> paths = new LinkedList<String>();
+		
 		for (MapType mt : MapType.values())
-			paths[i++] = mt.getPath();
+			paths.add(mt.getPath());
+		
+		paths.add("Projectiles/fireball_small.png");
+		paths.add("Projectiles/fireball_large.png");
 		
 		return paths;
 	}
 	
 	public GameState transition()
 	{
-		return new MapSelector(gp, this);
+		return new MapSelector(getGamePanel(), this);
 	}
 }

@@ -15,6 +15,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
 
+import towerdefense.gamestates.DummyGameState;
 import towerdefense.gamestates.ExitGame;
 import towerdefense.gamestates.GameState;
 import towerdefense.gamestates.InitialLoadingScreen;
@@ -42,6 +43,8 @@ public class GamePanel extends JPanel implements Runnable
 	private Image dbImage = null;
 	private GameState gs;
 	
+	private long frameMiss = 0;
+	
 	public GamePanel(TowerDefense td)
 	{
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -68,6 +71,8 @@ public class GamePanel extends JPanel implements Runnable
 				gs.processKey(e);
 			}
 		});
+		
+		gs = new DummyGameState();
 	}
 	
 	public void addNotify()
@@ -123,6 +128,8 @@ public class GamePanel extends JPanel implements Runnable
 			timeDiff = afterTime - beforeTime;
 			if (period - timeDiff < 0) {
 				sleepTime = 5000000L;	// 5 ms
+				if (TowerDefense.DEBUG)
+					frameMiss++;
 			}
 			else {
 				sleepTime = period - timeDiff;
@@ -139,7 +146,7 @@ public class GamePanel extends JPanel implements Runnable
 	
 	private void gameUpdate()
 	{
-		if(gs.update(System.nanoTime()))
+		if (gs.update(System.nanoTime()))
 			gs = gs.transition();
 	}
 	
@@ -150,6 +157,10 @@ public class GamePanel extends JPanel implements Runnable
 		dbg.fillRect(0, 0, WIDTH, HEIGHT);
 		
 		gs.draw(dbg);
+		
+		if (TowerDefense.DEBUG) {
+			dbg.drawString("" + frameMiss, 5, 10);
+		}
 	}
 	
 	private void paintScreen()
