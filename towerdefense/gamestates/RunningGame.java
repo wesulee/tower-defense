@@ -8,6 +8,7 @@ import towerdefense.GamePanel;
 import towerdefense.Menu;
 import towerdefense.Player;
 import towerdefense.AssetLoader;
+import towerdefense.TowerDefense;
 import towerdefense.WaveController;
 import towerdefense.creatures.CreatureContainer;
 import towerdefense.maps.GameMap;
@@ -31,6 +32,7 @@ public class RunningGame extends BasicGameState
 	private final TowerContainer towers;
 	private final CreatureContainer creatures;
 	private final WaveController wc;
+	// already existing tower selected
 	private Tower selectedTower = null;
 	
 	public RunningGame(GamePanel gp, MapType mt, AssetLoader assets)
@@ -47,7 +49,7 @@ public class RunningGame extends BasicGameState
 		towers = new TowerContainer(this, MENU_X);
 		creatures = new CreatureContainer(this);
 		wc = new WaveController(this);
-		menu = new Menu(MENU_X, this, player);
+		menu = new Menu(this, player);
 		player.setMenu(menu);
 		menu.notifyGoldChange();
 		
@@ -63,7 +65,7 @@ public class RunningGame extends BasicGameState
 	public WaveController getWaveController() {return wc;}
 	public AssetLoader getAssetLoader() {return assets;}
 
-	public boolean update(long time)
+	public boolean update(final long time)
 	{
 		updateCount++;
 		towers.update(time, creatures);
@@ -72,26 +74,26 @@ public class RunningGame extends BasicGameState
 		return false;
 	}
 
-	public void draw(Graphics2D g)
+	public void draw(final Graphics2D g)
 	{
 		// Drawing order: background, towers, creatures, projectiles, menu
 		map.draw(g);
 		
 		towers.draw(g);
-		if (selectedTower != null) {
+		if (selectedTower != null)
 			selectedTower.drawRangeCircle(g);
-		}
 		
 		creatures.draw(g);
 		
 		menu.draw(g);
 	}
 	
-	public void mouseClicked(int x, int y)
+	public void mouseClicked(final int x, final int y)
 	{
-		System.out.println("Mouse clicked at ("+x+", "+y+")");
+		if (TowerDefense.DEBUG)
+			System.out.println("Mouse clicked at (" + x + ", " + y + ")");
 		if (x >= MENU_X) {
-			menu.notifyMouseClicked(x, y);
+			menu.mouseClicked(x, y);
 			return;
 		}
 		
@@ -112,17 +114,17 @@ public class RunningGame extends BasicGameState
 		}
 	}
 	
-	public void mouseMoved(int x, int y)
+	public void mouseMoved(final int x, final int y)
 	{
 		if (x >= MENU_X) {
-			menu.notifyMouseMoved(x, y);
+			menu.mouseMoved(x, y);
 		}
 		else {
-			gp.setCurrentCursor(Cursor.DEFAULT_CURSOR);
+			//gp.setCurrentCursor(Cursor.DEFAULT_CURSOR);
 		}
 	}
 	
-	public void processKey(KeyEvent e)
+	public void processKey(final KeyEvent e)
 	{
 		int code = (int)e.getKeyChar();
 		// Escape key

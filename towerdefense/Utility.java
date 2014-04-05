@@ -133,4 +133,9 @@ public final class Utility
 	{
 		return a > b ? b : a;
 	}
+	
+	public static int minimumZero(int a)
+	{
+		return a > 0 ? a : 0;
+	}
 }

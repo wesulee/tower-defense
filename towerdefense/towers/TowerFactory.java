@@ -2,7 +2,7 @@ package towerdefense.towers;
 
 import towerdefense.gamestates.RunningGame;
 
-public class TowerFactory
+public final class TowerFactory
 {	
 	private TowerFactory() {}
 	
@@ -18,6 +18,9 @@ public class TowerFactory
 			break;
 		case TestTower3Type:
 			nt = new TestTower3(rg, x, y);
+			break;
+		case FrostTowerType:
+			nt = new FrostTower(rg, x, y);
 			break;
 		default:
 			nt = null;

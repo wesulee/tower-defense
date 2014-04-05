@@ -20,7 +20,7 @@ import towerdefense.gamestates.ExitGame;
 import towerdefense.gamestates.GameState;
 import towerdefense.gamestates.InitialLoadingScreen;
 
-public class GamePanel extends JPanel implements Runnable
+public final class GamePanel extends JPanel implements Runnable
 {
 	public static final int TARGET_FPS = 60;
 	public static final int WIDTH = 950;
@@ -42,7 +42,7 @@ public class GamePanel extends JPanel implements Runnable
 	private Graphics2D dbg;
 	private Image dbImage = null;
 	private GameState gs;
-	
+	// number of game updates that took longer than period
 	private long frameMiss = 0;
 	
 	public GamePanel(TowerDefense td)
@@ -192,7 +192,7 @@ public class GamePanel extends JPanel implements Runnable
 	public long getPeriod() {return period;}
 	public int getCurrentCursor() {return currentCursor;}
 	
-	public void setCurrentCursor(int cursor)
+	public void setCurrentCursor(final int cursor)
 	{
 		if (cursor == currentCursor)
 			return;

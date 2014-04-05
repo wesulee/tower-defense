@@ -15,11 +15,11 @@ import towerdefense.ui.TowerIconLayout;
 /**
  * Menu layout in vertical order: wave, icons, description, health/gold
  */
-public class Menu 
+public final class Menu 
 {
-	public final int WIDTH;
-	public final int HEIGHT;
-	public final int X_START;
+	public final int WIDTH = GamePanel.WIDTH - RunningGame.MENU_X;
+	public final int HEIGHT = GamePanel.HEIGHT;
+	public final int X_START = RunningGame.MENU_X;
 	public final Color BG_COLOR = Color.gray;
 	// distance from top of where icons will begin
 	public final int ICON_Y_START = 50;
@@ -34,43 +34,38 @@ public class Menu
 	public final Color ICON_BG_COLOR = Color.white;
 	public final Color ICON_OUTLINE_COLOR = Color.black;
 	// positions of rectangle that description will be drawn
-	private final int DESC_X1;
-	private final int DESC_X2;
-	private final int DESC_Y1;
+	private final int DESC_PADDING = 5;
+	private final int DESC_X1 = X_START + DESC_PADDING;
+	private final int DESC_X2 = X_START + WIDTH - DESC_PADDING;
+	private final int DESC_Y1 = 200;
 	
 	private final RunningGame rg;
 	private final Player player;
-	private Font font;
+	private Font font = GamePanel.defaultFont;
 	// type that mouse clicked on, activated only if sufficient funds
 	private TowerType typeSelected = null;
 	private final EnumMap<TowerType, TextBox> tDescMap;
 	private TextBox descToDraw = null;
 	private final TowerIconLayout iconLayout;
 	
-	public Menu(int x_offset, RunningGame rg, Player player)
+	public Menu(RunningGame rg, Player player)
 	{
-		this.WIDTH = GamePanel.WIDTH - x_offset;
-		this.HEIGHT = GamePanel.HEIGHT;
-		this.X_START = x_offset;
 		this.rg = rg;
 		this.player = player;
-		this.font = new Font("SansSerif", Font.BOLD, 12);
 		this.tDescMap = new EnumMap<TowerType, TextBox>(TowerType.class);
-		this.DESC_X1 = X_START + 5;
-		this.DESC_X2 = X_START + WIDTH - 10;
-		this.DESC_Y1 = 200;
+		this.iconLayout = new TowerIconLayout(this);
 		
-		iconLayout = new TowerIconLayout(this);
+		Graphics2D g = (Graphics2D)rg.getGamePanel().getGraphics();
 		
 		for (TowerType tt : TowerType.values())
 			tDescMap.put(tt, new TextBox(
-					tt.getDescription(), DESC_X1, DESC_X2, DESC_Y1));
+					tt.getDescription(), DESC_X1, DESC_X2, DESC_Y1, g));
+		
+		g.dispose();
 	}
 	
-	public void draw(Graphics2D g)
-	{
-		int gold = player.getGold();
-		
+	public void draw(final Graphics2D g)
+	{		
 		g.setColor(BG_COLOR);
 		g.fillRect(X_START, 0, WIDTH, HEIGHT);
 				
@@ -83,7 +78,7 @@ public class Menu
 		// display health and gold
 		g.drawString("Health: " + player.getHealth(),
 				X_START + 15, HEIGHT - 45);
-		g.drawString("Gold: " + gold, X_START + 15, HEIGHT - 25);
+		g.drawString("Gold: " + player.getGold(), X_START + 15, HEIGHT - 25);
 		
 		iconLayout.draw(g);
 		
@@ -99,7 +94,7 @@ public class Menu
 		iconLayout.recalcAvailable(player.getGold());
 	}
 	
-	public void notifyMouseMoved(int x, int y)
+	public void mouseMoved(final int x, final int y)
 	{
 		if (iconLayout.insideIcon(x, y)) {
 			rg.setCurrentCursor(Cursor.HAND_CURSOR);
@@ -109,7 +104,7 @@ public class Menu
 		}
 	}
 	
-	public void notifyMouseClicked(int x, int y)
+	public void mouseClicked(final int x, final int y)
 	{
 		GenericIcon<TowerType> icon = iconLayout.getIcon(x, y);
 		if (icon == null) {

@@ -29,32 +29,36 @@ public class TestTowerProjectile extends TimedMovingProjectile implements Projec
 				(int)target.getPositionY(), milliseconds);
 		this.target = target;
 		this.at = new AffineTransform();
+		this.beam = new Path2D.Double();
 		
 		// create beam rectangle and rotate it
-		Rectangle beamRect = new Rectangle(sourceX - beamWidth / 2,
+		final Rectangle beamRect = new Rectangle(sourceX - beamWidth / 2,
 				sourceY - beamHeight / 2, beamWidth, beamHeight);
-		double angle = Math.atan(super.dy / super.dx);
-		beam = new Path2D.Double();
-		beam.append(beamRect, false);
+		double angle = Math.atan(dy / dx);
 		AffineTransform t = new AffineTransform();
+		
+		beam.append(beamRect, false);
 		t.rotate(angle, beamRect.x + beamRect.width / 2,
 				beamRect.y + beamRect.height / 2);
 		beam.transform(t);
 	}
 
-	public void draw(Graphics2D g) {
-		Color oldColor = g.getColor();
+	public void draw(Graphics2D g)
+	{
+		final Color oldColor = g.getColor();
+		
 		g.setColor(beamColor);
 		g.fill(beam);
+		
 		g.setColor(oldColor);
 	}
 	
 	public boolean update()
 	{
-		boolean retBool = super.update();
+		final boolean retBool = super.update();
 		
 		// update position of drawn beam
-		at.setToTranslation(super.dx, super.dy);
+		at.setToTranslation(dx, dy);
 		beam.transform(at);
 		
 		if (retBool)

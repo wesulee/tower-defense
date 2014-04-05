@@ -27,46 +27,40 @@ public class TextBox
 	private int paragraphEnd;
 	private LinkedList<TextLayout> layouts;
 	
-	public TextBox(String text, int x1, int x2, int y)
+	public TextBox(String text, int x1, int x2, int y, Graphics2D g)
 	{
 		if (x2 <= x1)
 			throw new IllegalArgumentException("x2 <= x1");
 		this.description = new AttributedString(text);
-		description.addAttribute(TextAttribute.FONT, font);
+		this.description.addAttribute(TextAttribute.FONT, font);
 		this.drawX = (float)x1;
 		this.drawWidth = (float)(x2 - x1);
 		this.drawYStart = (float)y;
+		
+		// initialize layouts
 		layouts = new LinkedList<TextLayout>();
+		AttributedCharacterIterator paragraph = 
+				description.getIterator();
+		paragraphStart = paragraph.getBeginIndex();
+		paragraphEnd = paragraph.getEndIndex();
+		FontRenderContext frc = g.getFontRenderContext();
+		lineMeasurer = new LineBreakMeasurer(paragraph, frc);
+		lineMeasurer.setPosition(paragraphStart);
+		while (lineMeasurer.getPosition() < paragraphEnd) {
+			TextLayout layout = lineMeasurer.nextLayout(drawWidth);
+			layouts.add(layout);
+		}
 	}
 	
 	public void draw(Graphics2D g)
 	{
 		float drawY = drawYStart;
-		
-		if (lineMeasurer == null) {
-			AttributedCharacterIterator paragraph = 
-					description.getIterator();
-			paragraphStart = paragraph.getBeginIndex();
-			paragraphEnd = paragraph.getEndIndex();
-			FontRenderContext frc = g.getFontRenderContext();
-			lineMeasurer = new LineBreakMeasurer(paragraph, frc);
-			
-			lineMeasurer.setPosition(paragraphStart);
-			while (lineMeasurer.getPosition() < paragraphEnd) {
-				TextLayout layout = lineMeasurer.nextLayout(drawWidth);
-				layouts.add(layout);
-				drawY += layout.getAscent();
-				layout.draw(g, drawX, drawY);
-				drawY += layout.getDescent() + layout.getLeading();
-			}
-		}
-		else {
-			lineMeasurer.setPosition(paragraphStart);
-			for (TextLayout layout : layouts) {
-				drawY += layout.getAscent();
-				layout.draw(g, drawX, drawY);
-				drawY += layout.getDescent() + layout.getLeading();
-			}
+
+		lineMeasurer.setPosition(paragraphStart);
+		for (TextLayout layout : layouts) {
+			drawY += layout.getAscent();
+			layout.draw(g, drawX, drawY);
+			drawY += layout.getDescent() + layout.getLeading();
 		}
 	}
 }

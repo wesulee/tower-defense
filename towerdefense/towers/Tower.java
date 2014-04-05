@@ -79,9 +79,9 @@ public abstract class Tower
 	
 	private static void drawRangeCircleAt(Graphics2D g, int x, int y, int range)
 	{
-		Color oldColor = g.getColor();
-		Composite oldComposite = g.getComposite();
-		Stroke oldStroke = g.getStroke();
+		final Color oldColor = g.getColor();
+		final Composite oldComposite = g.getComposite();
+		final Stroke oldStroke = g.getStroke();
 		
 		g.setColor(rangeCircleColor);
 		g.setComposite(AlphaComposite.getInstance(

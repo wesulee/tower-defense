@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 
 import towerdefense.Direction;
 import towerdefense.AssetLoader;
+import towerdefense.TowerDefense;
 
 public class CreatureSpider extends Creature
 {
@@ -31,8 +32,11 @@ public class CreatureSpider extends Creature
 				(int)getPositionX() - spriteOffsetsX[spriteDir.toIndex()],
 				(int)getPositionY() - spriteOffsetsY[spriteDir.toIndex()],
 				null);
-		g.draw(super.rect);
 		drawHealthBar(g);
+		
+		if (TowerDefense.DEBUG)
+			g.draw(super.rect);
+		
 	}
 	
 	public void setPosition(double x, double y)

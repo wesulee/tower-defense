@@ -76,8 +76,8 @@ public class RailBeam implements Projectile
 	
 	public void draw(Graphics2D g)
 	{
-		Color oldColor = g.getColor();
-		Stroke oldStroke = g.getStroke();
+		final Color oldColor = g.getColor();
+		final Stroke oldStroke = g.getStroke();
 		
 		g.setColor(beamColor);
 		g.setStroke(beamStroke);

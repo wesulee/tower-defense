@@ -57,7 +57,7 @@ public abstract class LoadingScreen implements GameState, Runnable
 
 	public void draw(Graphics2D g)
 	{
-		Color oldColor = g.getColor();
+		final Color oldColor = g.getColor();
 		
 		g.setColor(bgColor);
 		g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);

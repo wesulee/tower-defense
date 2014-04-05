@@ -3,6 +3,8 @@ package towerdefense.creatures;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import towerdefense.Utility;
+
 public class HealthBar
 {
 	private final Creature creature;
@@ -10,8 +12,8 @@ public class HealthBar
 	private Color currentColor;
 	private int drawWidth;
 	
-	private static final int HEIGHT = 5;
-	private static final int WIDTH = 40;
+	private static final int HEIGHT = 4;
+	private static final int WIDTH = 38;
 	private static final Color colors[] = {
 		new Color(138, 23, 23),		// 0-9%
 		new Color(173, 26, 26),		// 10-19%
@@ -39,17 +41,19 @@ public class HealthBar
 	// creature's health has changed
 	public void update()
 	{
-		int percent = minZero(creature.getHealth()) * 100 / maxHealth;
+		int percent = Utility.minimumZero(creature.getHealth()) *
+				100 / maxHealth;
 		drawWidth = (int)((float)percent * WIDTH / 100);
 		if (creature.getHealth() != maxHealth)
 			currentColor = colors[percent / 10];
 		else
-			currentColor = colors[9];
+			currentColor = colors[colors.length-1];
 	}
 	
 	public void draw(Graphics2D g)
 	{
-		Color oldColor = g.getColor();
+		final Color oldColor = g.getColor();
+		
 		g.setColor(Color.black);
 		// black background, 1 px stroke
 		g.fillRect((int)creature.getPositionX() - xOffset - 1,
@@ -59,8 +63,7 @@ public class HealthBar
 		g.fillRect((int)creature.getPositionX() - xOffset,
 				(int)creature.getPositionY()- yOffset,
 				drawWidth, HEIGHT);
+		
 		g.setColor(oldColor);
 	}
-	
-	private int minZero(int a) {return a >= 0 ? a : 0;}
 }

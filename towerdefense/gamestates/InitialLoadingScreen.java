@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import towerdefense.GamePanel;
 import towerdefense.maps.MapType;
+import towerdefense.projectiles.Fireball;
 
 public class InitialLoadingScreen extends LoadingScreen
 {	
@@ -19,8 +20,9 @@ public class InitialLoadingScreen extends LoadingScreen
 		for (MapType mt : MapType.values())
 			paths.add(mt.getPath());
 		
-		paths.add("Projectiles/fireball_small.png");
-		paths.add("Projectiles/fireball_large.png");
+		paths.add(Fireball.path1);
+		paths.add(Fireball.path2);
+		paths.add("Projectiles/frost.png");
 		
 		return paths;
 	}

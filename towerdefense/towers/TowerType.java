@@ -9,8 +9,10 @@ public enum TowerType
 			10.0, 200, 2.0, 25, 1, 50, 50), 
 	TestTower2Type("Test Tower 2", "test_tower2.png", "None",
 			10.0, 100, 2.0, 25, 10, 50, 50),
-	TestTower3Type("Test Tower 3", "test_tower2.png", "None",
-			10.0, 100, 2.0, 25, 20, 50, 50);
+	TestTower3Type("Test Tower 3", "test_tower3.png", "None",
+			10.0, 100, 1.0, 25, 20, 50, 50),
+	FrostTowerType("Frost Tower", "frost_tower.png", "None",
+			10.0, 70, 1.0, 25, 10, 50, 50);
 	
 	TowerType(String name, String spriteName, String description, 
 			double damage, int range, double speed, int size, int cost,
@@ -38,6 +40,7 @@ public enum TowerType
 	private final int cost;				// purchase cost
 	private final int spriteWidth;
 	private final int spriteHeight;
+	
 	public String getName() {return name;}
 	public String getSpriteName() {return spriteName;}
 	public String getDescription() {return description;}

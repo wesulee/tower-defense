@@ -148,7 +148,7 @@ public class GenericIconGridLayout<T>
 	public Rectangle getRect() {return new Rectangle(layoutRect);}
 	public Rectangle getMinRect() {return new Rectangle(minLayoutRect);}
 	public int size() {return icons.length;}
-	protected int getRow(int y) {return (yStart - y) / rowHeight;}
+	protected int getRow(int y) {return (y - yStart) / rowHeight;}
 	protected int getColumn(int x) {return (x - xStart) / cellWidth;}
 	protected int getIndex(int row, int column) {return row*rowSize + column;}
 	protected boolean validIndex(int i) {return (i >= 0 && i < icons.length);}

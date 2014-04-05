@@ -11,7 +11,7 @@ import towerdefense.creatures.CreatureType;
 import towerdefense.maps.MapType;
 import towerdefense.towers.TowerType;
 
-public class AssetLoader
+public final class AssetLoader
 {
 	private static final boolean printFailure = true;
 	private static final boolean exitOnFailure = true;

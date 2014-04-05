@@ -34,7 +34,7 @@ public class TowerIconLayout
 		int yStart = menu.ICON_Y_START - menu.ICON_PADDING_Y;
 		
 		layout = new GenericIconGridLayout<TowerType>(xStart, yStart,
-				layoutWidth, TowerType.values().length, rowHeight,
+				layoutWidth, menu.ICON_COLUMNS, rowHeight,
 				Alignment.Center, Alignment.Center);
 		
 		for (TowerType tt : TowerType.values()) {
@@ -47,7 +47,7 @@ public class TowerIconLayout
 		}
 		layout.finalize();
 		
-		int drawSize = layout.size();
+		final int drawSize = layout.size();
 		enabled = new boolean[drawSize];
 		Arrays.fill(enabled, true);
 		
@@ -63,7 +63,7 @@ public class TowerIconLayout
 		}
 	}
 	
-	public void draw(Graphics2D g)
+	public void draw(final Graphics2D g)
 	{
 		for (int i = 0; i < enabled.length; i++)
 			if (enabled[i])
@@ -72,19 +72,19 @@ public class TowerIconLayout
 				disabledIcons[i].draw(g);
 	}
 	
-	public void recalcAvailable(int gold)
+	public void recalcAvailable(final int gold)
 	{
 		for (int i = 0; i < cost.length; i++)
 			enabled[i] = cost[i] <= gold;
 	}
 	
-	public GenericIcon<TowerType> getIcon(int x, int y)
+	public GenericIcon<TowerType> getIcon(final int x, final int y)
 	{
 		return layout.getIcon(x, y);
 	}
 	
 	// is (x, y) inside an enabled icon?
-	public boolean insideIcon(int x, int y)
+	public boolean insideIcon(final int x, final int y)
 	{
 		if (handCursorOverDisabled)
 			return layout.insideIcon(x, y);

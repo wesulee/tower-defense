@@ -42,9 +42,9 @@ public class VerticalTextScrollFade implements Animation
 	
 	public void draw(Graphics2D g)
 	{
-		Font oldFont = g.getFont();
-		Color oldColor = g.getColor();
-		Composite oldComposite = g.getComposite();
+		final Font oldFont = g.getFont();
+		final Color oldColor = g.getColor();
+		final Composite oldComposite = g.getComposite();
 		
 		g.setFont(font);
 		g.setColor(color);

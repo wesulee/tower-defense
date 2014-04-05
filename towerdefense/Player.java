@@ -4,7 +4,7 @@ package towerdefense;
  * Menu must be set in order to function correctly.
  * Correct order: p = new Player(); m = new Menu(...); p.setMenu(m);
  */
-public class Player
+public final class Player
 {
 	private int health;
 	private final int maxHealth;
