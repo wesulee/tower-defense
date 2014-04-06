@@ -20,8 +20,8 @@ public abstract class LoadingScreen implements GameState, Runnable
 	private static final Color bgColor = Color.black;
 	private static final Color fontColor = Color.white;
 	
-	private final GamePanel gp;
-	private final AssetLoader assets;
+	protected final GamePanel gp;
+	protected final AssetLoader assets;
 	private final int drawStringX;
 	private final int drawStringY;
 	private final LinkedList<String> files;
@@ -33,29 +33,27 @@ public abstract class LoadingScreen implements GameState, Runnable
 	{
 		this.gp = gp;
 		gp.setFPS(10);
+		
 		Graphics2D g = (Graphics2D) gp.getGraphics();
 		FontMetrics fm = g.getFontMetrics(GamePanel.defaultFont);
 		Rectangle2D rect = fm.getStringBounds(str[0], g);
-		drawStringX = (GamePanel.WIDTH - (int)rect.getWidth()) / 2;
-		drawStringY = (GamePanel.HEIGHT - (int)rect.getHeight()) / 2;
+		this.drawStringX = (GamePanel.WIDTH - (int)rect.getWidth()) / 2;
+		this.drawStringY = (GamePanel.HEIGHT - (int)rect.getHeight()) / 2;
 		g.dispose();
 		
-		assets = new AssetLoader();
+		this.assets = new AssetLoader(gp);
 		this.files= files;
-		
-		Thread t = new Thread(this);
-		t.start();
 	}
 
 	public abstract GameState transition();
 
-	public boolean update(long time)
+	public boolean update(final long time)
 	{
 		strIndex = ++updateCount / strUpdateCount % str.length;
 		return finishedLoading;
 	}
 
-	public void draw(Graphics2D g)
+	public void draw(final Graphics2D g)
 	{
 		final Color oldColor = g.getColor();
 		
@@ -65,6 +63,12 @@ public abstract class LoadingScreen implements GameState, Runnable
 		g.drawString(str[strIndex], drawStringX, drawStringY);
 		
 		g.setColor(oldColor);
+	}
+	
+	protected void startLoading()
+	{
+		Thread t = new Thread(this);
+		t.start();
 	}
 	
 	public void run()
@@ -88,7 +92,6 @@ public abstract class LoadingScreen implements GameState, Runnable
 	
 	public AssetLoader getAssets() {return assets;}
 	public GameStateType getType() {return GameStateType.LoadingScreen;}
-	protected GamePanel getGamePanel() {return gp;}
 	
 	// ignore all input
 	public void mouseMoved(int x, int y) {}

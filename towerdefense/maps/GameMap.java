@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
 
-import towerdefense.AssetLoader;
+import towerdefense.gamestates.RunningGame;
 
 /**
  * Map is used only to contain background sprite and appropriate information
@@ -12,6 +12,7 @@ import towerdefense.AssetLoader;
  */
 public class GameMap
 {
+	private final RunningGame rg;
 	private final BufferedImage backgroundSprite;
 	// creature's rectangle must always be within creaturePath
 	private final Rectangle[] creaturePath;
@@ -24,10 +25,10 @@ public class GameMap
 	// creature reaching the point
 	private final int[] pathDistance;
 	
-	public GameMap(MapType mt)
+	public GameMap(RunningGame rg, MapType mt)
 	{
-		String fileName = mt.getFileName();
-		backgroundSprite = AssetLoader.loadMap(fileName);
+		this.rg = rg;
+		this.backgroundSprite = rg.getAssetLoader().get(mt.getPath());
 		
 		MapParser parser = new MapParser(mt);
 		if (!parser.isValid())
@@ -63,8 +64,7 @@ public class GameMap
 	
 	private void mapDataError(MapParser parser)
 	{
-		System.out.print("Error reading map data: ");
-		System.out.println(parser.getError() + ".");
-		System.exit(1);
+		rg.getGamePanel().errorDialog("Map Data Error", 
+				parser.getError() + ".");
 	}
 }

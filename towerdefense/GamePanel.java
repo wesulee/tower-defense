@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import towerdefense.gamestates.DummyGameState;
@@ -38,7 +39,8 @@ public final class GamePanel extends JPanel implements Runnable
 	//private boolean isPaused = false;
 	// redraw delay, nanoseconds
 	public static long period;
-		
+	
+	private final TowerDefense td;
 	private Graphics2D dbg;
 	private Image dbImage = null;
 	private GameState gs;
@@ -47,6 +49,7 @@ public final class GamePanel extends JPanel implements Runnable
 	
 	public GamePanel(TowerDefense td)
 	{
+		this.td = td;
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		setFocusable(true);
 		requestFocus();
@@ -177,7 +180,7 @@ public final class GamePanel extends JPanel implements Runnable
 		}
 	}
 	
-	public void _mouseMoved(int x, int y)
+	public void _mouseMoved(final int x, final int y)
 	{
 		mouseX = x;
 		mouseY = y;
@@ -207,5 +210,29 @@ public final class GamePanel extends JPanel implements Runnable
 			setCursor(defaultCursor);
 		}
 		currentCursor = cursor;
+	}
+	
+	public void errorDialog(String title, String msg)
+	{
+		JOptionPane.showMessageDialog(td,
+			    msg,
+			    title,
+			    JOptionPane.ERROR_MESSAGE);
+		
+		if (TowerDefense.DEBUG)
+			throw new RuntimeException();
+		
+		System.exit(1);
+	}
+	
+	public void warningDialog(String title, String msg)
+	{
+		JOptionPane.showMessageDialog(td,
+			    msg,
+			    title,
+			    JOptionPane.WARNING_MESSAGE);
+		
+		if (TowerDefense.DEBUG)
+			throw new RuntimeException();
 	}
 }

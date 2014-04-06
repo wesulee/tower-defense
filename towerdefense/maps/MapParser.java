@@ -20,7 +20,7 @@ public class MapParser
 	
 	public MapParser(MapType mt)
 	{
-		String path = "Maps/" + Utility.excludeExt(mt.getFileName()) + ".txt";
+		String path = mt.getDataPath();
 		String str = Utility.readStrFromFile(path);
 		if (str == null) {
 			error = "data file could not be read";

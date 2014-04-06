@@ -44,7 +44,7 @@ public class RunningGame extends BasicGameState
 		
 		this.assets = assets;
 		assets.unloadMapsExcept(mt);
-		map = new GameMap(mt);
+		map = new GameMap(this, mt);
 		player = new Player();
 		towers = new TowerContainer(this, MENU_X);
 		creatures = new CreatureContainer(this);

@@ -10,6 +10,8 @@ import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.InputStream;
 
+import towerdefense.creatures.CreatureType;
+
 public final class Utility
 {
 	private Utility() {}
@@ -28,6 +30,23 @@ public final class Utility
 	public static String excludeExt(String fname)
 	{
 		return fname.substring(0, fname.lastIndexOf("."));
+	}
+	
+	public static String toIconPath(String path)
+	{
+		int extensionIndex = path.lastIndexOf(".");
+		String extension = path.substring(extensionIndex + 1);
+		return path.substring(0, extensionIndex) + "_icon." + extension;
+	}
+	
+	public static String[] creaturePaths(CreatureType ct)
+	{
+		String[] paths = new String[4];
+		int i = 0;
+		String basePath = "Creatures/" + ct.getSpriteName();
+		for (Direction d : Direction.values())
+			paths[i++] = basePath + d.toSuffix() + ct.getSpriteExtension();
+		return paths;
 	}
 	
 	public static String readStrFromFile(String path)

@@ -41,8 +41,8 @@ public class TowerIconLayout
 			BufferedImage img = AssetLoader.getSpriteIcon(tt);
 			img = iconize(img);
 			if (!layout.add(img, tt)) {
-				System.out.println("Error creating menu layout.");
-				System.exit(1);
+				menu.getGamePanel().errorDialog("Layout Error",
+						"Menu layout failed.");
 			}
 		}
 		layout.finalize();

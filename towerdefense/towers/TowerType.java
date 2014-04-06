@@ -14,12 +14,12 @@ public enum TowerType
 	FrostTowerType("Frost Tower", "frost_tower.png", "None",
 			10.0, 70, 1.0, 25, 10, 50, 50);
 	
-	TowerType(String name, String spriteName, String description, 
+	TowerType(String name, String fileName, String description, 
 			double damage, int range, double speed, int size, int cost,
 			int spriteWidth, int spriteHeight)
 	{
 		this.name = name;
-		this.spriteName = spriteName;
+		this.fileName = fileName;
 		this.description = description;
 		this.damage = damage;
 		this.range = range;
@@ -31,7 +31,7 @@ public enum TowerType
 	}
 	
 	private final String name;
-	private final String spriteName;
+	private final String fileName;
 	private final String description;
 	private final double damage;		// damage per attack
 	private final int range;			// distance tower can hit target
@@ -42,7 +42,11 @@ public enum TowerType
 	private final int spriteHeight;
 	
 	public String getName() {return name;}
-	public String getSpriteName() {return spriteName;}
+	public String getPath() {return "Towers/"+fileName;}
+	public String getIconPath()
+	{
+		return null;
+	}
 	public String getDescription() {return description;}
 	public double getDamage() {return damage;}
 	public int getRange() {return range;}

@@ -13,5 +13,5 @@ public class DummyGameState implements GameState
 	public void mouseMoved(int x, int y) {}
 	public void processKey(KeyEvent e) {}
 	public GameState transition() {return null;}
-	public GameStateType getType() {return null;}
+	public GameStateType getType() {return GameStateType.Default;}
 }

@@ -129,4 +129,7 @@ public final class Menu
 	
 	// player is no longer selecting a tower
 	public void clearSelectedTower() {typeSelected = null;}
+	
+	// for layout error notification
+	public GamePanel getGamePanel() {return rg.getGamePanel();}
 }
