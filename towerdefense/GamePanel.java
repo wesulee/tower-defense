@@ -106,8 +106,6 @@ public final class GamePanel extends JPanel implements Runnable
 	}
 	
 	public void stopGame() {gs = new ExitGame(this, gs);}
-	public void pauseGame() {/* not implemented */}
-	public void resumeGame() {/* not implemented */}
 	public long getRedrawDelay() {return period;}
 	public int getMouseX() {return mouseX;}
 	public int getMouseY() {return mouseY;}
@@ -176,7 +174,7 @@ public final class GamePanel extends JPanel implements Runnable
 			g.dispose();
 		}
 		catch (Exception e) {
-			System.out.println("Graphics context error: + e");
+			errorDialog("Graphics Context Error", e.getMessage());
 		}
 	}
 	
@@ -194,6 +192,7 @@ public final class GamePanel extends JPanel implements Runnable
 	
 	public long getPeriod() {return period;}
 	public int getCurrentCursor() {return currentCursor;}
+	public Image getImage() {return dbImage;}
 	
 	public void setCurrentCursor(final int cursor)
 	{

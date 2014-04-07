@@ -14,6 +14,8 @@ public class ExitGame extends BasicGameState {
 		case RunningGame:
 			((RunningGame) gs).printStats();
 			break;
+		case PausedGame:
+			((PausedGame) gs).printStats();
 		case MapSelector:
 			break;
 		case Default:

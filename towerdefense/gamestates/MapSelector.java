@@ -78,6 +78,6 @@ public class MapSelector extends BasicGameState
 	
 	public GameState transition()
 	{
-		return new RunningGame(getGamePanel(), selectedMap, al);
+		return new RunningGame(gp, selectedMap, al);
 	}
 }

@@ -19,12 +19,17 @@ import towerdefense.towers.TowerType;
 
 public class RunningGame extends BasicGameState
 {
-	private final GamePanel gp;
-	private final long startTime;
-	private long updateCount = 0;
-	private final int TARGET_FPS = 60;
+	public static final int TARGET_FPS = 60;
 	// MENU_X determines where menu is drawn
 	public static final int MENU_X = 800;
+	private final GamePanel gp;
+	private long startTime;
+	private long elapseTime = 0;	// excludes pause time
+	private long updateCount = 0;
+	private boolean switchState = false;	// change game state?
+	private boolean pauseActivated = false;
+	
+	// game components
 	private final AssetLoader assets;
 	private final GameMap map;
 	private final Player player;
@@ -71,7 +76,7 @@ public class RunningGame extends BasicGameState
 		towers.update(time, creatures);
 		creatures.update();
 		wc.update(time);
-		return false;
+		return switchState;
 	}
 
 	public void draw(final Graphics2D g)
@@ -92,6 +97,7 @@ public class RunningGame extends BasicGameState
 	{
 		if (TowerDefense.DEBUG)
 			System.out.println("Mouse clicked at (" + x + ", " + y + ")");
+		
 		if (x >= MENU_X) {
 			menu.mouseClicked(x, y);
 			return;
@@ -120,33 +126,58 @@ public class RunningGame extends BasicGameState
 			menu.mouseMoved(x, y);
 		}
 		else {
-			//gp.setCurrentCursor(Cursor.DEFAULT_CURSOR);
+			gp.setCurrentCursor(Cursor.DEFAULT_CURSOR);
 		}
 	}
 	
 	public void processKey(final KeyEvent e)
 	{
-		int code = (int)e.getKeyChar();
-		// Escape key
-		if (code == 27) {
-			menu.clearSelectedTower();
-			selectedTower = null;
-			return;
+		switch(e.getKeyChar()) {
+		case KeyEvent.VK_ESCAPE:
+			if (menu.towerIsSelected()) {
+				menu.clearSelectedTower();
+			}
+			else if (selectedTower != null) {
+				selectedTower = null;
+			}
+			else {	// activate pause menu
+				pauseActivated = true;
+				switchState = true;
+			}
+			break;
 		}
 	}
 	
 	public GameState transition()
 	{
-		return new ExitGame(gp, this);
+		if (pauseActivated) {
+			pauseActivated = false;
+			switchState = false;
+			return new PausedGame(gp, this);
+		}
+		else {
+			return new ExitGame(gp, this);
+		}
 	}
-		
+	
+	public void notifyPaused()
+	{
+		elapseTime += System.nanoTime() - startTime;
+	}
+	
+	public void notifyUnpaused(final long time)
+	{
+		startTime = time;
+	}
+	
 	public void printStats()
 	{
-		long elapseTime = (System.nanoTime()-startTime) / 1000000L; // ms
-		double elapse = elapseTime / 1000.0;
+		double elapse = (System.nanoTime()-startTime + elapseTime)
+				/ 1000000L / 1000.0;
 		double targetFPS = 1000.0 / gp.getPeriod() * 1000000L;
 		System.out.println("Target FPS: "+targetFPS);
-		System.out.println("Period: " + (gp.getPeriod() / 1000) / 1000.0 + " ms");
+		System.out.println("Period: " + (gp.getPeriod() / 1000)
+				/ 1000.0 + " ms");
 		System.out.println("Average FPS: " + updateCount / elapse);
 		System.out.println("gameUpdateCount: " + updateCount);
 		System.out.println("Elapse time: " + elapse + " s");

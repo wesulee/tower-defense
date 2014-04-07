@@ -12,7 +12,7 @@ import towerdefense.Utility;
  */
 public abstract class BasicGameState implements GameState
 {
-	private final GamePanel gp;
+	protected final GamePanel gp;
 	private int mousePressedX;
 	private int mousePressedY;
 	private long mousePressedTime;
@@ -28,14 +28,14 @@ public abstract class BasicGameState implements GameState
 		mouseDistanceLimit = distance;
 	}
 	
-	public void mousePressed(MouseEvent e)
+	public void mousePressed(final MouseEvent e)
 	{
 		mousePressedTime = System.nanoTime();
 		mousePressedX = e.getX();
 		mousePressedY = e.getY();
 	}
 	
-	public void mouseReleased(MouseEvent e)
+	public void mouseReleased(final MouseEvent e)
 	{
 		long time = System.nanoTime();
 		if ((time - mousePressedTime < mouseReleaseTimeLimit) &&
@@ -49,15 +49,14 @@ public abstract class BasicGameState implements GameState
 	public int getMouseX() {return gp.getMouseX();}
 	public int getMouseY() {return gp.getMouseY();}
 	public void setCurrentCursor(int c) {gp.setCurrentCursor(c);}
-	public GamePanel getGamePanel() {return gp;}
 	public GameStateType getType()
 	{
 		return GameStateType.getEnum(getClass().getSimpleName());
 	}
 	
-	public abstract boolean update(long time);
-	public abstract void draw(Graphics2D g);
-	public abstract void processKey(KeyEvent e);
-	public abstract void mouseClicked(int x, int y);
+	public abstract boolean update(final long time);
+	public abstract void draw(final Graphics2D g);
+	public abstract void processKey(final KeyEvent e);
+	public abstract void mouseClicked(final int x, final int y);
 	
 }
