@@ -1,9 +1,14 @@
 package towerdefense.maps;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
 
+import towerdefense.TowerDefense;
+import towerdefense.Utility;
 import towerdefense.gamestates.RunningGame;
 
 /**
@@ -28,17 +33,21 @@ public class GameMap
 	public GameMap(RunningGame rg, MapType mt)
 	{
 		this.rg = rg;
-		this.backgroundSprite = rg.getAssetLoader().get(mt.getPath());
 		
 		MapParser parser = new MapParser(mt);
 		if (!parser.isValid())
 			mapDataError(parser);
 		
-		creaturePath = parser.getCreaturePath();
-		spawnRect = parser.getSpawnRect();
-		pathX = parser.getPathX();
-		pathY = parser.getPathY();
-		pathDistance = parser.getPathDistance();
+		this.creaturePath = parser.getCreaturePath();
+		this.spawnRect = parser.getSpawnRect();
+		this.pathX = parser.getPathX();
+		this.pathY = parser.getPathY();
+		this.pathDistance = parser.getPathDistance();
+		if (TowerDefense.DEBUG)
+			this.backgroundSprite =
+			debugMapImage(rg.getAssetLoader().get(mt.getPath()));
+		else
+			this.backgroundSprite = rg.getAssetLoader().get(mt.getPath());
 	}
 	
 	public Rectangle getSpawnRectangle() {return spawnRect;}
@@ -66,5 +75,43 @@ public class GameMap
 	{
 		rg.getGamePanel().errorDialog("Map Data Error", 
 				parser.getError() + ".");
+	}
+	
+	private BufferedImage debugMapImage(BufferedImage img)
+	{
+		final BufferedImage retImg = Utility.createCopy(img);
+		final Color[] pathColor = {Color.red, Color.orange};
+		int pathColorIndex = 0;
+		final Graphics2D g = (Graphics2D) retImg.getGraphics();
+		
+		
+		// draw creature path
+		g.setComposite(AlphaComposite.getInstance(
+				AlphaComposite.SRC_OVER, 0.1f));
+		for (Rectangle r : creaturePath) {
+			g.setColor(pathColor[pathColorIndex]);
+			g.fill(r);
+			pathColorIndex = (pathColorIndex + 1) % pathColor.length;
+		}
+		
+		// draw path distance circles
+		g.setComposite(AlphaComposite.getInstance(
+				AlphaComposite.SRC_OVER, 1.0f));
+		g.setColor(Color.cyan);
+		for (int i = 0; i < pathX.length; i++) {
+			Ellipse2D.Float circ = new Ellipse2D.Float(
+					pathX[i], pathY[i], pathDistance[i], pathDistance[i]);
+			g.fill(circ);
+		}
+		
+		// draw checkpoints
+		g.setColor(Color.white);
+		for (int i = 0; i < pathX.length; i++) {
+			g.drawLine(pathX[i]-2, pathY[i], pathX[i]+2, pathY[i]); // horiz line
+			g.drawLine(pathX[i], pathY[i]-2, pathX[i], pathY[i]+2); // vert line
+		}
+		
+		g.dispose();
+		return retImg;
 	}
 }

@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import towerdefense.Direction;
+import towerdefense.DirectionVector;
 import towerdefense.Player;
 import towerdefense.Utility;
 import towerdefense.animation.AnimationContainer;
@@ -43,29 +43,47 @@ public class CreatureContainer
 		
 		delayTime = (double)rg.getGamePanel().getPeriod() / 1000000000.0;
 	}
+	
+	public void draw(Graphics2D g)
+	{
+		for (int i = 0; i < creatures.size(); i++)
+			creatures.get(i).draw(g);
+		
+		ac.draw(g);
+	}
 
 	public void update()
 	{
 		Creature c;
 		// try to spawn creature
 		if (!spawnQueue.isEmpty()) {
-			if (spawnCreature == null)
-				spawnCreature = spawnQueue.get(0);
-			
-			if (creatures.isEmpty())
-				creatures.add(spawnQueue.remove(0));
-			else {
-				c = creatures.get(creatures.size() - 1);
-				if (!c.getRectangle().intersects(spawnRect))
-					creatures.add(spawnQueue.remove(0));
+			// no creature spawned yet, spawn immediately
+			if (spawnCreature == null) {
+				spawnCreature = spawnQueue.remove(0);
+				updateDirVect(spawnCreature);
+				creatures.add(spawnCreature);
+			}
+			// no creatures alive, spawn immediately
+			else if (creatures.isEmpty()) {
+				spawnCreature = spawnQueue.remove(0);
+				updateDirVect(spawnCreature);
+				creatures.add(spawnCreature);
+			}
+			// spawn if last spawned is dead or outside spawn rect
+			else if (!spawnCreature.isAlive() ||
+					!spawnCreature.getRectangle().intersects(spawnRect)) {
+				spawnCreature = spawnQueue.remove(0);
+				updateDirVect(spawnCreature);
+				creatures.add(spawnCreature);
 			}
 		}
 		
+		// remove dead creatures and update positions
 		if (!creatures.isEmpty()) {
 			Iterator<Creature> iter = creatures.iterator();
 			while (iter.hasNext()) {
 				c = iter.next();
-				if (c.getHealth() <= 0) {
+				if (!c.isAlive()) {
 					ac.add(new CreatureGoldDrop(c));
 					player.increaseGold(c.getGoldDrop());
 					iter.remove();
@@ -84,14 +102,12 @@ public class CreatureContainer
 	private boolean updatePosition(Creature c)
 	{
 		int pathIndex = c.getPathIndex();
+		DirectionVector dirVect = c.getDirVect();
 		double creatureX = c.getPositionX();
 		double creatureY = c.getPositionY();
-		double dirX = map.getPathX(pathIndex) - creatureX;
-		double dirY = map.getPathY(pathIndex) - creatureY;
-		double dMult = c.getSpeed() * c.getSpeedMultiplier() * delayTime
-		               / Utility.length(dirX, dirY);
-		double dx = dirX * dMult;
-		double dy = dirY * dMult;
+		double dMult = c.getSpeed() * c.getSpeedMult() * delayTime;
+		double dx = dirVect.getX() * dMult;
+		double dy = dirVect.getY() * dMult;
 		double newX = creatureX + dx;
 		double newY = creatureY + dy;
 		
@@ -121,6 +137,7 @@ public class CreatureContainer
 			}
 			else {
 				c.setPathIndex(pathIndex + 1);
+				updateDirVect(c);
 			}
 		}
 		
@@ -133,28 +150,13 @@ public class CreatureContainer
 		return (Utility.length(x2 - x1, y2 - y1) <= maxDistance);
 	}
 	
-	private Direction getDirection(double x1, double x2, double y1, double y2)
+	private void updateDirVect(Creature c)
 	{
-		double dx = x2 - x1;
-		double dy = y2 - y1;
-		
-		if (dx == 0)
-			return dy >= 0 ? Direction.N : Direction.S;
-		if (dy == 0)
-			return dx >= 0 ? Direction.E : Direction.W;
-		
-		if (Math.abs(dx) > Math.abs(dy))
-			return dx >= 0 ? Direction.E : Direction.W;
-		else
-			return dy >= 0 ? Direction.N : Direction.S;
-	}
-	
-	public void draw(Graphics2D g)
-	{
-		for (int i = 0; i < creatures.size(); i++)
-			creatures.get(i).draw(g);
-		
-		ac.draw(g);
+		final int pathIndex = c.getPathIndex();
+		c.setDirVect(new DirectionVector(
+				map.getPathX(pathIndex) - c.getPositionX(),
+				map.getPathY(pathIndex) - c.getPositionY()
+		));
 	}
 	
 	public void setSpawnQueue(LinkedList<Creature> spawn)
