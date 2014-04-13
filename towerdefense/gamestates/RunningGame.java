@@ -28,6 +28,7 @@ public class RunningGame extends BasicGameState
 	private long updateCount = 0;
 	private boolean switchState = false;	// change game state?
 	private boolean pauseActivated = false;
+	private boolean gameLost = false;
 	
 	// game components
 	private final AssetLoader assets;
@@ -50,12 +51,11 @@ public class RunningGame extends BasicGameState
 		this.assets = assets;
 		assets.unloadMapsExcept(mt);
 		map = new GameMap(this, mt);
-		player = new Player();
+		player = new Player(this);
 		towers = new TowerContainer(this, MENU_X);
 		creatures = new CreatureContainer(this);
 		wc = new WaveController(this);
 		menu = new Menu(this, player);
-		player.setMenu(menu);
 		menu.notifyGoldChange();
 		
 		startTime = System.nanoTime();
@@ -155,9 +155,20 @@ public class RunningGame extends BasicGameState
 			switchState = false;
 			return new PausedGame(gp, this);
 		}
+		else if (gameLost) {
+			switchState = false;
+			menu.clearSelectedTower();
+			return new GameLost(this);
+		}
 		else {
 			return new ExitGame(gp, this);
 		}
+	}
+	
+	public void notifyGameLost()
+	{
+		gameLost = true;
+		switchState = true;
 	}
 	
 	public void notifyPaused()

@@ -3,24 +3,22 @@ package towerdefense.gamestates;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import towerdefense.GamePanel;
+import towerdefense.ui.CenteredText;
 
 public class PausedGame extends BasicGameState
 {
 	private static final int TARGET_FPS = 10;
 	private static final float blackAlpha = 0.3f;
 	private static final String msg = "Paused";
+	private final CenteredText text;
 	private final RunningGame rg;
 	private final BufferedImage img;
-	private final int drawX;
-	private final int drawY;
 	private boolean switchState = false;
 	
 	public PausedGame(GamePanel gp, RunningGame rg)
@@ -31,13 +29,7 @@ public class PausedGame extends BasicGameState
 		gp.setCurrentCursor(Cursor.DEFAULT_CURSOR);
 		this.rg = rg;
 		this.img = createBackgroundImage(gp.getImage());
-		
-		Graphics2D g = (Graphics2D) gp.getGraphics();
-		FontMetrics fm = g.getFontMetrics(GamePanel.defaultFont);
-		Rectangle2D rect = fm.getStringBounds(msg, g);
-		this.drawX = (GamePanel.WIDTH - (int) rect.getWidth()) / 2;
-		this.drawY = (GamePanel.HEIGHT - (int) rect.getHeight()) / 2;
-		g.dispose();
+		this.text = new CenteredText(gp, msg, 0, Color.white);
 	}
 
 	public boolean update(final long time)
@@ -49,14 +41,9 @@ public class PausedGame extends BasicGameState
 	}
 
 	public void draw(final Graphics2D g)
-	{
-		final Color oldColor = g.getColor();
-		
+	{		
 		g.drawImage(img, 0, 0, null);
-		g.setColor(Color.white);
-		g.drawString(msg, drawX, drawY);
-		
-		g.setColor(oldColor);
+		text.draw(g);
 	}
 
 	public void processKey(final KeyEvent e)

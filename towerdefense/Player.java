@@ -1,9 +1,7 @@
 package towerdefense;
 
-/**
- * Menu must be set in order to function correctly.
- * Correct order: p = new Player(); m = new Menu(...); p.setMenu(m);
- */
+import towerdefense.gamestates.RunningGame;
+
 public final class Player
 {
 	private int health;
@@ -13,19 +11,22 @@ public final class Player
 	private final static int DEFAULT_HEALTH = 20;
 	private final static int DEFAULT_GOLD = 50;
 	
-	private Menu menu;
+	private final RunningGame rg;
 	
-	public Player()
+	public Player(RunningGame rg)
 	{
 		this.health = DEFAULT_HEALTH;
 		this.maxHealth = DEFAULT_HEALTH;
 		this.gold = DEFAULT_GOLD;
+		this.rg = rg;
 	}
 	
 	// return remaining health
 	public int decreaseHealth(int amount)
 	{
 		health -= amount;
+		if (health <= 0)
+			rg.notifyGameLost();
 		return health;
 	}
 	
@@ -38,17 +39,16 @@ public final class Player
 	public int decreaseGold(int amount)
 	{
 		gold -= amount;
-		if (menu != null) menu.notifyGoldChange();
+		rg.getMenu().notifyGoldChange();
 		return gold;
 	}
 	
 	public void increaseGold(int amount)
 	{
 		gold += amount;
-		if (menu != null) menu.notifyGoldChange();
+		rg.getMenu().notifyGoldChange();
 	}
 	
-	public void setMenu(Menu menu) {this.menu = menu;}
 	public int getHealth() {return health;}
 	public int getMaxHealth() {return maxHealth;}
 	public int getGold() {return gold;}

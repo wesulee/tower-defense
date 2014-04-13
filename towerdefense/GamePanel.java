@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -12,6 +13,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -27,6 +29,7 @@ public final class GamePanel extends JPanel implements Runnable
 	public static final int WIDTH = 950;
 	public static final int HEIGHT = 600;
 	public static final Font defaultFont = new Font("SansSerif", Font.BOLD, 12);
+	private FontMetrics defaultFontMetrics;
 	
 	private int mouseX = 0;
 	private int mouseY = 0;
@@ -115,6 +118,7 @@ public final class GamePanel extends JPanel implements Runnable
 	{
 		long beforeTime, afterTime, timeDiff, sleepTime;
 		
+		defaultFontMetrics = dbg.getFontMetrics(defaultFont);
 		gs = new InitialLoadingScreen(this);
 		
 		beforeTime = System.nanoTime();
@@ -209,6 +213,11 @@ public final class GamePanel extends JPanel implements Runnable
 			setCursor(defaultCursor);
 		}
 		currentCursor = cursor;
+	}
+	
+	public Rectangle2D getStringBounds(String str)
+	{
+		return defaultFontMetrics.getStringBounds(str, dbg);
 	}
 	
 	public void errorDialog(String title, String msg)

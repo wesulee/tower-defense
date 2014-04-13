@@ -1,15 +1,14 @@
 package towerdefense.gamestates;
 
 import java.awt.Color;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 
 import towerdefense.AssetLoader;
 import towerdefense.GamePanel;
+import towerdefense.ui.CenteredText;
 
 public abstract class LoadingScreen implements GameState, Runnable
 {
@@ -19,11 +18,10 @@ public abstract class LoadingScreen implements GameState, Runnable
 	private static final int strUpdateCount = 5;
 	private static final Color bgColor = Color.black;
 	private static final Color fontColor = Color.white;
+	private final CenteredText text;
 	
 	protected final GamePanel gp;
 	protected final AssetLoader assets;
-	private final int drawStringX;
-	private final int drawStringY;
 	private final LinkedList<String> files;
 	private int strIndex = 0;
 	private int updateCount = 0;
@@ -34,13 +32,7 @@ public abstract class LoadingScreen implements GameState, Runnable
 		this.gp = gp;
 		gp.setFPS(10);
 		
-		Graphics2D g = (Graphics2D) gp.getGraphics();
-		FontMetrics fm = g.getFontMetrics(GamePanel.defaultFont);
-		Rectangle2D rect = fm.getStringBounds(str[0], g);
-		this.drawStringX = (GamePanel.WIDTH - (int)rect.getWidth()) / 2;
-		this.drawStringY = (GamePanel.HEIGHT - (int)rect.getHeight()) / 2;
-		g.dispose();
-		
+		this.text = new CenteredText(gp, str[0], 0, fontColor);
 		this.assets = new AssetLoader(gp);
 		this.files= files;
 	}
@@ -59,8 +51,7 @@ public abstract class LoadingScreen implements GameState, Runnable
 		
 		g.setColor(bgColor);
 		g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
-		g.setColor(fontColor);
-		g.drawString(str[strIndex], drawStringX, drawStringY);
+		text.draw(g, str[strIndex]);
 		
 		g.setColor(oldColor);
 	}
