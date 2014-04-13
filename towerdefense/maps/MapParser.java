@@ -2,7 +2,7 @@ package towerdefense.maps;
 
 import java.awt.Rectangle;
 
-import towerdefense.Utility;
+import towerdefense.util.Utility;
 
 public class MapParser
 {

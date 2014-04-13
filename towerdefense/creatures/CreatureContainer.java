@@ -5,13 +5,13 @@ import java.awt.Rectangle;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import towerdefense.DirectionVector;
-import towerdefense.Player;
-import towerdefense.Utility;
 import towerdefense.animation.AnimationContainer;
 import towerdefense.animation.CreatureGoldDrop;
+import towerdefense.components.Player;
 import towerdefense.gamestates.RunningGame;
 import towerdefense.maps.GameMap;
+import towerdefense.util.DirectionVector;
+import towerdefense.util.Utility;
 
 public class CreatureContainer
 {
@@ -36,12 +36,10 @@ public class CreatureContainer
 		this.player = rg.getPlayer();
 		this.ac = new AnimationContainer();
 		this.spawnRect = map.getSpawnRectangle();
-		
-		creatures = new LinkedList<Creature>();
-		spawnQueue = new LinkedList<Creature>();
-		END_INDEX = map.getPointsLength() - 1;
-		
-		delayTime = (double)rg.getGamePanel().getPeriod() / 1000000000.0;
+		this.creatures = new LinkedList<Creature>();
+		this.spawnQueue = new LinkedList<Creature>();
+		this.END_INDEX = map.getPointsLength() - 1;
+		this.delayTime = (double)rg.getGamePanel().getPeriod() / 1000000000.0;
 	}
 	
 	public void draw(Graphics2D g)
@@ -59,22 +57,16 @@ public class CreatureContainer
 		if (!spawnQueue.isEmpty()) {
 			// no creature spawned yet, spawn immediately
 			if (spawnCreature == null) {
-				spawnCreature = spawnQueue.remove(0);
-				updateDirVect(spawnCreature);
-				creatures.add(spawnCreature);
+				addNewCreature(spawnQueue.remove(0));
 			}
 			// no creatures alive, spawn immediately
 			else if (creatures.isEmpty()) {
-				spawnCreature = spawnQueue.remove(0);
-				updateDirVect(spawnCreature);
-				creatures.add(spawnCreature);
+				addNewCreature(spawnQueue.remove(0));
 			}
 			// spawn if last spawned is dead or outside spawn rect
 			else if (!spawnCreature.isAlive() ||
 					!spawnCreature.getRectangle().intersects(spawnRect)) {
-				spawnCreature = spawnQueue.remove(0);
-				updateDirVect(spawnCreature);
-				creatures.add(spawnCreature);
+				addNewCreature(spawnQueue.remove(0));
 			}
 		}
 		
@@ -99,13 +91,13 @@ public class CreatureContainer
 	}
 	
 	// returns true when creature reaches goal
-	private boolean updatePosition(Creature c)
+	private boolean updatePosition(final Creature c)
 	{
-		int pathIndex = c.getPathIndex();
-		DirectionVector dirVect = c.getDirVect();
-		double creatureX = c.getPositionX();
-		double creatureY = c.getPositionY();
-		double dMult = c.getSpeed() * c.getSpeedMult() * delayTime;
+		final int pathIndex = c.getPathIndex();
+		final DirectionVector dirVect = c.getDirVect();
+		final double creatureX = c.getPositionX();
+		final double creatureY = c.getPositionY();
+		final double dMult = c.getSpeed() * c.getSpeedMult() * delayTime;
 		double dx = dirVect.getX() * dMult;
 		double dy = dirVect.getY() * dMult;
 		double newX = creatureX + dx;
@@ -115,42 +107,29 @@ public class CreatureContainer
 			c.setPosition(newX, newY);
 		}
 		else {
-			Rectangle newRect = new Rectangle(c.getRectangle());
-			newRect.x = (int)newX - c.getType().getSizeX() / 2;
-			newRect.y = (int)newY - c.getType().getSizeY() / 2;
-			if (!intersectsOtherCreatures(c, newRect)) {
+			final Rectangle newRect = new Rectangle(c.getRectangle());
+			newRect.x = (int)newX - newRect.width / 2;
+			newRect.y = (int)newY - newRect.height / 2;
+			if (!intersectsOtherCreatures(c, newRect))
 				c.setPosition(newX, newY);
-			}
 			else
 				return false;
 		}
 		
-		if (closeEnough(
-				map.getPathX(pathIndex),
-				map.getPathY(pathIndex),
-				c.getPositionX(),
-				c.getPositionY(),
-				map.getPathDistance(pathIndex))) {
+		if (c.closeEnough()) {
 			if (pathIndex == END_INDEX) {
 				player.decreaseHealth(1);
 				return true;
 			}
 			else {
-				c.setPathIndex(pathIndex + 1);
-				updateDirVect(c);
+				updateCreature(c);
 			}
 		}
 		
 		return false;
 	}
 	
-	private boolean closeEnough(double x1, double y1, double x2, double y2,
-			int maxDistance)
-	{
-		return (Utility.length(x2 - x1, y2 - y1) <= maxDistance);
-	}
-	
-	private void updateDirVect(Creature c)
+	private void updateDirVect(final Creature c)
 	{
 		final int pathIndex = c.getPathIndex();
 		c.setDirVect(new DirectionVector(
@@ -167,7 +146,8 @@ public class CreatureContainer
 	// no other class should modify size of creatures
 	public LinkedList<Creature> getCreatureList() {return creatures;}
 	
-	public LinkedList<Creature> getCreaturesNear(int x, int y, int range)
+	public LinkedList<Creature> getCreaturesNear(final int x, final int y,
+			final int range)
 	{
 		LinkedList<Creature> inRange = new LinkedList<Creature>();
 		
@@ -177,6 +157,15 @@ public class CreatureContainer
 		}
 		
 		return inRange;
+	}
+	
+	public Creature getCreatureAt(final int x, final int y)
+	{
+		for (Creature c : creatures) {
+			if (c.getRectangle().contains(x, y))
+				return c;
+		}
+		return null;
 	}
 	
 	private double getDistanceFrom(int x, int y, Creature c)
@@ -190,10 +179,29 @@ public class CreatureContainer
 	private boolean intersectsOtherCreatures(Creature c, Rectangle cRect)
 	{
 		for (Creature test : creatures) {
-			if (c != test && cRect.intersects(test.getRectangle())) {
+			if (c != test && cRect.intersects(test.getRectangle()))
 				return true;
-			}
 		}
 		return false;
+	}
+	
+	// spawn the creature
+	private void addNewCreature(final Creature c)
+	{
+		spawnCreature = c;
+		updateDirVect(c);
+		c.updatePathRect(map.getPathX(0), map.getPathY(0),
+				map.getPathDistance(0));
+		creatures.add(c);
+	}
+	
+	// creature has made it to current checkpoint, update to next one
+	private void updateCreature(final Creature c)
+	{
+		final int pathIndex = c.getPathIndex() + 1;
+		c.setPathIndex(pathIndex);
+		updateDirVect(c);
+		c.updatePathRect(map.getPathX(pathIndex), map.getPathY(pathIndex),
+				map.getPathDistance(pathIndex));
 	}
 }

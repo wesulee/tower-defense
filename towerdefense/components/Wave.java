@@ -1,4 +1,4 @@
-package towerdefense;
+package towerdefense.components;
 
 import java.util.LinkedList;
 

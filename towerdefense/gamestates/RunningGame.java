@@ -5,17 +5,18 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
 import towerdefense.GamePanel;
-import towerdefense.Menu;
-import towerdefense.Player;
-import towerdefense.AssetLoader;
 import towerdefense.TowerDefense;
-import towerdefense.WaveController;
+import towerdefense.components.AssetLoader;
+import towerdefense.components.Player;
+import towerdefense.components.WaveController;
+import towerdefense.creatures.Creature;
 import towerdefense.creatures.CreatureContainer;
 import towerdefense.maps.GameMap;
 import towerdefense.maps.MapType;
 import towerdefense.towers.Tower;
 import towerdefense.towers.TowerContainer;
 import towerdefense.towers.TowerType;
+import towerdefense.ui.Menu;
 
 public class RunningGame extends BasicGameState
 {
@@ -40,6 +41,8 @@ public class RunningGame extends BasicGameState
 	private final WaveController wc;
 	// already existing tower selected
 	private Tower selectedTower = null;
+	
+	private Creature selectedCreature = null;	// debug variable
 	
 	public RunningGame(GamePanel gp, MapType mt, AssetLoader assets)
 	{
@@ -90,13 +93,18 @@ public class RunningGame extends BasicGameState
 		
 		creatures.draw(g);
 		
+		if (TowerDefense.DEBUG && (selectedCreature != null))
+			selectedCreature.drawDebug(g);
+		
 		menu.draw(g);
 	}
 	
 	public void mouseClicked(final int x, final int y)
 	{
-		if (TowerDefense.DEBUG)
+		if (TowerDefense.DEBUG) {
 			System.out.println("Mouse clicked at (" + x + ", " + y + ")");
+			selectedCreature = creatures.getCreatureAt(x, y);
+		}
 		
 		if (x >= MENU_X) {
 			menu.mouseClicked(x, y);

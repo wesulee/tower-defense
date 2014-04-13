@@ -9,12 +9,13 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 
 import towerdefense.GamePanel;
-import towerdefense.Utility;
 import towerdefense.creatures.Creature;
 import towerdefense.creatures.CreatureContainer;
 import towerdefense.gamestates.RunningGame;
 import towerdefense.towers.Tower;
 import towerdefense.towers.TowerContainer;
+import towerdefense.util.Counter;
+import towerdefense.util.Utility;
 
 /**
  * A long beam that immediately damages all creatures in its path.
@@ -23,10 +24,8 @@ public class RailBeam implements Projectile
 {
 	private static int beamLength = (int)Utility.length(RunningGame.MENU_X,
 			GamePanel.HEIGHT);
-	private final int maxUpdateTicks;
-	private int updateTickCounter = 0;
+	private final Counter counter;
 	private final int beamHitAllowance = 10;
-	
 	private final int x1;
 	private final int y1;
 	private final int x2;
@@ -37,11 +36,10 @@ public class RailBeam implements Projectile
 	private final CreatureContainer cc;
 	
 	// beam guaranteed to pass through and damage Creature c
-	public RailBeam(TowerContainer tc, Tower t, Creature c, int milliseconds,
+	public RailBeam(TowerContainer tc, Tower t, Creature c, int ms,
 			int beamWidth, Color beamColor)
 	{
-		long milliToNano = milliseconds * 1000000L;
-		this.maxUpdateTicks = (int)(milliToNano / GamePanel.period) + 1;
+		this.counter = new Counter(ms);
 		this.cc = tc.getGameState().getCreatureContainer();
 		this.beamColor = beamColor;
 		this.beamStroke = new BasicStroke(beamWidth);
@@ -87,13 +85,8 @@ public class RailBeam implements Projectile
 		g.setStroke(oldStroke);
 	}
 
-	public boolean update() {
-		if (++updateTickCounter > maxUpdateTicks)
-			return true;
-		return false;
-	}
+	public boolean update() {return counter.update();}
 	
-	// beam is a rotated 
 	private boolean creatureInBeam(Creature c)
 	{
 		return beam.contains(c.getPositionX(), c.getPositionY());

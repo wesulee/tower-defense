@@ -5,12 +5,12 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
-import towerdefense.AssetLoader;
 import towerdefense.GamePanel;
-import towerdefense.Utility;
+import towerdefense.components.AssetLoader;
 import towerdefense.maps.MapType;
 import towerdefense.ui.Alignment;
 import towerdefense.ui.GenericIconGridLayout;
+import towerdefense.util.Utility;
 
 public class MapSelector extends BasicGameState
 {

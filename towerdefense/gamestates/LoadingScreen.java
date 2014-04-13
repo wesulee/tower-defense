@@ -6,8 +6,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 
-import towerdefense.AssetLoader;
 import towerdefense.GamePanel;
+import towerdefense.components.AssetLoader;
 import towerdefense.ui.CenteredText;
 
 public abstract class LoadingScreen implements GameState, Runnable

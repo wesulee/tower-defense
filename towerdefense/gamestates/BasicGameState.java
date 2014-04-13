@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import towerdefense.GamePanel;
-import towerdefense.Utility;
+import towerdefense.util.Utility;
 
 /**
  * Provides basic mouse input for a GameState.

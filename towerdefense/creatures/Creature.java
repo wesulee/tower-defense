@@ -3,11 +3,12 @@ package towerdefense.creatures;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-import towerdefense.Direction;
-import towerdefense.DirectionVector;
+import towerdefense.util.Direction;
+import towerdefense.util.DirectionVector;
 
 public abstract class Creature 
 {
+	private static final int pathRectSize = 16;
 	protected Direction dir = Direction.N;
 	private DirectionVector dirVect;
 	protected double posX;
@@ -19,6 +20,8 @@ public abstract class Creature
 	protected final Rectangle rect2;	// E, W
 	private double speedMult = 1.0;
 	private int pathIndex = 0;
+	// once creature inside pathRect, can move on to next path index
+	protected final Rectangle pathRect;
 	protected final int sizeX;
 	protected final int sizeY;
 	
@@ -36,6 +39,9 @@ public abstract class Creature
 		this.rect2 = new Rectangle();
 		this.rect2.width = sizeY;
 		this.rect2.height = sizeX;
+		this.pathRect = new Rectangle();
+		this.pathRect.width = pathRectSize;
+		this.pathRect.height = pathRectSize;
 		setPosition(posX, posY);
 	}
 	
@@ -95,8 +101,40 @@ public abstract class Creature
 		dir = dirVect.toDirection();
 	}
 	
+	// is the creature close enough to the target path location?
+	public boolean closeEnough()
+	{
+		return pathRect.contains(posX, posY);
+	}
+	
+	// assumes dirVect has been updated
+	public void updatePathRect(final int targetX, final int targetY,
+			final int pathDistance)
+	{
+		switch (dir) {
+		case N:
+			pathRect.x = targetX - pathRectSize / 2;
+			pathRect.y = targetY - pathRectSize + pathDistance;
+			break;
+		case E:
+			pathRect.x = targetX - pathDistance;
+			pathRect.y = targetY - pathRectSize / 2;
+			break;
+		case S:
+			pathRect.x = targetX - pathRectSize / 2;
+			pathRect.y = targetY - pathDistance;
+			break;
+		case W:
+			pathRect.x = targetX - pathRectSize + pathDistance;
+			pathRect.y = targetY - pathRectSize / 2;
+			break;
+		default:
+			break;
+		}
+	}
 	
 	public abstract void draw(Graphics2D g);
+	public abstract void drawDebug(Graphics2D g);
 	public abstract CreatureType getType();
 	
 	

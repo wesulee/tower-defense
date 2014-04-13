@@ -1,4 +1,5 @@
-package towerdefense;
+package towerdefense.util;
+
 
 public class DirectionVector
 {

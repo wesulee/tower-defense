@@ -1,6 +1,6 @@
 package towerdefense.projectiles;
 
-import towerdefense.Utility;
+import towerdefense.util.Utility;
 
 abstract public class ConstSpeedProjectile extends TimedMovingProjectile
 {	

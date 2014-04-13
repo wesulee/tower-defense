@@ -8,8 +8,8 @@ import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
 
 import towerdefense.TowerDefense;
-import towerdefense.Utility;
 import towerdefense.gamestates.RunningGame;
+import towerdefense.util.Utility;
 
 /**
  * Map is used only to contain background sprite and appropriate information

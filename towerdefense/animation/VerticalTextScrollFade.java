@@ -6,7 +6,7 @@ import java.awt.Composite;
 import java.awt.Font;
 import java.awt.Graphics2D;
 
-import towerdefense.GamePanel;
+import towerdefense.util.Counter;
 
 /**
  * Displays a vertically scrolling string that fades out after a given amount
@@ -19,11 +19,10 @@ public class VerticalTextScrollFade implements Animation
 	private final Color color;
 	private final int x;
 	private float y;
-	private final float dy;
+	private final float dy;		// delta of y per update
 	private float alpha = 1.0f;
-	private final float da;
-	private int updateTickCounter = 0;
-	private final int maxUpdateTicks;
+	private final float da;		// delta of alpha per update
+	private final Counter counter;
 	
 	public VerticalTextScrollFade(String str, int x1, int y1, int y2, int ms,
 			Font font, Color color)
@@ -31,12 +30,12 @@ public class VerticalTextScrollFade implements Animation
 		this.string = str;
 		this.font = font;
 		this.color = color;
-		long milliToNano = ms * 1000000L;
-		this.maxUpdateTicks = (int)(milliToNano / GamePanel.period) + 1;
+		this.counter = new Counter(ms);
 		this.x = x1;
 		this.y = y1;
-		this.dy = (float)(y2 - y1) / maxUpdateTicks;
-		this.da = -1.0f / (maxUpdateTicks + 1);
+		this.dy = (float) (y2 - y1) / counter.getMaxTicks();
+		// make sure that alpha is never less than 0
+		this.da = -0.999f / counter.getMaxTicks();
 		
 	}
 	
@@ -50,7 +49,7 @@ public class VerticalTextScrollFade implements Animation
 		g.setColor(color);
 		g.setComposite(AlphaComposite.getInstance(
 				AlphaComposite.SRC_OVER, alpha));
-		g.drawString(string, x, (int)y);
+		g.drawString(string, x, (int) y);
 		
 		g.setFont(oldFont);
 		g.setColor(oldColor);
@@ -59,12 +58,13 @@ public class VerticalTextScrollFade implements Animation
 
 	public boolean update()
 	{
-		if (++updateTickCounter == maxUpdateTicks)
+		if (counter.update()) {
 			return true;
-		
-		y += dy;
-		alpha += da;
-		
-		return false;
+		}
+		else {
+			y += dy;
+			alpha += da;
+			return false;
+		}
 	}
 }

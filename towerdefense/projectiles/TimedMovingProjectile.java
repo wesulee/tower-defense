@@ -1,6 +1,6 @@
 package towerdefense.projectiles;
 
-import towerdefense.GamePanel;
+import towerdefense.util.Counter;
 
 /**
  * General projectile that travels from source to fixed destination
@@ -10,38 +10,34 @@ import towerdefense.GamePanel;
  */
 public abstract class TimedMovingProjectile
 {
-	// how many times update should have been called before destroyed
-	private final int maxUpdateTicks;
-	// number of calls to update()
-	private int updateTickCounter = 0;
+	private final Counter counter;
 	// current position
 	protected double x;
 	protected double y;
 	// calling update moves the projectile by this amount
-	protected double dx;
-	protected double dy;
+	protected final double dx;
+	protected final double dy;
 	
 	public TimedMovingProjectile(int sourceX, int sourceY,
-			int destX, int destY, int milliseconds)
+			int destX, int destY, int ms)
 	{
-		long milliToNano = milliseconds * 1000000L;
-		this.maxUpdateTicks = (int)(milliToNano / GamePanel.period) + 1;
-		
+		this.counter = new Counter(ms);
 		this.x = sourceX;
 		this.y = sourceY;
-		this.dx = (double)(destX - sourceX) / maxUpdateTicks;
-		this.dy = (double)(destY - sourceY) / maxUpdateTicks;
+		this.dx = (double) (destX - sourceX) / counter.getMaxTicks();
+		this.dy = (double) (destY - sourceY) / counter.getMaxTicks();
 	}
 
 	// returns true when projectile should be destroyed
 	public boolean update()
 	{
-		if (updateTickCounter >= maxUpdateTicks)
+		if (counter.update())
 			return true;
-		x += dx;
-		y += dy;
-		updateTickCounter++;
-		return false;
+		else {
+			x += dx;
+			y += dy;
+			return false;
+		}
 	}
 	
 	protected double getX() {return x;}

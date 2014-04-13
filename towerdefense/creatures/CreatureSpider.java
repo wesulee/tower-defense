@@ -2,7 +2,7 @@ package towerdefense.creatures;
 
 import java.awt.image.BufferedImage;
 
-import towerdefense.AssetLoader;
+import towerdefense.components.AssetLoader;
 
 public class CreatureSpider extends GameCreature
 {

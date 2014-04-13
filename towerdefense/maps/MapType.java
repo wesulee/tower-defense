@@ -1,6 +1,6 @@
 package towerdefense.maps;
 
-import towerdefense.Utility;
+import towerdefense.util.Utility;
 
 public enum MapType
 {

@@ -5,10 +5,9 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
-import towerdefense.Menu;
-import towerdefense.AssetLoader;
-import towerdefense.Utility;
+import towerdefense.components.AssetLoader;
 import towerdefense.towers.TowerType;
+import towerdefense.util.Utility;
 
 public class TowerIconLayout
 {

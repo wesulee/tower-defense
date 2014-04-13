@@ -1,4 +1,4 @@
-package towerdefense;
+package towerdefense.ui;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -6,11 +6,10 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.EnumMap;
 
+import towerdefense.GamePanel;
+import towerdefense.components.Player;
 import towerdefense.gamestates.RunningGame;
 import towerdefense.towers.TowerType;
-import towerdefense.ui.GenericIcon;
-import towerdefense.ui.TextBox;
-import towerdefense.ui.TowerIconLayout;
 
 /**
  * Menu layout in vertical order: wave, icons, description, health/gold

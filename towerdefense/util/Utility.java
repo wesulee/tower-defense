@@ -1,4 +1,4 @@
-package towerdefense;
+package towerdefense.util;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -10,6 +10,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.InputStream;
 
+import towerdefense.TowerDefense;
 import towerdefense.creatures.CreatureType;
 
 public final class Utility

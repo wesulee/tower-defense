@@ -1,4 +1,4 @@
-package towerdefense;
+package towerdefense.util;
 
 public enum Direction
 {

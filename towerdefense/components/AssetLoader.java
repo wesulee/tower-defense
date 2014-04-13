@@ -1,4 +1,4 @@
-package towerdefense;
+package towerdefense.components;
 
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
@@ -8,11 +8,14 @@ import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
 
+import towerdefense.GamePanel;
+import towerdefense.TowerDefense;
 import towerdefense.creatures.CreatureType;
 import towerdefense.maps.MapType;
 import towerdefense.projectiles.Fireball;
 import towerdefense.projectiles.Frost;
 import towerdefense.towers.TowerType;
+import towerdefense.util.Utility;
 
 public final class AssetLoader
 {

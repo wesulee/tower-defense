@@ -3,7 +3,7 @@ package towerdefense.creatures;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import towerdefense.Utility;
+import towerdefense.util.Utility;
 
 public class HealthBar
 {
