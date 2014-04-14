@@ -8,6 +8,7 @@ import towerdefense.util.DirectionVector;
 
 public abstract class Creature 
 {
+	public static CreatureContainer cc = null;
 	private static final int pathRectSize = 16;
 	protected Direction dir = Direction.N;
 	private DirectionVector dirVect;

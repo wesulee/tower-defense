@@ -3,11 +3,15 @@ package towerdefense.creatures;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import towerdefense.animation.AnimationContainer;
 import towerdefense.animation.CreatureGoldDrop;
 import towerdefense.components.Player;
+import towerdefense.creatures.effects.CreatureEffectSource;
+import towerdefense.creatures.effects.EffectContainer;
 import towerdefense.gamestates.RunningGame;
 import towerdefense.maps.GameMap;
 import towerdefense.util.DirectionVector;
@@ -15,8 +19,9 @@ import towerdefense.util.Utility;
 
 public class CreatureContainer
 {
-	private LinkedList<Creature> creatures;
+	private final LinkedList<Creature> creatures;
 	private LinkedList<Creature> spawnQueue;
+	private final LinkedHashMap<Creature, EffectContainer> effects;
 	// most recent creature spawned
 	private Creature spawnCreature = null;
 	private final Rectangle spawnRect;
@@ -31,15 +36,17 @@ public class CreatureContainer
 	
 	public CreatureContainer(RunningGame rg)
 	{
+		Creature.cc = this;
 		this.rg = rg;
 		this.map = rg.getMap();
 		this.player = rg.getPlayer();
 		this.ac = new AnimationContainer();
 		this.spawnRect = map.getSpawnRectangle();
 		this.creatures = new LinkedList<Creature>();
+		this.effects = new LinkedHashMap<Creature, EffectContainer>();
 		this.spawnQueue = new LinkedList<Creature>();
 		this.END_INDEX = map.getPointsLength() - 1;
-		this.delayTime = (double)rg.getGamePanel().getPeriod() / 1000000000.0;
+		this.delayTime = (double) rg.getGamePanel().getPeriod() / 1e9;
 	}
 	
 	public void draw(Graphics2D g)
@@ -52,8 +59,16 @@ public class CreatureContainer
 
 	public void update()
 	{
-		Creature c;
+		// update creature effects
+		Iterator<Map.Entry<Creature, EffectContainer>> it =
+				effects.entrySet().iterator();
+		while (it.hasNext()) {
+			if (it.next().getValue().update())
+				it.remove();
+		}
+		
 		// try to spawn creature
+		Creature c;
 		if (!spawnQueue.isEmpty()) {
 			// no creature spawned yet, spawn immediately
 			if (spawnCreature == null) {
@@ -79,6 +94,7 @@ public class CreatureContainer
 					ac.add(new CreatureGoldDrop(c));
 					player.increaseGold(c.getGoldDrop());
 					iter.remove();
+					effects.remove(c);
 				}
 				else if (updatePosition(c))
 					iter.remove();
@@ -157,6 +173,18 @@ public class CreatureContainer
 		}
 		
 		return inRange;
+	}
+	
+	public void applyCreatureEffect(Creature c, CreatureEffectSource source)
+	{
+		EffectContainer ec = effects.get(c);
+		if (ec == null) {
+			ec = new EffectContainer(c, source);
+			effects.put(c, ec);
+		}
+		else {
+			ec.addEffect(source);
+		}
 	}
 	
 	public Creature getCreatureAt(final int x, final int y)

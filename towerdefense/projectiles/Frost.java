@@ -6,22 +6,31 @@ import java.util.List;
 
 import towerdefense.animation.Fadeout;
 import towerdefense.creatures.Creature;
+import towerdefense.creatures.CreatureContainer;
+import towerdefense.creatures.effects.CreatureEffect;
+import towerdefense.creatures.effects.CreatureEffectSource;
+import towerdefense.creatures.effects.CreatureEffectType;
+import towerdefense.creatures.effects.SpeedModifier;
 import towerdefense.gamestates.RunningGame;
 import towerdefense.towers.FrostTower;
 
-public class Frost implements Projectile
+public class Frost implements Projectile, CreatureEffectSource
 {
 	public static final String path = "Projectiles/frost.png";
 	private static final int duration = 1000;	// ms
+	private static final double speedModifier = 0.8;
+	private static final int effectDuration = 5000;
 	private final Fadeout fade;
 	
 	public Frost(FrostTower src, List<Creature> creatures, RunningGame rg)
 	{
 		BufferedImage sprite = rg.getAssetLoader().get(path);
-		fade = new Fadeout(sprite, src.getX(), src.getY(), duration);
+		this.fade = new Fadeout(sprite, src.getX(), src.getY(), duration);
 		
+		final CreatureContainer cc = rg.getCreatureContainer();
 		for (Creature c : creatures) {
 			c.decreaseHealth((int)src.getDamage());
+			cc.applyCreatureEffect(c, this);
 		}
 	} 
 
@@ -33,5 +42,15 @@ public class Frost implements Projectile
 	public boolean update()
 	{
 		return fade.update();
+	}
+
+	public CreatureEffect applyEffect(Creature c)
+	{
+		return new SpeedModifier(c, speedModifier, effectDuration);
+	}
+
+	public CreatureEffectType getType()
+	{
+		return CreatureEffectType.SpeedModifier;
 	}
 }
