@@ -12,7 +12,9 @@ public enum TowerType
 	TestTower3Type("Test Tower 3", "test_tower3.png", "None",
 			10.0, 100, 1.0, 25, 20, 50, 50),
 	FrostTowerType("Frost Tower", "frost_tower.png", "None",
-			10.0, 70, 1.0, 25, 10, 50, 50);
+			10.0, 70, 1.0, 25, 10, 50, 50),
+	CLTowerType("Chain Lightning Tower", "test_tower.png", "None",
+			20.0, 200, 1.0 / 3, 25, 1, 50, 50);
 	
 	TowerType(String name, String fileName, String description, 
 			double damage, int range, double speed, int size, int cost,

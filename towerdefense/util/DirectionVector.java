@@ -1,34 +1,37 @@
 package towerdefense.util;
 
-
 public class DirectionVector
 {
-	private static final boolean normalized = true;
-	private double x;
-	private double y;
-	
-	public DirectionVector()
-	{
-		x = 0.0;
-		y = 1.0;
-	}
+	private final double x;
+	private final double y;
+	private final double length;
 	
 	public DirectionVector(double x, double y)
 	{
-		if (normalized) {
-			double length = Utility.length(x,  y);
-			this.x = x / length;
-			this.y = y / length;
+		final double div = Utility.length(x,  y);
+		this.x = x / div;
+		this.y = y / div;
+		this.length = 1.0 ;
+	}
+	
+	public DirectionVector(double x, double y, boolean norm)
+	{
+		if (norm) {
+			final double div = Utility.length(x,  y);
+			this.x = x / div;
+			this.y = y / div;
+			this.length = 1.0;
 		}
 		else {
 			this.x = x;
 			this.y = y;
+			this.length = Utility.length(x,  y);
 		}
-		
 	}
 	
 	public double getX() {return x;}
 	public double getY() {return y;}
+	public double length() {return length;}
 	
 	public Direction toDirection()
 	{

@@ -22,6 +22,9 @@ public final class TowerFactory
 		case FrostTowerType:
 			nt = new FrostTower(rg, x, y);
 			break;
+		case CLTowerType:
+			nt = new ChainLightningTower(rg, x, y);
+			break;
 		default:
 			nt = null;
 		}
