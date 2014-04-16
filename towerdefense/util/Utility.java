@@ -10,6 +10,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.InputStream;
 
+import towerdefense.GamePanel;
 import towerdefense.TowerDefense;
 import towerdefense.creatures.CreatureType;
 
@@ -157,5 +158,10 @@ public final class Utility
 	public static int minimumZero(int a)
 	{
 		return a > 0 ? a : 0;
+	}
+	
+	public static int msToGameTicks(int ms)
+	{
+		return (int) (ms * 1000000L / GamePanel.period) + 1;
 	}
 }

@@ -2,5 +2,5 @@ package towerdefense.creatures.effects;
 
 public enum CreatureEffectType
 {
-	SpeedModifier;
+	SpeedModifier, DamageOverTime;
 }
