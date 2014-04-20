@@ -164,4 +164,11 @@ public final class Utility
 	{
 		return (int) (ms * 1000000L / GamePanel.period) + 1;
 	}
+	
+	public static void drawCrosshair(final Graphics2D g, final int x,
+			final int y, final int width)
+	{
+		g.drawLine(x-width, y, x+width, y);		// horiz line
+		g.drawLine(x, y-width, x, y+2);			// vert line
+	}
 }

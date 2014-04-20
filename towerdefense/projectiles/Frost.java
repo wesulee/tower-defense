@@ -16,15 +16,18 @@ import towerdefense.towers.FrostTower;
 
 public class Frost implements Projectile, CreatureEffectSource
 {
-	public static final String path = "Projectiles/frost.png";
+	public static final String path1 = "Projectiles/frost.png";
+	public static final String path2 = "Projectiles/frost_creature.png";
 	private static final int duration = 1000;	// ms
 	private static final double speedModifier = 0.8;
 	private static final int effectDuration = 5000;
+	private final RunningGame rg;
 	private final Fadeout fade;
 	
 	public Frost(FrostTower src, List<Creature> creatures, RunningGame rg)
 	{
-		BufferedImage sprite = rg.getAssetLoader().get(path);
+		this.rg = rg;
+		BufferedImage sprite = rg.getAssetLoader().get(path1);
 		this.fade = new Fadeout(sprite, src.getX(), src.getY(), duration);
 		
 		final CreatureContainer cc = rg.getCreatureContainer();
@@ -46,7 +49,8 @@ public class Frost implements Projectile, CreatureEffectSource
 
 	public CreatureEffect applyEffect(Creature c)
 	{
-		return new SpeedModifier(c, speedModifier, effectDuration);
+		return new SpeedModifier(c, speedModifier, effectDuration,
+				rg.getAssetLoader().get(path2));
 	}
 
 	public CreatureEffectType getType()

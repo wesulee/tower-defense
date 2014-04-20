@@ -71,7 +71,8 @@ public final class AssetLoader
 		// projectiles
 		paths.add(Fireball.path1);
 		paths.add(Fireball.path2);
-		paths.add(Frost.path);
+		paths.add(Frost.path1);
+		paths.add(Frost.path2);
 		
 		return paths;
 	}

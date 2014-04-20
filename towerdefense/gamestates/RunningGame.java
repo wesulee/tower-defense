@@ -87,11 +87,13 @@ public class RunningGame extends BasicGameState
 		// Drawing order: background, towers, creatures, projectiles, menu
 		map.draw(g);
 		
-		towers.draw(g);
+		towers.drawTowers(g);
 		if (selectedTower != null)
 			selectedTower.drawRangeCircle(g);
 		
 		creatures.draw(g);
+		
+		towers.drawProjectiles(g);
 		
 		if (TowerDefense.DEBUG && (selectedCreature != null))
 			selectedCreature.drawDebug(g);

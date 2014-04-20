@@ -53,7 +53,7 @@ public class TowerContainer
 		pc.update();
 	}
 	
-	public void draw(Graphics2D g)
+	public void drawTowers(final Graphics2D g)
 	{
 		if (gameSelectedTower != null) {
 			gameSelectedTower.drawRangeCircle(g);
@@ -69,9 +69,9 @@ public class TowerContainer
 					rg.getMouseX(), rg.getMouseY(),
 					menuSelectedTower.getRange());
 		}
-		
-		pc.draw(g);
 	}
+	
+	public void drawProjectiles(Graphics2D g) {pc.draw(g);}
 	
 	public ProjectileContainer getProjectileContainer() {return pc;}
 	public RunningGame getGameState() {return rg;}

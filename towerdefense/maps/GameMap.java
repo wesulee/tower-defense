@@ -84,7 +84,6 @@ public class GameMap
 		int pathColorIndex = 0;
 		final Graphics2D g = (Graphics2D) retImg.getGraphics();
 		
-		
 		// draw creature path
 		g.setComposite(AlphaComposite.getInstance(
 				AlphaComposite.SRC_OVER, 0.1f));
@@ -106,10 +105,8 @@ public class GameMap
 		
 		// draw checkpoints
 		g.setColor(Color.white);
-		for (int i = 0; i < pathX.length; i++) {
-			g.drawLine(pathX[i]-2, pathY[i], pathX[i]+2, pathY[i]); // horiz line
-			g.drawLine(pathX[i], pathY[i]-2, pathX[i], pathY[i]+2); // vert line
-		}
+		for (int i = 0; i < pathX.length; i++)
+			Utility.drawCrosshair(g, pathX[i], pathY[i], 2);
 		
 		g.dispose();
 		return retImg;

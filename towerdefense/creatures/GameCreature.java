@@ -7,12 +7,16 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import towerdefense.TowerDefense;
+import towerdefense.util.Utility;
 
 /**
  * Extends Creature to supporting drawing.
  */
 public class GameCreature extends Creature
 {
+	private BufferedImage effect = null;
+	private int effectOffsetX;	// drawing offset of effect
+	private int effectOffsetY;
 	private final CreatureType ct;
 	private final BufferedImage[] sprites;
 	private final HealthBar healthBar;
@@ -45,12 +49,19 @@ public class GameCreature extends Creature
 					null);
 		}
 		
+		if (effect != null)
+			g.drawImage(effect, (int) posX - effectOffsetX,
+					(int) posY - effectOffsetY, null);
+		
 		healthBar.draw(g);
 		
-		if (TowerDefense.DEBUG)
+		if (TowerDefense.DEBUG) {
 			g.draw(getRectangle());
+			Utility.drawCrosshair(g, (int) posX, (int) posY, 2);
+		}
 	}
 	
+	// draw target rectangle
 	public void drawDebug(final Graphics2D g)
 	{
 		final Composite oldComposite = g.getComposite();
@@ -72,4 +83,13 @@ public class GameCreature extends Creature
 	}
 	
 	public CreatureType getType() {return ct;}
+	
+	public void setDrawEffect(BufferedImage img)
+	{
+		effect = img;
+		effectOffsetX = img.getWidth() / 2;
+		effectOffsetY = img.getHeight() / 2;
+	}
+	
+	public  void clearDrawEffect() {effect = null;}
 }
